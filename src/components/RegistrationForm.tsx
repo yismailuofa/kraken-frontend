@@ -1,13 +1,17 @@
 import {
     VStack,
+    Stack,
     Heading,
     Button,
 } from "@chakra-ui/react"
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField"
+import { useNavigate } from "react-router-dom";
 
 export function RegistrationForm() {
+    const navigate = useNavigate();
+
     return (
       <Formik
         initialValues={{
@@ -61,10 +65,16 @@ export function RegistrationForm() {
               variant="filled"
               placeholder="enter password..."
             />
-  
-            <Button type="submit" colorScheme="teal" variant="solid">
-              Create Account
-            </Button>
+
+            <Stack spacing={4} direction='row' align='center'>
+                <Button colorScheme="teal" variant="solid" onClick={() => navigate("/")}>
+                Back
+                </Button>
+    
+                <Button type="submit" colorScheme="teal" variant="solid">
+                Create Account
+                </Button>
+            </Stack>
           </VStack>
         </form>
         )}
