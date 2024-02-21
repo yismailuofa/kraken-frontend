@@ -11,17 +11,18 @@ export function RegistrationForm() {
     return (
       <Formik
         initialValues={{
-          email: "",
-          password: "",
+            username: "",
+            email: "",
+            password: "",
         }}
         validationSchema={Yup.object({
-          email: Yup.string().required("Username required"),
-          password: Yup.string().required("Password required").min(8, "Password must be at least 8 characters")
+            username: Yup.string().required("Username required"),
+            email: Yup.string().required("Email required"),
+            password: Yup.string().required("Password required").min(8, "Password must be at least 8 characters")
         })}
         onSubmit= { (values, actions) => {
-          alert(JSON.stringify(values, null, 2));
-          console.log('email: {}', values.email)
-          actions.resetForm();
+            alert(JSON.stringify(values, null, 3));
+            actions.resetForm();
         }}
       >
         {formik => (
@@ -33,6 +34,15 @@ export function RegistrationForm() {
             justifyContent="center"
           >
             <Heading>Sign Up</Heading>
+
+            <TextField
+              id="username"
+              name="username"
+              label="Username"
+              type="username"
+              variant="filled"
+              placeholder="enter username..."
+            />
   
             <TextField
               id="email"
