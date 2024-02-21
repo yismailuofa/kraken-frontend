@@ -11,10 +11,12 @@ import {
 } from "@chakra-ui/react"
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from "./Logo"
+import { RegistrationForm } from "./components/RegistrationForm"
 
 export const App = () => (
   <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
+    <RegistrationForm />
+    {/* <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
         <ColorModeSwitcher justifySelf="flex-end" />
         <VStack spacing={8}>
@@ -33,6 +35,6 @@ export const App = () => (
           </Link>
         </VStack>
       </Grid>
-    </Box>
+    </Box> */}
   </ChakraProvider>
 )
