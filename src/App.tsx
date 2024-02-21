@@ -12,10 +12,12 @@ import {
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from "./Logo"
 import { RegistrationForm } from "./components/RegistrationForm"
+import { LoginForm } from "./components/LoginForm"
 
 export const App = () => (
   <ChakraProvider theme={theme}>
-    <RegistrationForm />
+    {/* <RegistrationForm /> */}
+    <LoginForm />
     {/* <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
         <ColorModeSwitcher justifySelf="flex-end" />
