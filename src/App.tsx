@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Routes, Route } from 'react-router-dom';
 import {
   ChakraProvider,
   Box,
@@ -12,10 +13,16 @@ import {
 import { ColorModeSwitcher } from "./ColorModeSwitcher"
 import { Logo } from "./Logo"
 import { RegistrationForm } from "./components/RegistrationForm"
+import { LoginForm } from "./components/LoginForm"
+import { Home } from "./components/Home"
 
 export const App = () => (
   <ChakraProvider theme={theme}>
-    <RegistrationForm />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/registration" element={<RegistrationForm />} />
+    </Routes>
     {/* <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
         <ColorModeSwitcher justifySelf="flex-end" />

@@ -9,18 +9,16 @@ import * as Yup from "yup";
 import { TextField } from "./TextField"
 import { useNavigate } from "react-router-dom";
 
-export function RegistrationForm() {
+export function LoginForm() {
     const navigate = useNavigate();
 
     return (
       <Formik
         initialValues={{
-            username: "",
             email: "",
             password: "",
         }}
         validationSchema={Yup.object({
-            username: Yup.string().required("Username required"),
             email: Yup.string().required("Email required"),
             password: Yup.string().required("Password required").min(8, "Password must be at least 8 characters")
         })}
@@ -37,16 +35,7 @@ export function RegistrationForm() {
             h="100vh"
             justifyContent="center"
           >
-            <Heading>Sign Up</Heading>
-
-            <TextField
-              id="username"
-              name="username"
-              label="Username"
-              type="username"
-              variant="filled"
-              placeholder="enter username..."
-            />
+            <Heading>Login</Heading>
   
             <TextField
               id="email"
@@ -70,9 +59,9 @@ export function RegistrationForm() {
                 <Button colorScheme="teal" variant="solid" onClick={() => navigate("/")}>
                 Back
                 </Button>
-    
+
                 <Button type="submit" colorScheme="teal" variant="solid">
-                Create Account
+                Login
                 </Button>
             </Stack>
           </VStack>
