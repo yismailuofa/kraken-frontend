@@ -3,6 +3,7 @@ import {
     Stack,
     Heading,
     Button,
+    Text
 } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom";
 import { SiOctopusdeploy } from "react-icons/si";
@@ -18,9 +19,13 @@ export function Home() {
             justifyContent="center"
             spacing={10}
         >
-            <Stack spacing={4} direction='row' align='center'>
-                <Heading fontSize={128} >Kraken</Heading>
-                <SiOctopusdeploy size={128}/>
+            <Stack align='center'>
+                <Stack spacing={4} direction='row' align='center'>
+                    <Heading fontSize={128} >Kraken</Heading>
+                    <SiOctopusdeploy size={128}/>
+                </Stack>
+
+                <Text fontSize={32}>Get Crackin'</Text>
             </Stack>
             
             <Stack spacing={4} direction='row' align='center'>
