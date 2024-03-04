@@ -13,7 +13,9 @@
     "@types/node": "^12.20.55",
     "@types/react": "^18.2.51",
     "@types/react-dom": "^18.2.18",
+    "axios": "^1.6.7",
     "framer-motion": "^6.5.1",
+    "openapi-typescript-codegen": "^0.27.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^3.11.0",
@@ -25,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-client": "openapi --input http://localhost/openapi.json --output ./src/client --client axios --useOptions --useUnionTypes"
   },
   "eslintConfig": {
     "extends": "react-app"
