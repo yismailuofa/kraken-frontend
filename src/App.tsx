@@ -15,6 +15,7 @@ import { Logo } from "./Logo"
 import { RegistrationForm } from "./components/RegistrationForm"
 import { LoginForm } from "./components/LoginForm"
 import { Home } from "./components/Home"
+import { ProjectList } from "./components/ProjectList";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -22,6 +23,7 @@ export const App = () => (
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<LoginForm />} />
       <Route path="/registration" element={<RegistrationForm />} />
+      <Route path="/projectlist" element={<ProjectList />} />
     </Routes>
     {/* <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
