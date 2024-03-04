@@ -2,6 +2,12 @@ import createClient from 'openapi-fetch'
 import type { paths } from "./api";
 
 
-const client = createClient<paths>({baseUrl: 'http://162.246.157.194/'})
+const BASE_URL = "http://162.246.157.194/";
 
-export default client;
+export const createClientWithToken = (token: string | null) => createClient<paths>({
+    baseUrl: BASE_URL,
+    headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+    },
+    });
+
