@@ -22,7 +22,7 @@ export function ProjectListTopBar() {
             <Spacer />
 
             <HStack spacing="20px" alignItems="right">
-                <IconButton colorScheme='teal' aria-label='Add Project' size='lg' icon={<IoMdAdd />}/>
+                <IconButton colorScheme='teal' aria-label='Add Project' size='lg' icon={<IoMdAdd />} onClick={() => navigate("/addproject")}/>
                 <Button colorScheme='teal' size='lg' onClick={() => navigate("/login")}>Logout</Button>
             </HStack>
         </Flex>
