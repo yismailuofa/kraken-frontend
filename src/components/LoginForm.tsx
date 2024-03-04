@@ -25,6 +25,9 @@ export function LoginForm() {
         onSubmit= { (values, actions) => {
             alert(JSON.stringify(values, null, 3));
             actions.resetForm();
+
+            // TODO: Verify user credentials
+            navigate("/projectlist")
         }}
       >
         {formik => (
