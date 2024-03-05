@@ -8,26 +8,39 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField"
 import { useNavigate } from "react-router-dom";
+import { createClientWithToken } from "../client";
 
 export function LoginForm() {
     const navigate = useNavigate();
+    const client = createClientWithToken(null);
 
     return (
       <Formik
         initialValues={{
-            email: "",
+            username: "",
             password: "",
         }}
         validationSchema={Yup.object({
-            email: Yup.string().required("Email required"),
+            username: Yup.string().required("Username required"),
             password: Yup.string().required("Password required").min(8, "Password must be at least 8 characters")
         })}
-        onSubmit= { (values, actions) => {
+        onSubmit= { async (values, actions) => {
             alert(JSON.stringify(values, null, 3));
             actions.resetForm();
 
             // TODO: Verify user credentials
-            navigate("/projectlist")
+            const {data, error, response} = await client.POST("/users/login", {
+              params: {
+                query: values
+              },
+            });
+    
+            console.log(response.status);
+            
+            if (response.status == 200) {
+              navigate("/projectlist")
+            }
+            
         }}
       >
         {formik => (
@@ -41,12 +54,12 @@ export function LoginForm() {
             <Heading>Login</Heading>
   
             <TextField
-              id="email"
-              name="email"
-              label="Email Address"
-              type="email"
+              id="username"
+              name="username"
+              label="Username"
+              type="username"
               variant="filled"
-              placeholder="enter email..."
+              placeholder="enter username..."
             />
   
             <TextField
