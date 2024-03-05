@@ -17,16 +17,31 @@ import { LoginForm } from "./components/LoginForm"
 import { Home } from "./components/Home"
 import { ProjectList } from "./components/ProjectList";
 import { AddProjectForm } from "./components/AddProjectForm";
+import createStore from "react-auth-kit/createStore";
+import AuthProvider from "react-auth-kit";
+import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
+
+const store = createStore({
+  authName:'_auth',
+  authType:'cookie',
+  cookieDomain: window.location.hostname,
+  cookieSecure: false,
+});
 
 export const App = () => (
   <ChakraProvider theme={theme}>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/registration" element={<RegistrationForm />} />
-      <Route path="/projectlist" element={<ProjectList />} />
-      <Route path="/addproject" element={<AddProjectForm />} />
-    </Routes>
+    <AuthProvider store={store}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/registration" element={<RegistrationForm />} />
+        <Route element={<AuthOutlet fallbackPath='/login' />}>
+          <Route path="/projectlist" element={<ProjectList />} />
+          <Route path="/addproject" element={<AddProjectForm />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
+    
     {/* <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
         <ColorModeSwitcher justifySelf="flex-end" />

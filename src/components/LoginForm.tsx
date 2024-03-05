@@ -7,12 +7,16 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, redirect } from "react-router-dom";
 import { createClientWithToken } from "../client";
+import AuthProvider from "react-auth-kit";
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+// import auth from "./auth";
 
 export function LoginForm() {
     const navigate = useNavigate();
     const client = createClientWithToken(null);
+    const signIn = useSignIn();
 
     return (
       <Formik
@@ -26,7 +30,6 @@ export function LoginForm() {
         })}
         onSubmit= { async (values, actions) => {
             alert(JSON.stringify(values, null, 3));
-            actions.resetForm();
 
             // TODO: Verify user credentials
             const {data, error, response} = await client.POST("/users/login", {
@@ -34,12 +37,26 @@ export function LoginForm() {
                 query: values
               },
             });
-    
-            console.log(response.status);
+
+            console.log(data);
+            console.log(data?.token!)
             
             if (response.status == 200) {
-              navigate("/projectlist")
-            }
+                if(signIn({
+                  auth: {
+                      token: data?.token!,
+                      type: 'Bearer'
+                  },
+                  userState: { email: data?.email, username: data?.username }
+                })){
+                    actions.resetForm();
+                    navigate("/projectlist");
+                } else {
+                    //Throw error
+                    console.log("error")
+                    console.log(response.status)
+                }
+            } 
             
         }}
       >
