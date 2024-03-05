@@ -17,50 +17,41 @@ import { LoginForm } from "./components/LoginForm"
 import { Home } from "./components/Home"
 import { ProjectList } from "./components/ProjectList";
 import { AddProjectForm } from "./components/AddProjectForm";
-import createStore from "react-auth-kit/createStore";
-import AuthProvider from "react-auth-kit";
-import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
+import { createClientWithToken } from "./client";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
-const store = createStore({
-  authName:'_auth',
-  authType:'cookie',
-  cookieDomain: window.location.hostname,
-  cookieSecure: false,
-});
+export const App = () => {
+  const [client, setClient] = React.useState(createClientWithToken(null));
+  const [token, setToken] = React.useState<null | string>(null);
+  
+  function onClientChange(token: string | null) {
+    setClient(createClientWithToken(token));
+    setToken(token);
+  }
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
-    <AuthProvider store={store}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/registration" element={<RegistrationForm />} />
-        <Route element={<AuthOutlet fallbackPath='/login' />}>
-          <Route path="/projectlist" element={<ProjectList />} />
-          <Route path="/addproject" element={<AddProjectForm />} />
-        </Route>
-      </Routes>
-    </AuthProvider>
-    
-    {/* <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box> */}
-  </ChakraProvider>
-)
+  return (
+    <ChakraProvider theme={theme}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginForm onAuthenticate={onClientChange} />} />
+          <Route path="/registration" element={<RegistrationForm />} />
+          <Route
+            path="/projectlist"
+            element={
+              <ProtectedRoute token={token}>
+                <ProjectList onLogout={onClientChange} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/addproject"
+            element={
+              <ProtectedRoute token={token}>
+                <AddProjectForm />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+    </ChakraProvider>
+  )
+}

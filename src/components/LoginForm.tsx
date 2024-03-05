@@ -9,14 +9,10 @@ import * as Yup from "yup";
 import { TextField } from "./TextField"
 import { useNavigate, redirect } from "react-router-dom";
 import { createClientWithToken } from "../client";
-import AuthProvider from "react-auth-kit";
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
-// import auth from "./auth";
 
-export function LoginForm() {
+export function LoginForm({onAuthenticate}: any) {
     const navigate = useNavigate();
     const client = createClientWithToken(null);
-    const signIn = useSignIn();
 
     return (
       <Formik
@@ -31,33 +27,24 @@ export function LoginForm() {
         onSubmit= { async (values, actions) => {
             alert(JSON.stringify(values, null, 3));
 
-            // TODO: Verify user credentials
+            // Query if the user credentials are valid
             const {data, error, response} = await client.POST("/users/login", {
               params: {
                 query: values
               },
             });
 
-            console.log(data);
-            console.log(data?.token!)
-            
-            if (response.status == 200) {
-                if(signIn({
-                  auth: {
-                      token: data?.token!,
-                      type: 'Bearer'
-                  },
-                  userState: { email: data?.email, username: data?.username }
-                })){
-                    actions.resetForm();
-                    navigate("/projectlist");
-                } else {
-                    //Throw error
-                    console.log("error")
-                    console.log(response.status)
-                }
-            } 
-            
+            // If the credentials are invalid
+            if (error) {
+              console.log(error);
+              // If the response is valid authenticate the user and naviagte to the project list page
+            } else if (response.status == 200) {
+              onAuthenticate(data.token);
+              actions.resetForm();
+              navigate("/projectlist");
+            } else {
+              console.log(response);
+            }          
         }}
       >
         {formik => (

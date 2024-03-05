@@ -8,12 +8,9 @@ import {
 } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
-// import auth from "./auth"
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
-export function ProjectListTopBar(props: any) {
+export function ProjectListTopBar({onLogout}: any) {
     const navigate = useNavigate();
-    const signOut = useSignOut()
 
     return (
         <Flex
@@ -25,8 +22,8 @@ export function ProjectListTopBar(props: any) {
             <Spacer />
 
             <HStack spacing="20px" alignItems="right">
-                <IconButton colorScheme='teal' aria-label='Add Project' size='lg' icon={<IoMdAdd />} onClick={() => navigate("./addproject")}/>
-                <Button colorScheme='teal' size='lg' onClick={() => signOut()}>Logout</Button>
+                <IconButton colorScheme='teal' aria-label='Add Project' size='lg' icon={<IoMdAdd />} onClick={() => navigate("/addproject")}/>
+                <Button colorScheme='teal' size='lg' onClick={() => onLogout(null)}>Logout</Button>
             </HStack>
         </Flex>
     );
