@@ -11,9 +11,8 @@ import { TextField } from "./TextField"
 import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 
-export function AddProjectForm() {
+export function AddProjectForm({client}: any) {
     const navigate = useNavigate();
-    const { isOpen, onClose, onOpen } = useDisclosure();
 
     return (
       <Formik
@@ -24,9 +23,27 @@ export function AddProjectForm() {
         validationSchema={Yup.object({
             projectName: Yup.string().required("Project name required"),
         })}
-        onSubmit= { (values, actions) => {
+        onSubmit= { async (values, actions) => {
             alert(JSON.stringify(values, null, 2));
             actions.resetForm();
+
+            const {data, error, response} = await client.POST("/projects/", {
+              body: {
+                name: values.projectName,
+                description: values.description
+              },
+            });
+
+            if (error) {
+              console.log(error);
+            // If the response is valid naviagte to the project list page
+            } else if (response.status == 200) {
+                console.log(data);
+                actions.resetForm();
+                navigate("/projectlist");
+            } else {
+                console.log(response);
+            }     
         }}
       >
         {formik => (
