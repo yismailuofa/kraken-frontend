@@ -3,7 +3,7 @@ import {
     Stack,
     Heading,
     Button,
-    useDisclosure
+    useToast
 } from "@chakra-ui/react"
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -13,6 +13,7 @@ import { TextArea } from "./TextArea";
 
 export function AddProjectForm({client}: any) {
     const navigate = useNavigate();
+    const toast = useToast();
 
     return (
       <Formik
@@ -27,6 +28,7 @@ export function AddProjectForm({client}: any) {
             alert(JSON.stringify(values, null, 2));
             actions.resetForm();
 
+            // Make a request to add the project to the database
             const {data, error, response} = await client.POST("/projects/", {
               body: {
                 name: values.projectName,
@@ -34,13 +36,29 @@ export function AddProjectForm({client}: any) {
               },
             });
 
+            // If there is an error creating the project notify the user with a toast message
             if (error) {
               console.log(error);
-            // If the response is valid naviagte to the project list page
+              toast({
+                title: "Project Creation Failed",
+                description: "There was an error creating your project.",
+                status: "error",
+                duration: 8000,
+                isClosable: true,
+                position: "top"
+              });
+            // If the response is valid naviagte to the project list page and notify the user with a success toast message
             } else if (response.status == 200) {
-                console.log(data);
                 actions.resetForm();
                 navigate("/projectlist");
+                toast({
+                  title: "Project Created",
+                  description: "Your project has been successfully created.",
+                  status: "success",
+                  duration: 8000,
+                  isClosable: true,
+                  position: "top"
+                });
             } else {
                 console.log(response);
             }     
