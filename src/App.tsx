@@ -23,7 +23,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
   const [token, setToken] = React.useState<null | string>(null);
-  
+
   function onClientChange(token: string | null) {
     setClient(createClientWithToken(token));
     setToken(token);
@@ -35,21 +35,14 @@ export const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm onAuthenticate={onClientChange} />} />
           <Route path="/registration" element={<RegistrationForm />} />
-          <Route
-            path="/projectlist"
-            element={
-              <ProtectedRoute token={token}>
-                <ProjectList onLogout={onClientChange} />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/addproject"
-            element={
-              <ProtectedRoute token={token}>
-                <AddProjectForm />
-              </ProtectedRoute>
-            }
+          <Route path="/*" element={
+            <ProtectedRoute token={token}>
+              <Routes>
+                <Route path="/projectlist" element={<ProjectList onLogout={onClientChange} />} />
+                <Route path="/addproject" element={<AddProjectForm />} />
+              </Routes>
+            </ProtectedRoute>
+          }
           />
         </Routes>
     </ChakraProvider>
