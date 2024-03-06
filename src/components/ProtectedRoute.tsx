@@ -1,9 +1,13 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { ApiContext } from "../contexts/ApiContext";
 
-export const ProtectedRoute = ({ token, children }: any) => {
-    if (!token) {
-      return <Navigate to="/login" replace />;
-    }
-  
-    return children;
+export const ProtectedRoute = ({ children }: { children: any }) => {
+  const user = useContext(ApiContext).user;
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 };

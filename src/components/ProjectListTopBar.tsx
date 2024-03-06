@@ -1,30 +1,39 @@
 import {
-    Heading,
-    Button,
-    Flex,
-    Spacer,
-    HStack,
-    IconButton,
-} from "@chakra-ui/react"
+  Heading,
+  Button,
+  Flex,
+  Spacer,
+  HStack,
+  IconButton,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
+import { MaybeUser } from "../contexts/ApiContext";
 
-export function ProjectListTopBar({onLogout}: any) {
-    const navigate = useNavigate();
+interface ProjectListTopBarProps {
+  onLogout: (token: MaybeUser) => void;
+}
 
-    return (
-        <Flex
-        as="nav"
-        p="20px"
-        alignItems="center"
-        >
-            <Heading as="h1">Projects</Heading>
-            <Spacer />
+export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
+  const navigate = useNavigate();
 
-            <HStack spacing="20px" alignItems="right">
-                <IconButton colorScheme='teal' aria-label='Add Project' size='lg' icon={<IoMdAdd />} onClick={() => navigate("/addproject")}/>
-                <Button colorScheme='teal' size='lg' onClick={() => onLogout(null)}>Logout</Button>
-            </HStack>
-        </Flex>
-    );
+  return (
+    <Flex as="nav" p="20px" alignItems="center">
+      <Heading as="h1">Projects</Heading>
+      <Spacer />
+
+      <HStack spacing="20px" alignItems="right">
+        <IconButton
+          colorScheme="teal"
+          aria-label="Add Project"
+          size="lg"
+          icon={<IoMdAdd />}
+          onClick={() => navigate("/addproject")}
+        />
+        <Button colorScheme="teal" size="lg" onClick={() => onLogout(null)}>
+          Logout
+        </Button>
+      </HStack>
+    </Flex>
+  );
 }
