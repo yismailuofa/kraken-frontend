@@ -17,35 +17,34 @@ import { LoginForm } from "./components/LoginForm"
 import { Home } from "./components/Home"
 import { ProjectList } from "./components/ProjectList";
 import { AddProjectForm } from "./components/AddProjectForm";
+import { createClientWithToken } from "./client";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/registration" element={<RegistrationForm />} />
-      <Route path="/projectlist" element={<ProjectList />} />
-      <Route path="/addproject" element={<AddProjectForm />} />
-    </Routes>
-    {/* <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box> */}
-  </ChakraProvider>
-)
+export const App = () => {
+  const [client, setClient] = React.useState(createClientWithToken(null));
+  const [token, setToken] = React.useState<null | string>(null);
+
+  function onClientChange(token: string | null) {
+    setClient(createClientWithToken(token));
+    setToken(token);
+  }
+
+  return (
+    <ChakraProvider theme={theme}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginForm onAuthenticate={onClientChange} />} />
+          <Route path="/registration" element={<RegistrationForm />} />
+          <Route path="/*" element={
+            <ProtectedRoute token={token}>
+              <Routes>
+                <Route path="/projectlist" element={<ProjectList onLogout={onClientChange} />} />
+                <Route path="/addproject" element={<AddProjectForm />} />
+              </Routes>
+            </ProtectedRoute>
+          }
+          />
+        </Routes>
+    </ChakraProvider>
+  )
+}

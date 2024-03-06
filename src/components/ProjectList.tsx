@@ -2,7 +2,7 @@ import {
     Box,
     SimpleGrid,
 } from "@chakra-ui/react"
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectListTopBar } from "./ProjectListTopBar";
 
@@ -30,7 +30,7 @@ export const projects = [{
   },];
 
 
-export function ProjectList() {
+export function ProjectList({onLogout}: any) {
     const navigate = useNavigate();
 
     // Map list of projects to ProjectCard Items
@@ -43,7 +43,7 @@ export function ProjectList() {
 
     return (
         <Box>
-            <ProjectListTopBar/>
+            <ProjectListTopBar onLogout={onLogout}/>
             <SimpleGrid columns={5} spacing={10} minChildWidth="300px" padding={10}>
                 {projectItems}
             </SimpleGrid>

@@ -9,7 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 
-export function ProjectListTopBar() {
+export function ProjectListTopBar({onLogout}: any) {
     const navigate = useNavigate();
 
     return (
@@ -23,7 +23,7 @@ export function ProjectListTopBar() {
 
             <HStack spacing="20px" alignItems="right">
                 <IconButton colorScheme='teal' aria-label='Add Project' size='lg' icon={<IoMdAdd />} onClick={() => navigate("/addproject")}/>
-                <Button colorScheme='teal' size='lg' onClick={() => navigate("/login")}>Logout</Button>
+                <Button colorScheme='teal' size='lg' onClick={() => onLogout(null)}>Logout</Button>
             </HStack>
         </Flex>
     );

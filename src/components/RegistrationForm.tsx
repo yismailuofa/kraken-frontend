@@ -12,7 +12,7 @@ export function RegistrationForm() {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWU2NTg3YmU4YWE3ZTljY2UxNmYzMGIifQ.D9AVBUITtBnlUupSgbVTjPMNNZzjc0NGpgavn6vt8W8"
   ); // This token is me, but normally youd pass the token from the user
 
-  client.GET("/users/me").then((res) => {
+  client.GET("/users/me").then((res: any) => {
     console.log(res);
   });
 
