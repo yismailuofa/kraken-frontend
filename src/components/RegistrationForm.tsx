@@ -3,18 +3,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
 import { useNavigate } from "react-router-dom";
-import { createClientWithToken } from "../client";
+import { useContext } from "react";
+import { ApiContext } from "../contexts/ApiContext";
 
 export function RegistrationForm() {
   const navigate = useNavigate();
-  // const client = createClientWithToken(null);
-  const client = createClientWithToken(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWU2NTg3YmU4YWE3ZTljY2UxNmYzMGIifQ.D9AVBUITtBnlUupSgbVTjPMNNZzjc0NGpgavn6vt8W8"
-  ); // This token is me, but normally youd pass the token from the user
-
-  client.GET("/users/me").then((res: any) => {
-    console.log(res);
-  });
+  const client = useContext(ApiContext).client;
 
   return (
     <Formik
