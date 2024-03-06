@@ -39,7 +39,7 @@ export const App = () => {
             <ProtectedRoute token={token}>
               <Routes>
                 <Route path="/projectlist" element={<ProjectList onLogout={onClientChange} />} />
-                <Route path="/addproject" element={<AddProjectForm />} />
+                <Route path="/addproject" element={<AddProjectForm client={client}/>} />
               </Routes>
             </ProtectedRoute>
           }

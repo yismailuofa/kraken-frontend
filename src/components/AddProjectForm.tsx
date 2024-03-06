@@ -3,7 +3,7 @@ import {
     Stack,
     Heading,
     Button,
-    useDisclosure
+    useToast
 } from "@chakra-ui/react"
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -11,9 +11,9 @@ import { TextField } from "./TextField"
 import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 
-export function AddProjectForm() {
+export function AddProjectForm({client}: any) {
     const navigate = useNavigate();
-    const { isOpen, onClose, onOpen } = useDisclosure();
+    const toast = useToast();
 
     return (
       <Formik
@@ -24,9 +24,44 @@ export function AddProjectForm() {
         validationSchema={Yup.object({
             projectName: Yup.string().required("Project name required"),
         })}
-        onSubmit= { (values, actions) => {
+        onSubmit= { async (values, actions) => {
             alert(JSON.stringify(values, null, 2));
             actions.resetForm();
+
+            // Make a request to add the project to the database
+            const {data, error, response} = await client.POST("/projects/", {
+              body: {
+                name: values.projectName,
+                description: values.description
+              },
+            });
+
+            // If there is an error creating the project notify the user with a toast message
+            if (error) {
+              console.log(error);
+              toast({
+                title: "Project Creation Failed",
+                description: "There was an error creating your project.",
+                status: "error",
+                duration: 8000,
+                isClosable: true,
+                position: "top"
+              });
+            // If the response is valid naviagte to the project list page and notify the user with a success toast message
+            } else if (response.status == 200) {
+                actions.resetForm();
+                navigate("/projectlist");
+                toast({
+                  title: "Project Created",
+                  description: "Your project has been successfully created.",
+                  status: "success",
+                  duration: 8000,
+                  isClosable: true,
+                  position: "top"
+                });
+            } else {
+                console.log(response);
+            }     
         }}
       >
         {formik => (
