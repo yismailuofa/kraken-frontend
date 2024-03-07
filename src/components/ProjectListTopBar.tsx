@@ -1,6 +1,5 @@
 import {
   Heading,
-  Button,
   Flex,
   Spacer,
   HStack,
@@ -15,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { useContext, useState } from "react";
-import { userInfo } from "os";
 
 interface ProjectListTopBarProps {
   onLogout: (token: MaybeUser) => void;

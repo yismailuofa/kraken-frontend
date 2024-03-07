@@ -21,18 +21,19 @@ export function ChangePasswordForm() {
     <Formik
       initialValues={{
         password: "",
-        passwordCopy: ""
+        passwordConfirmation: ""
       }}
       validationSchema={Yup.object({
         password: Yup.string()
         .required("Password required")
         .min(8, "Password must be at least 8 characters"),
-        passwordCopy: Yup.string()
+        passwordConfirmation: Yup.string()
         .required("Password verification required")
         .min(8, "Password must be at least 8 characters"),
       })}
       onSubmit={async (values, actions) => {
-        if (values.password === values.passwordCopy) {
+        // Only submit the request if the new password matches the confirmed password
+        if (values.password === values.passwordConfirmation) {
           // Make a request to change user's password
           const { data, error, response } = await client.PATCH("/users/password/reset", {
             params: {
@@ -94,8 +95,8 @@ export function ChangePasswordForm() {
             />
 
             <TextField
-              id="passwordCopy"
-              name="passwordCopy"
+              id="passwordConfirmation"
+              name="passwordConfirmation"
               label="Confirm New Password"
               type="password"
               placeholder="enter new password..."
