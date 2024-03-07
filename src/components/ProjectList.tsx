@@ -1,36 +1,47 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectListTopBar } from "./ProjectListTopBar";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
+import { components } from "../client/api";
 
 interface ProjectListProps {
   onLogout: (user: MaybeUser) => void;
 }
 
+type Project = components["schemas"]["Project"];
+
 export function ProjectList({ onLogout }: ProjectListProps) {
-  const [projectItems, setProjectItems] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const client = useContext(ApiContext).client;
 
-  client.GET("/projects/").then((res: any) => {
-    // Map list of projects to ProjectCard Items
-    const projectItems = res.data.map(
-      (project: { createdAt: any; description: any; id: any; name: any }) => (
-        <ProjectCard
-          key={project.id}
-          name={project.name}
-          description={project.description}
-        />
-      )
-    );
-    setProjectItems(projectItems);
-  });
+  const fetchProjects = async () => {
+    const { error, data } = await client.GET("/projects/");
+
+    if (error) {
+      console.error(error);
+      // Maybe toast here
+      return;
+    }
+
+    setProjects(data);
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [client]);
 
   return (
     <Box>
       <ProjectListTopBar onLogout={onLogout} />
       <SimpleGrid columns={5} spacing={10} minChildWidth="300px" padding={10}>
-        {projectItems}
+        {projects.map((project) => (
+          <ProjectCard
+            key={project.id}
+            name={project.name}
+            description={project.description}
+          />
+        ))}
       </SimpleGrid>
     </Box>
   );
