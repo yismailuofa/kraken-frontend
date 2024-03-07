@@ -28,6 +28,19 @@ export function ChangePasswordForm() {
       onSubmit={async (values, actions) => {
         alert(JSON.stringify(values, null, 2));
         actions.resetForm();
+
+        // Make a request to change user's password
+        const { data, error, response } = await client.PATCH("/users/password/reset", {
+          params: {
+            query: {
+              newPassword: values.password
+            },
+          },
+        });
+
+        console.log(response);
+        console.log(data);
+        
       }}
     >
       {(formik) => (
