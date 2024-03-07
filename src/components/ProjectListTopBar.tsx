@@ -13,7 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 interface ProjectListTopBarProps {
   onLogout: (token: MaybeUser) => void;
@@ -26,10 +26,12 @@ export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
   const client = useContext(ApiContext).client;
 
   // Get the username to set the profile avatar
-  client.GET("/users/me").then((res: any) => {
-    const username = res.data.username;
-    setUsername(username);
-  });
+  useEffect(() => {
+    client.GET("/users/me").then((res: any) => {
+      const username = res.data.username;
+      setUsername(username);
+    });
+  }, [username]);
 
   return (
     <Flex as="nav" p="20px" alignItems="center">
