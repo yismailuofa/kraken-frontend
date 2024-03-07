@@ -12,9 +12,6 @@ export function ProjectList({ onLogout }: ProjectListProps) {
   const [projectItems, setProjectItems] = useState([]);
   const client = useContext(ApiContext).client;
 
-  client.GET("/users/me").then((res: any) => {
-    console.log(res);
-  });
   client.GET("/projects/").then((res: any) => {
     // Map list of projects to ProjectCard Items
     const projectItems = res.data.map(
