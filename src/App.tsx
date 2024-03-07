@@ -7,6 +7,7 @@ import { LoginForm } from "./components/LoginForm";
 import { Home } from "./components/Home";
 import { ProjectList } from "./components/ProjectList";
 import { AddProjectForm } from "./components/AddProjectForm";
+import { ChangePasswordForm } from "./components/ChangePasswordForm";
 import { createClientWithToken } from "./client";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ApiContext, MaybeUser } from "./contexts/ApiContext";
@@ -40,6 +41,7 @@ export const App = () => {
                     element={<ProjectList onLogout={onClientChange} />}
                   />
                   <Route path="/addproject" element={<AddProjectForm />} />
+                  <Route path="/changepassword" element={<ChangePasswordForm />} />
                 </Routes>
               </ProtectedRoute>
             }
