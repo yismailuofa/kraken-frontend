@@ -17,6 +17,8 @@ import { LoginForm } from "./components/LoginForm"
 import { Home } from "./components/Home"
 import { ProjectList } from "./components/ProjectList";
 import { AddProjectForm } from "./components/AddProjectForm";
+import { KanbanBoard } from "./components/KanbanBoard";
+
 
 export const App = () => (
   <ChakraProvider theme={theme}>
@@ -26,6 +28,7 @@ export const App = () => (
       <Route path="/registration" element={<RegistrationForm />} />
       <Route path="/projectlist" element={<ProjectList />} />
       <Route path="/addproject" element={<AddProjectForm />} />
+      <Route path="/kanban" element={<KanbanBoard />} />
     </Routes>
     {/* <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>
