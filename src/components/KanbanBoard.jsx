@@ -21,7 +21,9 @@ class Task {
 }
 
 export function KanbanBoard() {
-    let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2")];
+    let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
+        new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
+    ];
     let inProgressTaskList = [];
     let completedTaskList = [];
 

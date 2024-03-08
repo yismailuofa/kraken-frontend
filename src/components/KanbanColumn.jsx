@@ -29,7 +29,8 @@ export function KanbanColumn({name, id, tasks=[]}) {
                 ref={provided.innerRef}
                 style={{ 
                     width: '25vw',
-                    backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray' 
+                    backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray',
+                    overflowY: "auto", maxHeight: "75vh"
                 }}
                 {...provided.droppableProps}
                 >
