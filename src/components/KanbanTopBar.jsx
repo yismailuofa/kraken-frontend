@@ -17,6 +17,7 @@ export function KanbanTopBar() {
         as="nav"
         p="20px"
         alignItems="center"
+        height={"10vh"}
         >
             <Heading as="h1">Kanban</Heading>
             <Spacer />

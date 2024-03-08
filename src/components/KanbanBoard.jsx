@@ -37,7 +37,6 @@ export function KanbanBoard() {
         }
         if (id === "1") {
             setInProgressTaskItems([...list]);
-            console.log(inProgressTaskItems)
         }
         if (id === "2") {
             setCompletedTaskItems([...list]);
