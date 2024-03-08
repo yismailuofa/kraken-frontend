@@ -1,37 +1,25 @@
 import React from "react";
 import {
-    VStack,
-    Stack,
-    Heading,
-    Button,
-    Grid,
-    GridItem,
     Flex,
 } from "@chakra-ui/react"
 import { useState } from "react";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { KanbanTopBar } from "./KanbanTopBar";
-import { KanbanColumn, KanbanColumnFilled } from "./KanbanColumn";
-
-class Task {
-    constructor(name, id) {
-        this.name = name;
-        this.id = id;
-    }
-}
+import { KanbanColumn } from "./KanbanColumn";
+import { Task } from "../models/Task";
 
 export function KanbanBoard() {
     let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
         new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
     ];
-    let inProgressTaskList = [];
-    let completedTaskList = [];
+    let inProgressTaskList: Task[] = [];
+    let completedTaskList: Task[] = [];
 
     const [plannedTaskItems, setPlannedTaskItems] = useState(plannedTaskList)
     const [inProgressTaskItems, setInProgressTaskItems] = useState(inProgressTaskList)
     const [completedTaskItems, setCompletedTaskItems] = useState(completedTaskList)
     
-    const updateTaskList = (id, list) => {
+    const updateTaskList = (id: string, list: Task[]) => {
         if (id === "0") {
             setPlannedTaskItems([...list]);
         }
@@ -43,41 +31,49 @@ export function KanbanBoard() {
         }
     }
 
-    const handleDragEnd = (result) => {
+    const handleDragEnd = (result: DropResult) => {
         const { destination, source, draggableId } = result;
-        let draggedItem, temp_dest, temp_src;
+        let draggedItem: Task | undefined;
+        let temp_dest: Task[] = [];
+        let temp_src: Task[] = [];
 
         if (!destination || source.droppableId === destination.droppableId) return;
 
         if (source.droppableId === "0" && destination.droppableId === "1") {
             draggedItem = plannedTaskItems.find(item => item.id === draggableId);
             temp_src = plannedTaskItems.filter(item => item.id !== draggableId);
-            temp_dest = [...inProgressTaskItems, draggedItem];
+            if (draggedItem)
+                temp_dest = [...inProgressTaskItems, draggedItem];
         }
         if (source.droppableId === "0" && destination.droppableId === "2") {
             draggedItem = plannedTaskItems.find(item => item.id === draggableId);
             temp_src = plannedTaskItems.filter(item => item.id !== draggableId);
-            temp_dest = [...completedTaskItems, draggedItem];
+            if (draggedItem)
+                temp_dest = [...completedTaskItems, draggedItem];
         }
         if (source.droppableId === "1" && destination.droppableId === "0") {
             draggedItem = inProgressTaskItems.find(item => item.id === draggableId);
             temp_src = inProgressTaskItems.filter(item => item.id !== draggableId);
-            temp_dest = [...plannedTaskItems, draggedItem];
+            if (draggedItem)
+                temp_dest = [...plannedTaskItems, draggedItem];
         }
         if (source.droppableId === "1" && destination.droppableId === "2") {
             draggedItem = inProgressTaskItems.find(item => item.id === draggableId);
             temp_src = inProgressTaskItems.filter(item => item.id !== draggableId);
-            temp_dest = [...completedTaskItems, draggedItem];
+            if (draggedItem)
+                temp_dest = [...completedTaskItems, draggedItem];
         }
         if (source.droppableId === "2" && destination.droppableId === "0") {
             draggedItem = completedTaskItems.find(item => item.id === draggableId);
             temp_src = completedTaskItems.filter(item => item.id !== draggableId);
-            temp_dest = [...plannedTaskItems, draggedItem];
+            if (draggedItem)
+                temp_dest = [...plannedTaskItems, draggedItem];
         }
         if (source.droppableId === "2" && destination.droppableId === "1") {
             draggedItem = completedTaskItems.find(item => item.id === draggableId);
             temp_src = completedTaskItems.filter(item => item.id !== draggableId);
-            temp_dest = [...inProgressTaskItems, draggedItem];
+            if (draggedItem)
+                temp_dest = [...inProgressTaskItems, draggedItem];
         }
 
         updateTaskList(source.droppableId, temp_src)

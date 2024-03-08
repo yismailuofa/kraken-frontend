@@ -1,25 +1,20 @@
 import React from "react";
 import {
-    VStack,
-    Stack,
     Heading,
-    Button,
-    Flex,
     Card, 
     CardHeader, 
     CardBody, 
-    CardFooter 
 } from "@chakra-ui/react"
-import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { KanbanItem } from "./KanbanItem";
+import { Task } from "../models/Task";
 
-export function KanbanColumn({name, id, tasks=[]}) {
+
+export function KanbanColumn({name, id, tasks=[]} : { name: string, id: string, tasks: Task[] }) {
     let taskItems = tasks.map((task) => <li key={task.id}>
         <KanbanItem task={task} index={tasks.indexOf(task)}/></li>);
 
     return (
-        // <Flex className="column" w='100%' h='50vh' bg='teal' overflow-y="scroll" flex="1" flexDirection="column">
         <Card>
             <CardHeader><Heading as="h1">{name}</Heading> </CardHeader>
             
@@ -41,6 +36,5 @@ export function KanbanColumn({name, id, tasks=[]}) {
             )}
             </Droppable>
         </Card>
-        // </Flex>
     )
 }
