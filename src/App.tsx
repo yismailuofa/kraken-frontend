@@ -7,6 +7,7 @@ import { LoginForm } from "./components/LoginForm";
 import { Home } from "./components/Home";
 import { ProjectList } from "./components/ProjectList";
 import { AddProjectForm } from "./components/AddProjectForm";
+import { KanbanBoard } from "./components/KanbanBoard";
 import { ChangePasswordForm } from "./components/ChangePasswordForm";
 import { createClientWithToken } from "./client";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -31,6 +32,8 @@ export const App = () => {
             element={<LoginForm onAuthenticate={onClientChange} />}
           />
           <Route path="/registration" element={<RegistrationForm />} />
+          //TODO: Move to project context
+          <Route path="/kanban" element={<KanbanBoard />} />
           <Route
             path="/*"
             element={
