@@ -16,7 +16,7 @@ import { IoMdAdd } from "react-icons/io";
 import { FaUserPlus } from "react-icons/fa";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { useContext } from "react";
-import { JoinProjectModal } from "./JoinProjectForm";
+import { JoinProjectModal } from "./JoinProjectModal";
 
 interface ProjectListTopBarProps {
   onLogout: (token: MaybeUser) => void;
