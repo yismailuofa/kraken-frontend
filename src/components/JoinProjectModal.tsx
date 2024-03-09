@@ -37,9 +37,17 @@ export function JoinProjectModal({isOpen, onClose, fetchProjects}: any) {
                 // If there is an error joining the project notify the user with a toast message
                 if (error) {
                   console.log(error);
+
+                  // Inform the user specifically if the request fails due to an invalid project code
+                  // Otherwise, display a more general error message
+                  let msg = "";
+                  if (error.detail?.toString() === "Invalid ObjectId") {
+                    msg = "The project code entered is invalid"
+                  }
+
                   toast({
                     title: "Joining Project Failed",
-                    description: "There was an error joining the project.",
+                    description: msg === "" ? "There was an error joining the project." : msg,
                     status: "error",
                     duration: 8000,
                     isClosable: true,
