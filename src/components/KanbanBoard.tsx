@@ -2,7 +2,10 @@ import React from "react";
 import {
     Flex,
 } from "@chakra-ui/react"
-import { useState } from "react";
+import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
+import { components } from "../client/api";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { KanbanTopBar } from "./KanbanTopBar";
 import { KanbanColumn } from "./KanbanColumn";
@@ -18,6 +21,10 @@ export function KanbanBoard() {
     const [plannedTaskItems, setPlannedTaskItems] = useState(plannedTaskList)
     const [inProgressTaskItems, setInProgressTaskItems] = useState(inProgressTaskList)
     const [completedTaskItems, setCompletedTaskItems] = useState(completedTaskList)
+
+    const client = useContext(ApiContext).client;
+    const project = useContext(ApiContext).project;
+    const navigate = useNavigate();
     
     const updateTaskList = (id: string, list: Task[]) => {
         if (id === "0") {
@@ -32,6 +39,7 @@ export function KanbanBoard() {
     }
 
     const handleDragEnd = (result: DropResult) => {
+        console.log(project?.id);
         const { destination, source, draggableId } = result;
         let draggedItem: Task | undefined;
         let temp_dest: Task[] = [];
