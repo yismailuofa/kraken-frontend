@@ -35,9 +35,6 @@ export function AddProjectForm() {
           projectName: Yup.string().required("Project name required"),
         })}
         onSubmit={async (values, actions) => {
-          alert(JSON.stringify(values, null, 2));
-          actions.resetForm();
-
           // Make a request to add the project to the database
           const { data, error, response } = await client.POST("/projects/", {
             body: {

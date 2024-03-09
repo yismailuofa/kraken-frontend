@@ -20,9 +20,10 @@ import { JoinProjectModal } from "./JoinProjectModal";
 
 interface ProjectListTopBarProps {
   onLogout: (token: MaybeUser) => void;
+  fetchProjects: Function;
 }
 
-export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
+export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBarProps) {
   const navigate = useNavigate();
   const { client, user } = useContext(ApiContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,7 +38,7 @@ export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
       <Heading as="h1">Projects</Heading>
       <Spacer />
 
-      <JoinProjectModal isOpen={isOpen} onClose={onClose}></JoinProjectModal>
+      <JoinProjectModal isOpen={isOpen} onClose={onClose} fetchProjects={fetchProjects}></JoinProjectModal>
 
       <HStack spacing="20px" alignItems="right">
         <IconButton

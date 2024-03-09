@@ -2,8 +2,12 @@ import { VStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCl
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
+import { useContext } from "react";
+import { ApiContext } from "../contexts/ApiContext";
 
-export function JoinProjectModal({isOpen, onClose}: any) {
+export function JoinProjectModal({isOpen, onClose, fetchProjects}: any) {
+  const client = useContext(ApiContext).client;
+  
 	return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -20,7 +24,26 @@ export function JoinProjectModal({isOpen, onClose}: any) {
 									projectCode: Yup.string().required("Project code required")
 							})}
 							onSubmit={async (values, actions) => {
-									alert(JSON.stringify(values, null, 1));
+                // Make a request to the database to join the project
+                const { data, error, response } = await client.POST("/projects/{id}/join", {
+                	params: {
+                    path: {
+                      id: values.projectCode,
+                    },
+                  },
+                });
+
+                // If there is an error joining the project
+                if (error) {
+                  console.log(error);
+                  // If the response is valid close the modal
+                } else if (response.status === 200) {
+                  actions.resetForm();
+                  fetchProjects(); // Update the project list
+                  onClose();
+                } else {
+                  console.log(response);
+                }
 							}}
 					>
 							{(formik) => (
