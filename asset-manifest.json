@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "/kraken-frontend/static/js/main.abbf868e.js",
+    "main.js": "/kraken-frontend/static/js/main.9b7b91a7.js",
     "static/js/592.d55c1e9e.chunk.js": "/kraken-frontend/static/js/592.d55c1e9e.chunk.js",
     "index.html": "/kraken-frontend/index.html",
-    "main.abbf868e.js.map": "/kraken-frontend/static/js/main.abbf868e.js.map",
+    "main.9b7b91a7.js.map": "/kraken-frontend/static/js/main.9b7b91a7.js.map",
     "592.d55c1e9e.chunk.js.map": "/kraken-frontend/static/js/592.d55c1e9e.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.abbf868e.js"
+    "static/js/main.9b7b91a7.js"
   ]
 }
