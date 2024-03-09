@@ -9,19 +9,24 @@ import {
   MenuButton,
   MenuList,
   Avatar,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
+import { FaUserPlus } from "react-icons/fa";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { useContext } from "react";
+import { JoinProjectModal } from "./JoinProjectModal";
 
 interface ProjectListTopBarProps {
   onLogout: (token: MaybeUser) => void;
+  fetchProjects: Function;
 }
 
-export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
+export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBarProps) {
   const navigate = useNavigate();
   const { client, user } = useContext(ApiContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (!user) {
     navigate("/login");
@@ -33,6 +38,8 @@ export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
       <Heading as="h1">Projects</Heading>
       <Spacer />
 
+      <JoinProjectModal isOpen={isOpen} onClose={onClose} fetchProjects={fetchProjects}></JoinProjectModal>
+
       <HStack spacing="20px" alignItems="right">
         <IconButton
           colorScheme="teal"
@@ -40,6 +47,13 @@ export function ProjectListTopBar({ onLogout }: ProjectListTopBarProps) {
           size="lg"
           icon={<IoMdAdd />}
           onClick={() => navigate("/addproject")}
+        />
+        <IconButton
+          colorScheme="teal"
+          aria-label="Join Project"
+          size="lg"
+          icon={<FaUserPlus />}
+          onClick={onOpen}
         />
         <Menu>
           <MenuButton
