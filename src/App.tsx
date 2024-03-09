@@ -37,8 +37,6 @@ export const App = () => {
             element={<LoginForm onAuthenticate={onClientChange} />}
           />
           <Route path="/registration" element={<RegistrationForm />} />
-          //TODO: Move to project context
-          <Route path="/kanban" element={<KanbanBoard />} />
           <Route
             path="/*"
             element={
@@ -50,6 +48,7 @@ export const App = () => {
                   />
                   <Route path="/addproject" element={<AddProjectForm />} />
                   <Route path="/changepassword" element={<ChangePasswordForm />} />
+                  <Route path="/kanban" element={<KanbanBoard onLogout={onClientChange}/>} />
                 </Routes>
               </ProtectedRoute>
             }

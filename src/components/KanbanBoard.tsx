@@ -11,10 +11,15 @@ import { KanbanTopBar } from "./KanbanTopBar";
 import { KanbanColumn } from "./KanbanColumn";
 import { Task } from "../models/Task";
 
-export function KanbanBoard() {
-    let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
-        new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
-    ];
+interface KanbanBoardProps {
+    onLogout: (token: MaybeUser) => void;
+}
+
+export function KanbanBoard({ onLogout }: KanbanBoardProps) {
+    // let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
+    //     new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
+    // ];
+    let plannedTaskList: Task[] = [];
     let inProgressTaskList: Task[] = [];
     let completedTaskList: Task[] = [];
 
@@ -25,6 +30,29 @@ export function KanbanBoard() {
     const client = useContext(ApiContext).client;
     const project = useContext(ApiContext).project;
     const navigate = useNavigate();
+
+    const setTaskByStatus = (data: MaybeProject) => {
+        if (data) {
+            console.log(data)
+        }
+    }
+
+    const fetchTasks = async () => {
+        if (project && project.id) {
+            const { error, data } = await client.GET("/projects/{id}", {params: {path: {id: project.id}}});
+    
+            if (error) {
+              console.error(error);
+              return;
+            }
+        
+            setTaskByStatus(data);
+        }
+      };
+    
+      useEffect(() => {
+        fetchTasks();
+      }, [client]);
     
     const updateTaskList = (id: string, list: Task[]) => {
         if (id === "0") {
@@ -91,7 +119,7 @@ export function KanbanBoard() {
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
-            <KanbanTopBar/>
+            <KanbanTopBar onLogout={onLogout}/>
             <Flex justifyContent={"space-evenly"} gap={10}>
                 <KanbanColumn name="To Do" id={"0"} tasks={plannedTaskItems}/>
                 <KanbanColumn name="In Progress" id={"1"} tasks={inProgressTaskItems}/>

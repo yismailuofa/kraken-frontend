@@ -37,7 +37,6 @@ export function ProjectList({ onLogout, onProjectSelected }: ProjectListProps) {
 
   const showProjectKanban = (project: MaybeProject) => {
     if (project) {
-      console.log("gg")
       onProjectSelected(project);
       navigate('/kanban');
     }
