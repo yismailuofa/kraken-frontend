@@ -12,12 +12,14 @@ if (!container) throw new Error('Failed to find the root element');
 const root = ReactDOM.createRoot(container)
 
 root.render(
-  <React.StrictMode>
-    <ColorModeScript />
+  //commented out due to incompatibility with drag and drop (weird)
+  //src: https://stackoverflow.com/questions/60029734/react-beautiful-dnd-i-get-unable-to-find-draggable-with-id-1
+  // <React.StrictMode>
+  //   <ColorModeScript />
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
+//   </React.StrictMode>,
 )
 
 // If you want your app to work offline and load faster, you can change
