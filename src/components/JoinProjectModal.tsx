@@ -1,4 +1,4 @@
-import { VStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
+import { VStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -7,6 +7,7 @@ import { ApiContext } from "../contexts/ApiContext";
 
 export function JoinProjectModal({isOpen, onClose, fetchProjects}: any) {
   const client = useContext(ApiContext).client;
+  const toast = useToast();
   
 	return (
 		<>
@@ -33,14 +34,30 @@ export function JoinProjectModal({isOpen, onClose, fetchProjects}: any) {
                   },
                 });
 
-                // If there is an error joining the project
+                // If there is an error joining the project notify the user with a toast message
                 if (error) {
                   console.log(error);
-                  // If the response is valid close the modal
+                  toast({
+                    title: "Joining Project Failed",
+                    description: "There was an error joining the project.",
+                    status: "error",
+                    duration: 8000,
+                    isClosable: true,
+                    position: "top",
+                  });
+                  // If the response is valid close the modal and notify the user with a success toast message
                 } else if (response.status === 200) {
                   actions.resetForm();
                   fetchProjects(); // Update the project list
                   onClose();
+                  toast({
+                    title: "Successfully Joined Project",
+                    description: "The new project should appear in your projects list",
+                    status: "success",
+                    duration: 8000,
+                    isClosable: true,
+                    position: "top",
+                  });
                 } else {
                   console.log(response);
                 }
