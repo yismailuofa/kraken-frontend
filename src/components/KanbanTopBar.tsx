@@ -48,10 +48,8 @@ export function KanbanTopBar({ onLogout }: KanbanTopBarProps) {
                 variant='outline'
             />
             <MenuList>
-                <MenuItem onClick={() => navigate("/addtask")}>
-                Add Task
-                </MenuItem>
-                <MenuItem onClick={() => {}}>Add Milstone</MenuItem>
+                <MenuItem onClick={() => navigate("/addtask")}> Add Task </MenuItem>
+                <MenuItem onClick={() => navigate("/addmilestone")}> Add Milstone </MenuItem>
             </MenuList>
             </Menu>
             <Menu>
@@ -62,10 +60,8 @@ export function KanbanTopBar({ onLogout }: KanbanTopBarProps) {
                 variant="nooutline"
             />
             <MenuList>
-                <MenuItem onClick={() => navigate("/changepassword")}>
-                Change Password
-                </MenuItem>
-                <MenuItem onClick={() => onLogout(null)}>Logout</MenuItem>
+                <MenuItem onClick={() => navigate("/changepassword")}> Change Password </MenuItem>
+                <MenuItem onClick={() => onLogout(null)}> Logout </MenuItem>
             </MenuList>
             </Menu>
         </HStack>

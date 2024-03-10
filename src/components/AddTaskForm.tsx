@@ -15,6 +15,7 @@ export function AddTaskForm() {
   const toast = useToast();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
+  const default_date = new Date()
 
   function updateMenuButton(pri: string) {
     const btn = document.getElementById("priorityStr");
@@ -35,11 +36,11 @@ export function AddTaskForm() {
       initialValues={{
         taskName: "",
         description: "",
-        dueDate: "",
+        dueDate: default_date.toISOString(),
         priority: undefined as "Low" | "Medium" | "High" | undefined,    
         qaTaskName: "",
         qaDescription: "",
-        qaDueDate: "",
+        qaDueDate: default_date.toISOString(),
         qaPriority: undefined as "Low" | "Medium" | "High" | undefined,     
       }}
       validationSchema={Yup.object({
@@ -71,8 +72,6 @@ export function AddTaskForm() {
         //     }
         // }});
 
-        console.log(project?.id)
-
         const { data, error, response } = await client.POST("/tasks/", { body: { 
             name: "a", 
             description: "a",
@@ -94,8 +93,6 @@ export function AddTaskForm() {
             }
         }});
 
-
-        // If there is an error creating the project notify the user with a toast message
         if (error) {
           console.log(error);
           toast({
@@ -106,7 +103,6 @@ export function AddTaskForm() {
             isClosable: true,
             position: "top",
           });
-          // If the response is valid naviagte to the project list page and notify the user with a success toast message
         } else if (response.status === 200) {
           actions.resetForm();
           navigate("/kanban");

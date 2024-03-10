@@ -13,6 +13,7 @@ import { createClientWithToken } from "./client";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ApiContext, MaybeUser, MaybeProject } from "./contexts/ApiContext";
 import { AddTaskForm } from "./components/AddTaskForm";
+import { AddMilestoneForm } from "./components/AddMilestoneForm";
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
@@ -51,6 +52,7 @@ export const App = () => {
                   <Route path="/changepassword" element={<ChangePasswordForm />} />
                   <Route path="/kanban" element={<KanbanBoard onLogout={onClientChange}/>} />
                   <Route path="/addtask" element={<AddTaskForm/>} />
+                  <Route path="/addmilestone" element={<AddMilestoneForm/>} />
                 </Routes>
               </ProtectedRoute>
             }
