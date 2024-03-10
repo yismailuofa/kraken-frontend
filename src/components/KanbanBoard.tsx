@@ -13,9 +13,10 @@ import { Task } from "../models/Task";
 
 interface KanbanBoardProps {
     onLogout: (token: MaybeUser) => void;
+    onProjectUpdated: (project: MaybeProject) => void;
 }
 
-export function KanbanBoard({ onLogout }: KanbanBoardProps) {
+export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     // let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
     //     new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
     // ];
@@ -47,6 +48,7 @@ export function KanbanBoard({ onLogout }: KanbanBoardProps) {
             }
         
             setTaskByStatus(data);
+            onProjectUpdated(data);
         }
       };
     

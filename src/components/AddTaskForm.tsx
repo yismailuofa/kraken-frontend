@@ -1,4 +1,4 @@
-import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton } from "@chakra-ui/react";
+import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, Divider } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -9,6 +9,7 @@ import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DateChooser } from "./DateChooser";
 import { useState } from "react";
 import {ChevronDownIcon} from '@chakra-ui/icons';
+
 
 export function AddTaskForm() {
   const navigate = useNavigate();
@@ -31,6 +32,13 @@ export function AddTaskForm() {
     }
   }
 
+  function updateMilestoneButton(mname: string) {
+    const btn = document.getElementById("mnameString");
+    if (btn) {
+        btn.innerText = mname;
+    }
+  }
+
   return (
     <Formik
       initialValues={{
@@ -38,6 +46,7 @@ export function AddTaskForm() {
         description: "",
         dueDate: default_date.toISOString(),
         priority: undefined as "Low" | "Medium" | "High" | undefined,    
+        milestoneId: "",
         qaTaskName: "",
         qaDescription: "",
         qaDueDate: default_date.toISOString(),
@@ -51,43 +60,22 @@ export function AddTaskForm() {
         alert(JSON.stringify(values, null, 1));
         actions.resetForm();
 
-        // const { data, error, response } = await client.POST("/tasks/", { body: { 
-        //     name: values.taskName, 
-        //     description: values.description,
-        //     dueDate: values.dueDate,
-        //     priority: values.priority, 
-        //     status: "Todo", 
-        //     assignedTo: "Unassigned",
-        //     projectId: (project?.id || "") as string,
-        //     milestoneId: "",
-        //     dependentMilestones: [],
-        //     dependentTasks: [],
-        //     qaTask: {
-        //       name: values.qaTaskName,
-        //       description: values.qaDescription,
-        //       dueDate: values.qaDueDate,
-        //       priority: values.qaPriority,
-        //       status: "Todo",
-        //       assignedTo: "Unassigned"
-        //     }
-        // }});
-
         const { data, error, response } = await client.POST("/tasks/", { body: { 
-            name: "a", 
-            description: "a",
-            dueDate: "2011-10-05T14:48:00.000Z",
-            priority: "Low", 
+            name: values.taskName, 
+            description: values.description,
+            dueDate: values.dueDate,
+            priority: values.priority, 
             status: "Todo", 
             assignedTo: "Unassigned",
             projectId: (project?.id || "") as string,
-            milestoneId: "1",
+            milestoneId: values.milestoneId,
             dependentMilestones: [],
             dependentTasks: [],
             qaTask: {
-              name: "b",
-              description: "b",
-              dueDate: "2011-10-05T14:48:00.000Z",
-              priority: "Low",
+              name: values.qaTaskName,
+              description: values.qaDescription,
+              dueDate: values.qaDueDate,
+              priority: values.qaPriority,
               status: "Todo",
               assignedTo: "Unassigned"
             }
@@ -123,67 +111,92 @@ export function AddTaskForm() {
         <form onSubmit={formik.handleSubmit}>
           <VStack
             mx="auto"
-            w={{ base: "90%", md: 500 }}
+            w={{ base: "90%", md: 800 }}
             h="100vh"
             justifyContent="center"
           >
-            <Heading>Create Task</Heading>
-
-            <TextField
-              id="taskName"
-              name="taskName"
-              label="Task Name"
-              type="text"
-              variant="filled"
-              placeholder="enter task name..."
-              fontFamily="'Raleway', sans-serif"
-            />
-
-            <TextArea
-              id="description"
-              name="description"
-              label="Task Description"
-              type="text"
-              placeholder="enter task description..."
-              fontFamily="'Raleway', sans-serif"
-            />
-            
-            <DateChooser
-                id="dueDate"
-                name="dueDate"
-                selectedDateString={formik.values.dueDate}
-                setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
-            />
-
-            <HStack justifyContent="flex-start" width={"100%"}>
-                <Text> Priority: </Text> 
+            <HStack>
+            <Text> Parent Milestone: </Text> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                    <Text id="priorityStr">Change Priority</Text>
+                    <Text id="mnameString">Select Parent Milestone</Text>
                     </MenuButton>
                     <MenuList>
-                        <MenuItem onClick={() => {
-                            formik.setFieldValue("priority", "Low");
-                            updateMenuButton("Low")
-                            }}> 
-                            Low 
+                    {project?.milestones?.map((milestone) => (
+                        <MenuItem key={milestone.id} onClick={() => {
+                            formik.setFieldValue("milestoneId", milestone.id);
+                            updateMilestoneButton(milestone.name)
+                            }}>
+                                {milestone.name}
                         </MenuItem>
-                        <MenuItem onClick={() => {
-                            formik.setFieldValue("priority", "Medium");
-                            updateMenuButton("Medium")
-                            }}> 
-                            Medium 
-                        </MenuItem>                        
-                        <MenuItem onClick={() => {
-                            formik.setFieldValue("priority", "High");
-                            updateMenuButton("High")
-                            }}> 
-                            High 
-                        </MenuItem>
+                    ))}
                     </MenuList>
-                </Menu>   
+                </Menu> 
             </HStack>
+            <HStack justifyContent="space-between" width="100%" paddingBottom={"50px"}>
+                <VStack width="45%">
+                <Heading>Create Task</Heading>
 
+                <TextField
+                id="taskName"
+                name="taskName"
+                label="Task Name"
+                type="text"
+                variant="filled"
+                placeholder="enter task name..."
+                fontFamily="'Raleway', sans-serif"
+                />
+
+                <TextArea
+                id="description"
+                name="description"
+                label="Task Description"
+                type="text"
+                placeholder="enter task description..."
+                fontFamily="'Raleway', sans-serif"
+                />
+                
+                <DateChooser
+                    id="dueDate"
+                    name="dueDate"
+                    selectedDateString={formik.values.dueDate}
+                    setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
+                />
+
+                <HStack justifyContent="flex-start" width={"100%"}>
+                    <Text> Priority: </Text> 
+                    <Menu>           
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                        <Text id="priorityStr">Change Priority</Text>
+                        </MenuButton>
+                        <MenuList>
+                            <MenuItem onClick={() => {
+                                formik.setFieldValue("priority", "Low");
+                                updateMenuButton("Low")
+                                }}> 
+                                Low 
+                            </MenuItem>
+                            <MenuItem onClick={() => {
+                                formik.setFieldValue("priority", "Medium");
+                                updateMenuButton("Medium")
+                                }}> 
+                                Medium 
+                            </MenuItem>                        
+                            <MenuItem onClick={() => {
+                                formik.setFieldValue("priority", "High");
+                                updateMenuButton("High")
+                                }}> 
+                                High 
+                            </MenuItem>
+                        </MenuList>
+                    </Menu>   
+            </HStack>
+            </VStack>
+
+            <Divider orientation="vertical" borderColor="gray.200" height="100%" />
+
+            <VStack width="45%">
+            <Heading>Create QA Task</Heading>
             <TextField
               id="qaTaskName"
               name="qaTaskName"
@@ -239,16 +252,20 @@ export function AddTaskForm() {
                 </Menu>   
             </HStack>
 
+            </VStack>
+            </HStack>
+
             <Stack spacing={4} direction="row" align="center">
               <Button
                 colorScheme="teal"
                 variant="solid"
                 onClick={() => navigate("/kanban")}
+                width={"200px"}
               >
                 Cancel
               </Button>
 
-              <Button type="submit" colorScheme="teal" variant="solid">
+              <Button type="submit" colorScheme="teal" variant="solid" width={"200px"}>
                 Create Task
               </Button>
             </Stack>

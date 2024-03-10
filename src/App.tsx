@@ -50,7 +50,7 @@ export const App = () => {
                   />
                   <Route path="/addproject" element={<AddProjectForm />} />
                   <Route path="/changepassword" element={<ChangePasswordForm />} />
-                  <Route path="/kanban" element={<KanbanBoard onLogout={onClientChange}/>} />
+                  <Route path="/kanban" element={<KanbanBoard onLogout={onClientChange} onProjectUpdated={onProjectChange}/>} />
                   <Route path="/addtask" element={<AddTaskForm/>} />
                   <Route path="/addmilestone" element={<AddMilestoneForm/>} />
                 </Routes>

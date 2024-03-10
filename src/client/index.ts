@@ -2,7 +2,7 @@ import createClient from 'openapi-fetch'
 import type { paths } from "./api";
 
 
-const BASE_URL = "http://162.246.157.194/";
+const BASE_URL = "https://33db9.yeg.rac.sh/";
 
 export const createClientWithToken = (token: string | null) => createClient<paths>({
     baseUrl: BASE_URL,

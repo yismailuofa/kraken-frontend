@@ -3,7 +3,7 @@ import { createClientWithToken } from "../client";
 import { components } from "../client/api";
 
 export type MaybeUser = components["schemas"]["User"] | null;
-export type MaybeProject = components["schemas"]["Project"] | null;
+export type MaybeProject = components["schemas"]["ProjectView"] | null;
 
 interface ApiContextProps {
   client: ReturnType<typeof createClientWithToken>;
