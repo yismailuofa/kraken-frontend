@@ -9,7 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { KanbanTopBar } from "./KanbanTopBar";
 import { KanbanColumn } from "./KanbanColumn";
-import { Task } from "../models/Task";
+import { Task } from "../contexts/ApiContext";
 
 interface KanbanBoardProps {
     onLogout: (token: MaybeUser) => void;
@@ -20,9 +20,9 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     // let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
     //     new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
     // ];
-    let plannedTaskList: Task[] = [];
-    let inProgressTaskList: Task[] = [];
-    let completedTaskList: Task[] = [];
+    const plannedTaskList: Task[] = [];
+    const inProgressTaskList: Task[] = [];
+    const completedTaskList: Task[] = [];
 
     const [plannedTaskItems, setPlannedTaskItems] = useState(plannedTaskList)
     const [inProgressTaskItems, setInProgressTaskItems] = useState(inProgressTaskList)
@@ -33,8 +33,16 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     const navigate = useNavigate();
 
     const setTaskByStatus = (data: MaybeProject) => {
-        if (data) {
-            console.log(data)
+        if (data && data.tasks) {
+            const tasklist = data.tasks;
+            const temp_planned = tasklist?.filter(task => task.status === "Todo");
+            const temp_started = tasklist?.filter(task => task.status === "In Progress");
+            const temp_completed = tasklist?.filter(task => task.status === "Completed");
+
+            setPlannedTaskItems(temp_planned);
+            setInProgressTaskItems(temp_started);
+            setCompletedTaskItems(temp_completed);
+            console.log(plannedTaskItems, inProgressTaskItems, completedTaskItems);
         }
     }
 

@@ -11,11 +11,12 @@
         CardFooter 
     } from "@chakra-ui/react"
     import { Draggable } from "react-beautiful-dnd";
-    import { Task } from "../models/Task";
+    import { Task } from "../contexts/ApiContext";
 
     export function KanbanItem({task, index} : {task: Task, index: number}) {
         return (
-            <Draggable draggableId={task.id} index={index}>
+            // requires task id
+            <Draggable draggableId={task.id || ""} index={index}>
                 {(provided, snapshot) => (
                     <Card
                     {...provided.draggableProps}
