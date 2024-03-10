@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, HStack, Text, border, Button } from "@chakra-ui/react";
+import { Box, HStack, Text, border, Button, FormLabel, Center } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,8 +21,8 @@ export function DateChooser({ id, name, selectedDateString, setSelectedDateStrin
   }
 
   return (
-    <HStack justifyContent="flex-start" width={"100%"}>    
-      <Text font-weight= "500" fontFamily="'Raleway', sans-serif"> Due Date: </Text>
+    <HStack justifyContent="flex-start" width="100%" alignItems="center">    
+      <FormLabel> Due Date: </FormLabel>
       <DatePicker selected={selectedDate} onChange={(date) => updateSelectedDate(date)} className="custom-datepicker"/>
     </HStack>
   );

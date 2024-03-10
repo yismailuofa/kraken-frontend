@@ -1,4 +1,4 @@
-import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, Divider } from "@chakra-ui/react";
+import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, Divider, FormLabel } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -116,7 +116,7 @@ export function AddTaskForm() {
             justifyContent="center"
           >
             <HStack>
-            <Text> Parent Milestone: </Text> 
+            <FormLabel> Parent Milestone: </FormLabel> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                     <Text id="mnameString">Select Parent Milestone</Text>
@@ -164,7 +164,7 @@ export function AddTaskForm() {
                 />
 
                 <HStack justifyContent="flex-start" width={"100%"}>
-                    <Text> Priority: </Text> 
+                    <FormLabel> Priority: </FormLabel> 
                     <Menu>           
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                         <Text id="priorityStr">Change Priority</Text>
@@ -224,7 +224,7 @@ export function AddTaskForm() {
             />
 
             <HStack justifyContent="flex-start" width={"100%"}>
-                <Text> QA Priority: </Text> 
+                <FormLabel> QA Priority: </FormLabel> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
                     <Text id="qaPriorityStr">Change QA Priority</Text>
