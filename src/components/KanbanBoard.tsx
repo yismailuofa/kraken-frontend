@@ -1,15 +1,15 @@
-import React from "react";
 import {
-    Flex, useToast,
+    Box,
+    Flex, HStack, useToast,
 } from "@chakra-ui/react"
 import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
-import { components } from "../client/api";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { KanbanTopBar } from "./KanbanTopBar";
 import { KanbanColumn } from "./KanbanColumn";
 import { Task } from "../contexts/ApiContext";
+import { SideNavBar } from "./sideNavBar";
 
 interface KanbanBoardProps {
     onLogout: (token: MaybeUser) => void;
@@ -161,11 +161,16 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <KanbanTopBar onLogout={onLogout}/>
-            <Flex justifyContent={"space-evenly"} gap={10}>
-                <KanbanColumn name="To Do" id={"0"} tasks={plannedTaskItems}/>
-                <KanbanColumn name="In Progress" id={"1"} tasks={inProgressTaskItems}/>
-                <KanbanColumn name="Completed" id={"2"} tasks={completedTaskItems}/>
-            </Flex>
+            <HStack w="100vw">
+                <SideNavBar />
+                <Box h="100vh" alignContent={"top"}>
+                    <Flex justifyContent={"space-evenly"} gap={10}>
+                        <KanbanColumn name="To Do" id={"0"} tasks={plannedTaskItems}/>
+                        <KanbanColumn name="In Progress" id={"1"} tasks={inProgressTaskItems}/>
+                        <KanbanColumn name="Completed" id={"2"} tasks={completedTaskItems}/>
+                    </Flex>
+                </Box>
+            </HStack>
         </DragDropContext>
     )
 }
