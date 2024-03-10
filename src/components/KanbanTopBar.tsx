@@ -49,7 +49,7 @@ export function KanbanTopBar({ onLogout }: KanbanTopBarProps) {
             />
             <MenuList>
                 <MenuItem onClick={() => navigate("/addtask")}> Add Task </MenuItem>
-                <MenuItem onClick={() => navigate("/addmilestone")}> Add Milstone </MenuItem>
+                <MenuItem onClick={() => navigate("/addmilestone")}> Add Milestone </MenuItem>
             </MenuList>
             </Menu>
             <Menu>
