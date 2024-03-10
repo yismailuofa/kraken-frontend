@@ -1,4 +1,4 @@
-import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, Divider, FormLabel } from "@chakra-ui/react";
+import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, Divider, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -54,7 +54,8 @@ export function AddTaskForm() {
       }}
       validationSchema={Yup.object({
         taskName: Yup.string().required("Task name required"),
-        qaTaskName: Yup.string().required("Task name required"),
+        qaTaskName: Yup.string().required("QA task name required"),
+        milestoneId: Yup.string().required("Parent milestone required"),
       })}
       onSubmit={async (values, actions) => {
         alert(JSON.stringify(values, null, 1));
