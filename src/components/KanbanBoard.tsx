@@ -34,6 +34,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     const toast = useToast();
 
     const setTaskByStatus = (data: MaybeProject) => {
+        // TO DO: display QA tasks
         if (data && data.tasks) {
             const tasklist = data.tasks;
             const temp_planned = tasklist?.filter(task => task.status === "Todo");
@@ -78,6 +79,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     }
 
     const updateTaskStatus = async (task: Task, endStatus: "Todo" | "In Progress" | "Completed" | null | undefined) => {
+        // TO DO: update QA task
         const { data, error, response } = await client.PATCH(`/tasks/{id}`, 
         {   params: {
                 path: {
@@ -85,24 +87,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
                 }
             },
             body: {
-                "name": task.name,
-                "description": task.description,
-                "dueDate": task.dueDate,
-                "priority": task.priority,
                 "status": endStatus,
-                "assignedTo": task.assignedTo,
-                "projectId": task.projectId,
-                "milestoneId": task.milestoneId,
-                "qaTask": {
-                    "name": task.qaTask.name,
-                    "description": task.qaTask.description,
-                    "dueDate": task.qaTask.dueDate,
-                    "priority": task.qaTask.priority,
-                    "status": task.qaTask.status,
-                    "assignedTo": task.qaTask.assignedTo
-                },
-                "dependentMilestones": task.dependentMilestones,
-                "dependentTasks": task.dependentTasks
             }
         });
 
@@ -115,7 +100,6 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     
 
     const handleDragEnd = (result: DropResult) => {
-        console.log(project?.id);
         const { destination, source, draggableId } = result;
         let draggedItem: Task | undefined;
         let temp_dest: Task[] = [];
