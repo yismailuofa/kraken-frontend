@@ -45,7 +45,7 @@ export function ProjectList({ onLogout, onProjectSelected }: ProjectListProps) {
 
   return (
     <Box>
-      <ProjectListTopBar onLogout={onLogout}/>
+      <ProjectListTopBar onLogout={onLogout} fetchProjects={fetchProjects}/>
       <SimpleGrid columns={5} spacing={10} minChildWidth="300px" padding={10}>
         {projects.map((project) => (
           <ProjectCard
