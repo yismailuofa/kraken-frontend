@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    Flex,
+    Flex, useToast,
 } from "@chakra-ui/react"
 import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
 import { components } from "../client/api";
@@ -31,6 +31,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     const client = useContext(ApiContext).client;
     const project = useContext(ApiContext).project;
     const navigate = useNavigate();
+    const toast = useToast();
 
     const setTaskByStatus = (data: MaybeProject) => {
         if (data && data.tasks) {
@@ -76,12 +77,50 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
         }
     }
 
+    const updateTaskStatus = async (task: Task, endStatus: "Todo" | "In Progress" | "Completed" | null | undefined) => {
+        const { data, error, response } = await client.PATCH(`/tasks/{id}`, 
+        {   params: {
+                path: {
+                    id: task.id || ""
+                }
+            },
+            body: {
+                "name": task.name,
+                "description": task.description,
+                "dueDate": task.dueDate,
+                "priority": task.priority,
+                "status": endStatus,
+                "assignedTo": task.assignedTo,
+                "projectId": task.projectId,
+                "milestoneId": task.milestoneId,
+                "qaTask": {
+                    "name": task.qaTask.name,
+                    "description": task.qaTask.description,
+                    "dueDate": task.qaTask.dueDate,
+                    "priority": task.qaTask.priority,
+                    "status": task.qaTask.status,
+                    "assignedTo": task.qaTask.assignedTo
+                },
+                "dependentMilestones": task.dependentMilestones,
+                "dependentTasks": task.dependentTasks
+            }
+        });
+
+        if (error) {
+            console.log(error);
+          } else {
+            console.log(response);
+          }
+    };
+    
+
     const handleDragEnd = (result: DropResult) => {
         console.log(project?.id);
         const { destination, source, draggableId } = result;
         let draggedItem: Task | undefined;
         let temp_dest: Task[] = [];
         let temp_src: Task[] = [];
+        let dest_status: "Todo" | "In Progress" | "Completed" | null | undefined;
 
         if (!destination || source.droppableId === destination.droppableId) return;
 
@@ -90,40 +129,48 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
             temp_src = plannedTaskItems.filter(item => item.id !== draggableId);
             if (draggedItem)
                 temp_dest = [...inProgressTaskItems, draggedItem];
+                dest_status = "In Progress";
         }
         if (source.droppableId === "0" && destination.droppableId === "2") {
             draggedItem = plannedTaskItems.find(item => item.id === draggableId);
             temp_src = plannedTaskItems.filter(item => item.id !== draggableId);
             if (draggedItem)
                 temp_dest = [...completedTaskItems, draggedItem];
+                dest_status = "Completed";
         }
         if (source.droppableId === "1" && destination.droppableId === "0") {
             draggedItem = inProgressTaskItems.find(item => item.id === draggableId);
             temp_src = inProgressTaskItems.filter(item => item.id !== draggableId);
             if (draggedItem)
                 temp_dest = [...plannedTaskItems, draggedItem];
+                dest_status = "Todo";
         }
         if (source.droppableId === "1" && destination.droppableId === "2") {
             draggedItem = inProgressTaskItems.find(item => item.id === draggableId);
             temp_src = inProgressTaskItems.filter(item => item.id !== draggableId);
             if (draggedItem)
                 temp_dest = [...completedTaskItems, draggedItem];
+                dest_status = "Completed";
         }
         if (source.droppableId === "2" && destination.droppableId === "0") {
             draggedItem = completedTaskItems.find(item => item.id === draggableId);
             temp_src = completedTaskItems.filter(item => item.id !== draggableId);
             if (draggedItem)
                 temp_dest = [...plannedTaskItems, draggedItem];
+                dest_status = "Todo";
         }
         if (source.droppableId === "2" && destination.droppableId === "1") {
             draggedItem = completedTaskItems.find(item => item.id === draggableId);
             temp_src = completedTaskItems.filter(item => item.id !== draggableId);
             if (draggedItem)
                 temp_dest = [...inProgressTaskItems, draggedItem];
+                dest_status = "In Progress";
         }
 
-        updateTaskList(source.droppableId, temp_src)
-        updateTaskList(destination.droppableId, temp_dest)
+        updateTaskList(source.droppableId, temp_src);
+        updateTaskList(destination.droppableId, temp_dest);
+        if (draggedItem)
+            updateTaskStatus(draggedItem, dest_status);
         console.log(plannedTaskItems, inProgressTaskItems, completedTaskItems)
     }
 

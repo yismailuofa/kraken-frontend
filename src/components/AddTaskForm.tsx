@@ -8,7 +8,7 @@ import { useContext } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DateChooser } from "./DateChooser";
 import { useState } from "react";
-import {ChevronDownIcon} from '@chakra-ui/icons';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 
 export function AddTaskForm() {

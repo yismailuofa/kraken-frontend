@@ -14,8 +14,6 @@ export function KanbanColumn({name, id, tasks=[]} : { name: string, id: string, 
     let taskItems = tasks.map((task) => <li key={task.id}>
         <KanbanItem task={task} index={tasks.indexOf(task)}/></li>);
 
-    console.log(tasks);
-
     return (
         <Card>
             <CardHeader><Heading as="h1">{name}</Heading> </CardHeader>
