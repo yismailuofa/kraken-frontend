@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 
 interface LoginFormProps {
@@ -13,11 +13,17 @@ interface LoginFormProps {
 export function LoginForm({ onAuthenticate }: LoginFormProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const client = useContext(ApiContext).client;
+  const { user, client } = useContext(ApiContext);
 
   const displayErrorMessage = () => {
     setErrorMessage("Invalid username or password");
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/projectlist");
+    }
+  }, [user, navigate]);
 
   return (
     <Formik
@@ -32,8 +38,6 @@ export function LoginForm({ onAuthenticate }: LoginFormProps) {
           .min(8, "Password must be at least 8 characters"),
       })}
       onSubmit={async (values, actions) => {
-        alert(JSON.stringify(values, null, 3));
-
         // Query if the user credentials are valid
         const { data, error, response } = await client.POST("/users/login", {
           params: {
