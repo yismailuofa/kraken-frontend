@@ -1,8 +1,6 @@
-import { Box, Button, Flex, Heading, SimpleGrid, Spacer, Stack, useDisclosure } from "@chakra-ui/react";
-import { ProjectCard } from "./ProjectCard";
-import { ProjectListTopBar } from "./ProjectListTopBar";
-import { useContext, useEffect, useState } from "react";
-import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
+import { Box, Button, Spacer, Stack, useDisclosure, useToast } from "@chakra-ui/react";
+import { useContext } from "react";
+import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { components } from "../client/api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SettingsTopBar } from "./SettingsTopBar";
@@ -21,6 +19,7 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
   const project = useContext(ApiContext).project;
   const {state} = useLocation();
   const navigate = useNavigate();
+  const toast = useToast();
 
   if (!project) {
     navigate("/projectlist");
@@ -36,10 +35,28 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
       },
     });
 
+    // If there is an error deleting the project notify the user with a toast message
     if (error) {
       console.log(error);
+      toast({
+        title: "Project Deletion Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error deleting your project.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
+    // If the response is valid naviagte to the project list page and notify the user with a success toast message
     } else if (response.status === 200) {
       console.log(data)
+      toast({
+        title: "Project Deleted",
+        description: "Your project has been successfully deleted.",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else {
       console.log(response);
     }
