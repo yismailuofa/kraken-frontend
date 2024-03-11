@@ -9,7 +9,7 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { KanbanTopBar } from "./KanbanTopBar";
 import { KanbanColumn } from "./KanbanColumn";
 import { Task } from "../contexts/ApiContext";
-import { SideNavBar } from "./sideNavBar";
+import { SideNavBar } from "./SideNavBar";
 
 interface KanbanBoardProps {
     onLogout: (token: MaybeUser) => void;
