@@ -1,19 +1,28 @@
-import { Box, Button, Container, Flex, Heading, IconButton, Spacer, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useToast } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, IconButton, Spacer, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from "@chakra-ui/react";
 import { useState, useEffect, useContext } from "react";
 import { components } from "../client/api";
 import { ApiContext } from "../contexts/ApiContext";
 import { FaWindowClose } from "react-icons/fa";
+import { RemoveMemberModal } from "./RemoveMemberModal";
 
 type UserView = components["schemas"]["UserView"];
 
 export function ProjectMemberTable() {
   const [projectMembers, setProjectMembers] = useState<UserView[]>();
+  const [memberToRemove, setMemberToRemove] = useState<UserView>();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
   const toast = useToast();
 
-  function test(id: string) {
-    console.log(id);
+  const { 
+    isOpen: isOpenRemoveMemberModal, 
+    onOpen: onOpenRemoveMemberModal, 
+    onClose: onCloseRemoveMemberModal 
+  } = useDisclosure()
+
+  function onConfirmRemoveMember(member: UserView) {
+    console.log(member.id);
+    console.log("Removing member")
   }
 
   // Get a list of members on the project
@@ -49,6 +58,14 @@ export function ProjectMemberTable() {
 
   const showHeading = () => (
     <Flex>
+
+      <RemoveMemberModal
+        onConfirmRemoveMember={onConfirmRemoveMember}
+        member={memberToRemove!}
+        isOpen={isOpenRemoveMemberModal}
+        onClose={onCloseRemoveMemberModal}
+      />
+
       <Box>
         <Heading fontSize={"xl"}>Project Members</Heading>
       </Box>
@@ -86,7 +103,7 @@ export function ProjectMemberTable() {
                 fontSize={32}
                 variant='ghost'
                 icon={<FaWindowClose />}
-                onClick={() => test(member.id!)}
+                onClick={() => {setMemberToRemove(member); onOpenRemoveMemberModal();}}
                 />
                 
               </Td>
