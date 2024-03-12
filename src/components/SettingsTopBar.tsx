@@ -28,7 +28,7 @@ export function SettingsTopBar({ onLogout }: ProjectSettingsTopBarProps) {
   }
 
   return (
-    <Flex as="nav" p="20px" alignItems="center" borderBottom="1px" borderBottomColor={'gray.200'}>
+    <Flex as="nav" p="20px" h="12vh" alignItems="center" borderBottom="1px" borderBottomColor={'gray.200'}>
       <Heading as="h1">Settings</Heading>
       <Spacer />
 

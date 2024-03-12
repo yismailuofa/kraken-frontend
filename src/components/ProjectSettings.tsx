@@ -1,10 +1,11 @@
-import { Box, Button, Spacer, Stack, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Heading, Text, Button, Spacer, Stack, VStack, useDisclosure, useToast } from "@chakra-ui/react";
 import { useContext } from "react";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { components } from "../client/api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SettingsTopBar } from "./SettingsTopBar";
 import { DeleteProjectModal } from "./DeleteProjectModal";
+import { ProjectMemberTable } from "./ProjectMemberTable";
 
 type Project = components["schemas"]["Project"];
 
@@ -15,7 +16,7 @@ interface ProjectSettingsProps {
 // TODO: get path we routed from so we can return
 export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const client = useContext(ApiContext).client;
+  const {user, client} = useContext(ApiContext);
   const project = useContext(ApiContext).project;
   const {state} = useLocation();
   const navigate = useNavigate();
@@ -69,7 +70,12 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
       <SettingsTopBar onLogout={onLogout} />
 
       <DeleteProjectModal onConfirmDelete={onConfirmDelete} isOpen={isOpen} onClose={onClose}/>
-      <Stack h="90vh" direction='row' spacing={4} align='center' mt={10}>
+      <VStack h="88vh" w="100vw">
+        <Heading mt={5}>{project.name}</Heading>
+        <Text align="center" maxWidth={1000} mt={5} mb={10}>{project.description}</Text>
+        {user?.ownedProjects?.some(projectId => projectId === project.id) && <ProjectMemberTable />}
+        <Spacer />
+        <Stack w="100vw" direction='row' spacing={4} align='center' mt={10} mb={10}>
         <Button colorScheme='teal' variant='solid' ml={10} onClick={() => navigate(state.location)}>
           Close
         </Button>
@@ -78,6 +84,7 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
           Delete Project
         </Button>       
       </Stack>
+      </VStack>
     </Box>
   );
 }
