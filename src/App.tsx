@@ -14,20 +14,38 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ApiContext, MaybeUser, MaybeProject } from "./contexts/ApiContext";
 import { AddTaskForm } from "./components/AddTaskForm";
 import { AddMilestoneForm } from "./components/AddMilestoneForm";
+import {
+  fetchUserFromLocalStorage,
+  removeUserFromLocalStorage,
+  saveUserToLocalStorage,
+} from "./util";
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
-  const [user, setUser] = React.useState<MaybeUser>(null);
+  const [user, setUser] = React.useState<MaybeUser>(
+    fetchUserFromLocalStorage()
+  );
   const [project, setProject] = React.useState<MaybeProject>(null);
 
   function onClientChange(user: MaybeUser) {
     setClient(createClientWithToken(user?.token || null));
     setUser(user);
+
+    if (user) {
+      saveUserToLocalStorage(user);
+    } else {
+      removeUserFromLocalStorage();
+    }
   }
 
   function onProjectChange(project: MaybeProject) {
     setProject(project);
   }
+
+  React.useEffect(() => {
+    const user = fetchUserFromLocalStorage();
+    onClientChange(user);
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>
@@ -46,13 +64,29 @@ export const App = () => {
                 <Routes>
                   <Route
                     path="/projectlist"
-                    element={<ProjectList onLogout={onClientChange} onProjectSelected={onProjectChange}/>}
+                    element={
+                      <ProjectList
+                        onLogout={onClientChange}
+                        onProjectSelected={onProjectChange}
+                      />
+                    }
                   />
                   <Route path="/addproject" element={<AddProjectForm />} />
-                  <Route path="/changepassword" element={<ChangePasswordForm />} />
-                  <Route path="/kanban" element={<KanbanBoard onLogout={onClientChange} onProjectUpdated={onProjectChange}/>} />
-                  <Route path="/addtask" element={<AddTaskForm/>} />
-                  <Route path="/addmilestone" element={<AddMilestoneForm/>} />
+                  <Route
+                    path="/changepassword"
+                    element={<ChangePasswordForm />}
+                  />
+                  <Route
+                    path="/kanban"
+                    element={
+                      <KanbanBoard
+                        onLogout={onClientChange}
+                        onProjectUpdated={onProjectChange}
+                      />
+                    }
+                  />
+                  <Route path="/addtask" element={<AddTaskForm />} />
+                  <Route path="/addmilestone" element={<AddMilestoneForm />} />
                 </Routes>
               </ProtectedRoute>
             }

@@ -1,9 +1,16 @@
 import { VStack, Stack, Heading, Button, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { SiOctopusdeploy } from "react-icons/si";
+import { useContext } from "react";
+import { ApiContext } from "../contexts/ApiContext";
 
 export function Home() {
   const navigate = useNavigate();
+  const { user } = useContext(ApiContext);
+
+  if (user) {
+    navigate("/projectlist");
+  }
 
   return (
     <VStack
