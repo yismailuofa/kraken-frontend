@@ -22,7 +22,9 @@ import {
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
-  const [user, setUser] = React.useState<MaybeUser>(null);
+  const [user, setUser] = React.useState<MaybeUser>(
+    fetchUserFromLocalStorage()
+  );
   const [project, setProject] = React.useState<MaybeProject>(null);
 
   function onClientChange(user: MaybeUser) {
