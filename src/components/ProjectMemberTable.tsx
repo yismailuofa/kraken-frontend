@@ -20,9 +20,26 @@ export function ProjectMemberTable() {
     onClose: onCloseRemoveMemberModal 
   } = useDisclosure()
 
-  function onConfirmRemoveMember(member: UserView) {
-    console.log(member.id);
-    console.log("Removing member")
+  async function onConfirmRemoveMember(member: UserView) {
+    const { error, data, response } = await client.DELETE("/projects/{id}/users", {
+      params: {
+        query: {
+          userID: member.id!
+        },
+        path: {
+          id: project?.id!
+        },
+      },
+    });
+    
+    if (error) {
+      console.log(error);
+    } else if (response.status === 200) {
+      console.log(data);      
+      fetchProjectMembers();
+    } else {
+      console.log(response);
+    }
   }
 
   // Get a list of members on the project
