@@ -61,7 +61,6 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
       });
     // If the response is valid naviagte to the project list page and notify the user with a success toast message
     } else if (response.status === 200) {
-      console.log(data)
       toast({
         title: "Project Deleted",
         description: "Your project has been successfully deleted.",
@@ -88,8 +87,23 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
 
     if (error) {
       console.log(error);
+      toast({
+        title: "Leave Project Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error leaving the project.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else if (response.status === 200) {
-      console.log(data)
+      toast({
+        title: "Successfully Exited Project",
+        description: "You are no longer a member on the project.",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else {
       console.log(response);
     }
