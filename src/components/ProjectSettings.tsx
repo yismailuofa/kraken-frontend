@@ -77,8 +77,24 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
     navigate("/projectlist");
   }
 
-  function onConfirmLeave() {
-    console.log("Leaving");
+  async function onConfirmLeave() {
+    const { data, error, response } = await client.DELETE("/projects/{id}/leave", {
+      params: {
+        path: {
+          id: project?.id!,
+        },
+      },
+    });
+
+    if (error) {
+      console.log(error);
+    } else if (response.status === 200) {
+      console.log(data)
+    } else {
+      console.log(response);
+    }
+
+    navigate("/projectlist");
   }
 
   return (
