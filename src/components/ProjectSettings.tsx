@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { SettingsTopBar } from "./SettingsTopBar";
 import { DeleteProjectModal } from "./DeleteProjectModal";
 import { ProjectMemberTable } from "./ProjectMemberTable";
+import { LeaveProjectModal } from "./LeaveProjectModal";
 
 type Project = components["schemas"]["Project"];
 
@@ -15,12 +16,23 @@ interface ProjectSettingsProps {
 
 // TODO: get path we routed from so we can return
 export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const {user, client} = useContext(ApiContext);
   const project = useContext(ApiContext).project;
   const {state} = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
+
+  const { 
+    isOpen: isOpenDeleteModal, 
+    onOpen: onOpenDeleteModal, 
+    onClose: onCloseDeleteModal 
+  } = useDisclosure()
+
+  const { 
+    isOpen: isOpenLeaveModal, 
+    onOpen: onOpenLeaveModal, 
+    onClose: onCloseLeaveModal 
+  } = useDisclosure()
 
   if (!project) {
     navigate("/projectlist");
@@ -65,11 +77,17 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
     navigate("/projectlist");
   }
 
+  function onConfirmLeave() {
+    console.log("Leaving");
+  }
+
   return (
     <Box h="100vh">
       <SettingsTopBar onLogout={onLogout} />
 
-      <DeleteProjectModal onConfirmDelete={onConfirmDelete} isOpen={isOpen} onClose={onClose}/>
+      <DeleteProjectModal onConfirmDelete={onConfirmDelete} isOpen={isOpenDeleteModal} onClose={onCloseDeleteModal}/>
+      <LeaveProjectModal onConfirmLeave={onConfirmLeave} isOpen={isOpenLeaveModal} onClose={onCloseLeaveModal}/>
+
       <VStack h="88vh" w="100vw">
         <Heading mt={5}>{project.name}</Heading>
         <Text align="center" maxWidth={1000} mt={5} mb={10}>{project.description}</Text>
@@ -80,9 +98,16 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
           Close
         </Button>
         <Spacer />
-        <Button colorScheme='red' variant='solid' mr={10} onClick={onOpen}>
+        {
+          user?.ownedProjects?.some(projectId => projectId === project.id) ?
+        <Button colorScheme='red' variant='solid' mr={10} onClick={onOpenDeleteModal}>
           Delete Project
-        </Button>       
+        </Button>
+        :
+        <Button colorScheme='red' variant='solid' mr={10} onClick={onOpenLeaveModal}>
+          Leave Project
+        </Button>
+        }       
       </Stack>
       </VStack>
     </Box>
