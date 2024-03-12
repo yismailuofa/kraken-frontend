@@ -34,8 +34,24 @@ export function ProjectMemberTable() {
     
     if (error) {
       console.log(error);
+      toast({
+        title: "Remove Member Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error removing " + member.username + " the from the project.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else if (response.status === 200) {
-      console.log(data);      
+      console.log(data);
+      toast({
+        title: "Successfully Removed " + member.username + " From Project",
+        description: member.username + " is no longer a member on the project.",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });      
       fetchProjectMembers();
     } else {
       console.log(response);
