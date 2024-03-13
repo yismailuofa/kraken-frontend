@@ -105,7 +105,7 @@ export function ProjectMemberTable() {
         isOpen={isOpenRemoveMemberModal}
         onClose={onCloseRemoveMemberModal}
       />
-      <AddMemberModal isOpen={isOpenAddMemberModal} onClose={onCloseAddMemberModal}/>
+      <AddMemberModal fetchProjectMembers={fetchProjectMembers} isOpen={isOpenAddMemberModal} onClose={onCloseAddMemberModal}/>
 
       <Box>
         <Heading fontSize={"xl"}>Project Members</Heading>

@@ -4,9 +4,17 @@ import * as Yup from "yup";
 import { TextField } from "./TextField";
 import { useContext } from "react";
 import { ApiContext } from "../contexts/ApiContext";
+import { useNavigate } from "react-router-dom";
 
-export function AddMemberModal({isOpen, onClose}: any) {
+export function AddMemberModal({fetchProjectMembers, isOpen, onClose}: any) {
   const client = useContext(ApiContext).client;
+  const project = useContext(ApiContext).project;
+  const navigate = useNavigate();
+
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
   
 	return (
 		<>
@@ -24,7 +32,27 @@ export function AddMemberModal({isOpen, onClose}: any) {
                 email: Yup.string().required("Email required")
             })}
             onSubmit={async (values, actions) => {
-              console.log("Adding member");
+              // Make a request to the database add the member to the project
+              const { data, error, response } = await client.POST("/projects/{id}/users", {
+                params: {
+                  query: {
+                    email: values.email,
+                  },
+                  path: {
+                    id: project.id!,
+                  },
+                },
+              });
+
+              if (error) {
+                console.log(error);
+              } else if (response.status === 200) {
+                console.log(data);
+                fetchProjectMembers();
+                onClose();
+              } else {
+                console.log(response);
+              }
             }}
 					>
             {(formik) => (
