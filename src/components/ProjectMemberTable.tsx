@@ -4,6 +4,7 @@ import { components } from "../client/api";
 import { ApiContext } from "../contexts/ApiContext";
 import { FaWindowClose } from "react-icons/fa";
 import { RemoveMemberModal } from "./RemoveMemberModal";
+import { AddMemberModal } from "./AddMemberModal";
 
 type UserView = components["schemas"]["UserView"];
 
@@ -18,6 +19,12 @@ export function ProjectMemberTable() {
     isOpen: isOpenRemoveMemberModal, 
     onOpen: onOpenRemoveMemberModal, 
     onClose: onCloseRemoveMemberModal 
+  } = useDisclosure()
+
+  const { 
+    isOpen: isOpenAddMemberModal, 
+    onOpen: onOpenAddMemberModal, 
+    onClose: onCloseAddMemberModal 
   } = useDisclosure()
 
   async function onConfirmRemoveMember(member: UserView) {
@@ -98,13 +105,14 @@ export function ProjectMemberTable() {
         isOpen={isOpenRemoveMemberModal}
         onClose={onCloseRemoveMemberModal}
       />
+      <AddMemberModal isOpen={isOpenAddMemberModal} onClose={onCloseAddMemberModal}/>
 
       <Box>
         <Heading fontSize={"xl"}>Project Members</Heading>
       </Box>
       <Spacer />
       <Box>
-        <Button colorScheme={"teal"}>Add Member</Button>
+        <Button colorScheme={"teal"} onClick={onOpenAddMemberModal}>Add Member</Button>
       </Box>
     </Flex>
   )
