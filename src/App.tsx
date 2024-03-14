@@ -90,7 +90,7 @@ export const App = () => {
                   <Route path="/addtask" element={<AddTaskForm />} />
                   <Route path="/addmilestone" element={<AddMilestoneForm />} />
                   <Route path="/settings" element={<ProjectSettings onLogout={onClientChange}/>} />
-                  <Route path="/editproject" element={<EditProjectForm/>} />
+                  <Route path="/editproject" element={<EditProjectForm onProjectUpdated={onProjectChange}/>} />
                 </Routes>
               </ProtectedRoute>
             }

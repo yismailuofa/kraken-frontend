@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { TextField } from "./TextField";
 import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ApiContext } from "../contexts/ApiContext";
 
 interface AddEditProjectProps {
@@ -16,15 +16,13 @@ interface AddEditProjectProps {
 
 export function AddEditProjectBase({onSubmitForm, title, posButton, originPage}: AddEditProjectProps) {
   const navigate = useNavigate();
-  const client = useContext(ApiContext).client;
+  const project = useContext(ApiContext).project;
+  const initValues = project ? {projectName: project.name, description: project.description} : {projectName: "", description: ""};
 
   return (
     <Box>
       <Formik
-        initialValues={{
-          projectName: "",
-          description: "",
-        }}
+        initialValues={initValues}
         validationSchema={Yup.object({
           projectName: Yup.string().required("Project name required"),
         })}
