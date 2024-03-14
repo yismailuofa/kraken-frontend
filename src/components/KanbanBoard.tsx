@@ -19,7 +19,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     // let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
     //     new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
     // ];
-    let currentDisplay = 1;
+    const [currentDisplay, setCurrentDisplay] = useState(1);
     const plannedTaskList: Task[] = [];
     const inProgressTaskList: Task[] = [];
     const completedTaskList: Task[] = [];
@@ -158,13 +158,13 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
         let milestoneBlock = document.getElementById("milestoneDisplay")
 
         if (textToChange && taskBlock && milestoneBlock && num === 1) {
-            currentDisplay = 1;
+            setCurrentDisplay(1);
             textToChange.innerHTML = "Task";
             taskBlock.style.display = "flex";
             milestoneBlock.style.display = "none";
         }
         if (textToChange && taskBlock && milestoneBlock && num === 2) {
-            currentDisplay = 2;
+            setCurrentDisplay(2);
             textToChange.innerHTML = "Milstone";
             taskBlock.style.display = "none";
             milestoneBlock.style.display = "flex";
@@ -286,10 +286,11 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
         updateMilestoneList(destination.droppableId, temp_dest);
         if (draggedItem)
             updateMilestoneStatus(draggedItem, dest_status);
-        console.log(plannedTaskItems, inProgressTaskItems, completedTaskItems)
+        console.log(plannedMilestoneItems, inProgressMilestoneItems, completedMilestoneItems)
     }
 
     const handleDragEnd = (result: DropResult) => {
+        console.log("currentDisplay:" + currentDisplay);
         if (currentDisplay === 1) {
             handleDragTask(result);
         }
