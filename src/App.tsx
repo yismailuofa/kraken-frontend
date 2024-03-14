@@ -21,6 +21,7 @@ import {
   saveUserToLocalStorage,
 } from "./util";
 import { EditProjectForm } from "./components/EditProjectForm";
+import { Dependencies } from "./components/Dependencies";
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
@@ -41,7 +42,7 @@ export const App = () => {
   }
 
   async function updateUser() {
-    const {error, data, response} = await client.GET("/users/me");
+    const { error, data, response } = await client.GET("/users/me");
 
     if (error) {
       console.log(error);
@@ -98,10 +99,19 @@ export const App = () => {
                       />
                     }
                   />
+                  <Route path="/dependencies" element={<Dependencies />} />
                   <Route path="/addtask" element={<AddTaskForm />} />
                   <Route path="/addmilestone" element={<AddMilestoneForm />} />
-                  <Route path="/settings" element={<ProjectSettings onLogout={onClientChange}/>} />
-                  <Route path="/editproject" element={<EditProjectForm onProjectUpdated={onProjectChange}/>} />
+                  <Route
+                    path="/settings"
+                    element={<ProjectSettings onLogout={onClientChange} />}
+                  />
+                  <Route
+                    path="/editproject"
+                    element={
+                      <EditProjectForm onProjectUpdated={onProjectChange} />
+                    }
+                  />
                 </Routes>
               </ProtectedRoute>
             }
