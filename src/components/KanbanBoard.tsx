@@ -1,7 +1,6 @@
 import React from "react";
-import {
-    Flex, useToast,
-} from "@chakra-ui/react"
+import { VStack, Stack, Flex, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, Spacer, MenuButton, Divider, FormLabel, FormErrorMessage } from "@chakra-ui/react";
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
 import { components } from "../client/api";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +19,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     // let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
     //     new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
     // ];
+    let currentDisplay = 1;
     const plannedTaskList: Task[] = [];
     const inProgressTaskList: Task[] = [];
     const completedTaskList: Task[] = [];
@@ -97,7 +97,18 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
             console.log(response);
           }
     };
-    
+
+    const handleDisplayChange = (num: number) => {
+        let textToChange = document.getElementById("currentDisplayText");
+        if (textToChange && num === 1) {
+            currentDisplay = 1;
+            textToChange.innerHTML = "Task";
+        }
+        if (textToChange && num === 2) {
+            currentDisplay = 2;
+            textToChange.innerHTML = "Milstone";
+        }
+    }
 
     const handleDragEnd = (result: DropResult) => {
         const { destination, source, draggableId } = result;
@@ -160,12 +171,31 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
-            <KanbanTopBar onLogout={onLogout}/>
-            <Flex justifyContent={"space-evenly"} gap={10}>
-                <KanbanColumn name="To Do" id={"0"} tasks={plannedTaskItems}/>
-                <KanbanColumn name="In Progress" id={"1"} tasks={inProgressTaskItems}/>
-                <KanbanColumn name="Completed" id={"2"} tasks={completedTaskItems}/>
-            </Flex>
+        <KanbanTopBar onLogout={onLogout}/>
+        <Flex justifyContent={"center"} paddingBottom={"10px"}>
+            <Menu>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <Text id="currentDisplayText">Task</Text>
+                </MenuButton>
+                <MenuList>
+                    <MenuItem onClick={() => {
+                            handleDisplayChange(1);
+                        }}> 
+                        Task
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                            handleDisplayChange(2);
+                        }}> 
+                        Milestone 
+                    </MenuItem>                        
+                </MenuList>
+            </Menu>  
+        </Flex> 
+        <Flex justifyContent={"space-evenly"} gap={10}>
+            <KanbanColumn name="To Do" id={"0"} tasks={plannedTaskItems}/>
+            <KanbanColumn name="In Progress" id={"1"} tasks={inProgressTaskItems}/>
+            <KanbanColumn name="Completed" id={"2"} tasks={completedTaskItems}/>
+        </Flex>
         </DragDropContext>
     )
 }

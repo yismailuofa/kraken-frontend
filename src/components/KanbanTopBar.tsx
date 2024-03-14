@@ -37,7 +37,7 @@ export function KanbanTopBar({ onLogout }: KanbanTopBarProps) {
         alignItems="center"
         height={"10vh"}
         >
-            <Heading as="h1">Kanban</Heading>
+            <Heading as="h1" flex={2}>Kanban</Heading>
             <Spacer />
             <HStack spacing="20px" alignItems="right">
             <Menu>
