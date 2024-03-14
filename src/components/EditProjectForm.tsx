@@ -13,7 +13,6 @@ export function EditProjectForm({onProjectUpdated}: EditProjectProps) {
   const toast = useToast();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
-  const {state} = useLocation();
 
   if (!project) {
     navigate("/projectlist");

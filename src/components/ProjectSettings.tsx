@@ -8,6 +8,7 @@ import { DeleteProjectModal } from "./DeleteProjectModal";
 import { ProjectMemberTable } from "./ProjectMemberTable";
 import { LeaveProjectModal } from "./LeaveProjectModal";
 import { FaEdit } from "react-icons/fa";
+import { ProjectCodeModal } from "./ProjectCodeModal";
 
 type Project = components["schemas"]["Project"];
 
@@ -33,6 +34,12 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
     isOpen: isOpenLeaveModal, 
     onOpen: onOpenLeaveModal, 
     onClose: onCloseLeaveModal 
+  } = useDisclosure()
+
+  const { 
+    isOpen: isOpenProjectCodeModal, 
+    onOpen: onOpenProjectCodeModal, 
+    onClose: onCloseProjectCodeModal 
   } = useDisclosure()
 
   if (!project) {
@@ -118,6 +125,7 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
 
       <DeleteProjectModal onConfirmDelete={onConfirmDelete} isOpen={isOpenDeleteModal} onClose={onCloseDeleteModal}/>
       <LeaveProjectModal onConfirmLeave={onConfirmLeave} isOpen={isOpenLeaveModal} onClose={onCloseLeaveModal}/>
+      <ProjectCodeModal projectCode={project.id} onCloseModal={onCloseProjectCodeModal} isOpen={isOpenProjectCodeModal} onClose={onCloseProjectCodeModal}/>
 
       <VStack h="88vh" w="100vw">
         <HStack>
@@ -140,8 +148,16 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
             />
           }
         </HStack>
+
+        <Text align="center" maxWidth={1000} mt={5} mb={5}>{project.description}</Text>
         
-        <Text align="center" maxWidth={1000} mt={5} mb={10}>{project.description}</Text>
+        {
+          user?.ownedProjects?.some(projectId => projectId === project.id)
+          &&
+          <Button colorScheme='teal' variant='solid' mb={10} onClick={onOpenProjectCodeModal}>
+            Get Project ID
+          </Button>
+        }
 
         {user?.ownedProjects?.some(projectId => projectId === project.id) && <ProjectMemberTable />}
 
@@ -149,7 +165,7 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
 
         <Stack w="100vw" direction='row' spacing={4} align='center' mt={10} mb={10}>
         <Button colorScheme='teal' variant='solid' ml={10} onClick={() => navigate(state.location)}>
-          Close
+          Back
         </Button>
         <Spacer />
         {
