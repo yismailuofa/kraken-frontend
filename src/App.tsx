@@ -40,8 +40,19 @@ export const App = () => {
     }
   }
 
+  async function updateUser() {
+    const {error, data, response} = await client.GET("/users/me");
+
+    if (error) {
+      console.log(error);
+    } else if (response.status === 200) {
+      setUser(data!);
+    }
+  }
+
   function onProjectChange(project: MaybeProject) {
     setProject(project);
+    updateUser();
   }
 
   React.useEffect(() => {
