@@ -1,4 +1,4 @@
-import { Box, Heading, Text, Button, Spacer, Stack, VStack, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Heading, Text, Button, Spacer, Stack, VStack, useDisclosure, useToast, IconButton, HStack } from "@chakra-ui/react";
 import { useContext } from "react";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { components } from "../client/api";
@@ -7,6 +7,7 @@ import { SettingsTopBar } from "./SettingsTopBar";
 import { DeleteProjectModal } from "./DeleteProjectModal";
 import { ProjectMemberTable } from "./ProjectMemberTable";
 import { LeaveProjectModal } from "./LeaveProjectModal";
+import { FaEdit } from "react-icons/fa";
 
 type Project = components["schemas"]["Project"];
 
@@ -119,10 +120,33 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
       <LeaveProjectModal onConfirmLeave={onConfirmLeave} isOpen={isOpenLeaveModal} onClose={onCloseLeaveModal}/>
 
       <VStack h="88vh" w="100vw">
-        <Heading mt={5}>{project.name}</Heading>
+        <HStack>
+          <Heading mt={5}>{project.name}</Heading>
+          {
+            user?.ownedProjects?.some(projectId => projectId === project.id)
+            &&
+            <IconButton
+            colorScheme="teal"
+            _hover={{
+              background: "white",
+              color: "teal.700",
+            }}
+            aria-label="Edit Project"
+            size="lg"
+            fontSize={32}
+            variant="ghost"
+            icon={<FaEdit />}
+            onClick={() => navigate("/editproject")}
+            />
+          }
+        </HStack>
+        
         <Text align="center" maxWidth={1000} mt={5} mb={10}>{project.description}</Text>
+
         {user?.ownedProjects?.some(projectId => projectId === project.id) && <ProjectMemberTable />}
+
         <Spacer />
+
         <Stack w="100vw" direction='row' spacing={4} align='center' mt={10} mb={10}>
         <Button colorScheme='teal' variant='solid' ml={10} onClick={() => navigate(state.location)}>
           Close

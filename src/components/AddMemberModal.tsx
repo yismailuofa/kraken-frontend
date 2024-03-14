@@ -60,7 +60,7 @@ export function AddMemberModal({fetchProjectMembers, isOpen, onClose}: any) {
                 });
               // If the response is valid fetch the new list of project members and notify the user with a success toast message
               } else if (response.status === 200) {
-                console.log(data);
+                actions.resetForm();
                 fetchProjectMembers(); // Update the list of project members
                 onClose();
                 toast({

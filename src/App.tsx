@@ -20,6 +20,7 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./util";
+import { EditProjectForm } from "./components/EditProjectForm";
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
@@ -89,6 +90,7 @@ export const App = () => {
                   <Route path="/addtask" element={<AddTaskForm />} />
                   <Route path="/addmilestone" element={<AddMilestoneForm />} />
                   <Route path="/settings" element={<ProjectSettings onLogout={onClientChange}/>} />
+                  <Route path="/editproject" element={<EditProjectForm/>} />
                 </Routes>
               </ProtectedRoute>
             }
