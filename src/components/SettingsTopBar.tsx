@@ -9,25 +9,18 @@ import {
   MenuButton,
   MenuList,
   Avatar,
-  useDisclosure,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { IoMdAdd } from "react-icons/io";
-import { FaUserPlus } from "react-icons/fa";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { useContext } from "react";
-import { JoinProjectModal } from "./JoinProjectModal";
 
-interface ProjectListTopBarProps {
+interface ProjectSettingsTopBarProps {
   onLogout: (token: MaybeUser) => void;
-  fetchProjects: Function;
 }
-
-export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBarProps) {
+  
+export function SettingsTopBar({ onLogout }: ProjectSettingsTopBarProps) {
   const navigate = useNavigate();
   const { client, user } = useContext(ApiContext);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (!user) {
     navigate("/login");
@@ -35,27 +28,11 @@ export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBar
   }
 
   return (
-    <Flex as="nav" p="20px" alignItems="center" borderBottom="1px" borderBottomColor={'gray.200'}>
-      <Heading as="h1">Projects</Heading>
+    <Flex as="nav" p="20px" h="12vh" alignItems="center" borderBottom="1px" borderBottomColor={'gray.200'}>
+      <Heading as="h1">Settings</Heading>
       <Spacer />
 
-      <JoinProjectModal isOpen={isOpen} onClose={onClose} fetchProjects={fetchProjects}></JoinProjectModal>
-
       <HStack spacing="20px" alignItems="right">
-        <IconButton
-          colorScheme="teal"
-          aria-label="Add Project"
-          size="lg"
-          icon={<IoMdAdd />}
-          onClick={() => navigate("/addproject")}
-        />
-        <IconButton
-          colorScheme="teal"
-          aria-label="Join Project"
-          size="lg"
-          icon={<FaUserPlus />}
-          onClick={onOpen}
-        />
         <Menu>
           <MenuButton
             as={IconButton}

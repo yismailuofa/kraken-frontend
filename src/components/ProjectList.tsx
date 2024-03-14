@@ -33,6 +33,7 @@ export function ProjectList({ onLogout, onProjectSelected }: ProjectListProps) {
 
   useEffect(() => {
     fetchProjects();
+    onProjectSelected(null);
   }, [client]);
 
   const showProjectKanban = (project: MaybeProject) => {
