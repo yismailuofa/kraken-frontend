@@ -34,13 +34,30 @@ export function EditProjectForm({onProjectUpdated}: EditProjectProps) {
       },
     });
 
+    // If there is an error updating the project notify the user with a toast message
     if (error) {
       console.log(error);
+      toast({
+        title: "Project Update Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error updating the project.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
+    // If the response is valid naviagte to the settings page and notify the user with a success toast message
     } else if (response.status === 200) {
       actions.resetForm();
-      onProjectUpdated(data);
+      onProjectUpdated(data); // Update the project context
       navigate("/settings");
-      console.log(data);
+      toast({
+        title: "Project Successfully Updated",
+        description: "The project has been successfully updated.",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else {
       console.log(response);
     }
