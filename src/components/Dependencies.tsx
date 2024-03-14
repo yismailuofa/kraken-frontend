@@ -23,7 +23,13 @@ export const Dependencies = () => {
     const elements: cytoscape.ElementDefinition[] = [];
 
     for (const task of project.tasks!) {
-      elements.push({ data: { id: task.id!, label: task.name, type: "task" } });
+      elements.push({
+        data: {
+          id: task.id!,
+          label: `${task.name}\n(${task.status})`,
+          type: "task",
+        },
+      });
 
       for (const dep of [
         ...task.dependentTasks!,
@@ -49,7 +55,11 @@ export const Dependencies = () => {
 
     for (const milestone of project.milestones!) {
       elements.push({
-        data: { id: milestone.id!, label: milestone.name, type: "milestone" },
+        data: {
+          id: milestone.id!,
+          label: `${milestone.name}\n(${milestone.status})`,
+          type: "milestone",
+        },
       });
 
       for (const dep of [
@@ -101,14 +111,19 @@ export const Dependencies = () => {
               style: {
                 "curve-style": "bezier",
                 "target-arrow-shape": "triangle",
-                width: 3,
+                width: 10,
               },
             },
             {
               selector: "node",
               style: {
                 label: "data(label)",
-              },
+                "text-wrap": "wrap",
+                "text-valign": "center",
+                shape: "roundrectangle",
+                "border-width": 1,
+                padding: 40,
+              } as any,
             },
             {
               selector: "node[type = 'task']",
@@ -131,7 +146,7 @@ export const Dependencies = () => {
             {
               selector: "edge[type = 'dependency']",
               style: {
-                "line-style": "dotted",
+                "line-style": "dashed",
               },
             },
             {
