@@ -38,7 +38,7 @@ export function KanbanTopBar({ onLogout }: KanbanTopBarProps) {
         borderBottom="1px"
         borderBottomColor={'gray.200'}
         >
-            <Heading as="h1">Kanban</Heading>
+            <Heading as="h1" flex={2}>Kanban</Heading>
             <Spacer />
             <HStack spacing="20px" alignItems="right">
             <Menu>

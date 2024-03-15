@@ -101,6 +101,7 @@ export function AddMilestoneForm() {
                 name="dueDate"
                 selectedDateString={formik.values.dueDate}
                 setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
+                startDate={new Date()}
             />
 
             <Stack spacing={4} direction="row" align="center">

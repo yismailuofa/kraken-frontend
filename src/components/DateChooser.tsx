@@ -8,10 +8,11 @@ interface DateChooserProps {
   name: string;
   selectedDateString: string;
   setSelectedDateString: (date: string) => void;
+  startDate: Date;
 }
 
-export function DateChooser({ id, name, selectedDateString, setSelectedDateString }: DateChooserProps){
-  const [selectedDate, setSelectedDate] = useState(new Date());
+export function DateChooser({ id, name, selectedDateString, setSelectedDateString, startDate }: DateChooserProps){
+  const [selectedDate, setSelectedDate] = useState(startDate);
 
   function updateSelectedDate(date: Date | null) {
     if (date) {
