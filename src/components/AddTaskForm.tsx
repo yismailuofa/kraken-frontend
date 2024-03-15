@@ -162,6 +162,7 @@ export function AddTaskForm() {
                     name="dueDate"
                     selectedDateString={formik.values.dueDate}
                     setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
+                    startDate={new Date()}
                 />
 
                 <HStack justifyContent="flex-start" width={"100%"}>
@@ -222,6 +223,8 @@ export function AddTaskForm() {
                 name="qaDueDate"
                 selectedDateString={formik.values.qaDueDate}
                 setSelectedDateString={(date) => formik.setFieldValue("qaDueDate", date)}
+                startDate={new Date()}
+
             />
 
             <HStack justifyContent="flex-start" width={"100%"}>

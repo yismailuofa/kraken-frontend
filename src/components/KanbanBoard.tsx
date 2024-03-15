@@ -16,9 +16,6 @@ interface KanbanBoardProps {
 }
 
 export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
-    // let plannedTaskList = [new Task("fix frontend error", "1"), new Task("fix backend error", "2"), new Task("add new feature", "3"),
-    //     new Task("fix frontend error", "4"), new Task("fix backend error", "5"), new Task("add new feature", "6")
-    // ];
     const [currentDisplay, setCurrentDisplay] = useState(1);
     const plannedTaskList: Task[] = [];
     const inProgressTaskList: Task[] = [];
