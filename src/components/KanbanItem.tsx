@@ -39,14 +39,52 @@ import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DeleteIcon, EditIcon} from "@chakra-ui/icons";
 
 
-
-function viewTaskDetail(task: Task){
-}
-
-export function KanbanItemTask({task, index} : {task: Task, index: number}) {
+export function KanbanItemTask({task, index, change} : {task: Task, index: number, change: any}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
+    const editModal = useDisclosure();
+    const deleteModal = useDisclosure();
+    const toast = useToast();
+    const client = useContext(ApiContext).client;
+
+    const deleteTask = async () => {
+        const { data, error, response } = await client.DELETE("/tasks/{id}", {
+            params: {
+                path: {
+                    id: task.id || ""
+                }
+            },
+        });
+
+        if (error) {
+        console.log(error);
+        toast({
+            title: "Task Deletion Failed",
+            description: "There was an error deleting your task.",
+            status: "error",
+            duration: 8000,
+            isClosable: true,
+            position: "top",
+        });
+        } else if (response.status === 200) {
+        toast({
+            title: "Task Deleted",
+            description: "Your task has been successfully deleted.",
+            status: "success",
+            duration: 8000,
+            isClosable: true,
+            position: "top",
+        });
+        }
+    }
+
+    function handleDeleteTask(){
+        deleteModal.onClose();
+        deleteTask();
+        change(task);
+    }
+
     return (
         // requires task id
         <Draggable draggableId={task.id || ""} index={index}>
@@ -61,37 +99,56 @@ export function KanbanItemTask({task, index} : {task: Task, index: number}) {
                         <Stack divider={<StackDivider />} spacing='4'>
                             <Box>  #{task.id} </Box>
                             <Box>  {task.name} </Box>
+                            <HStack>
+                                <EditIcon onClick={editModal.onOpen}/>
+                                <DeleteIcon onClick={deleteModal.onOpen}/>
+                            </HStack>
                         </Stack>
                     </CardBody>
                 </Card>
                 <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
-                isOpen={isOpen}
-                onClose={onClose}
-                >
+                isOpen={deleteModal.isOpen}
+                onClose={deleteModal.onClose}
+                size="lg">
                 <ModalOverlay />
                 <ModalContent>
-                <ModalHeader>Create your account</ModalHeader>
+                <ModalHeader>Delete Task</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody pb={6}>
-                    <FormControl>
-                    <FormLabel>First name</FormLabel>
-                    <Input ref={initialRef} placeholder='First name' />
-                    </FormControl>
-    
-                    <FormControl mt={4}>
-                    <FormLabel>Last name</FormLabel>
-                    <Input placeholder='Last name' />
-                    </FormControl>
-                </ModalBody>
-    
-                <ModalFooter>
-                    <Button colorScheme='blue' mr={3}>
-                    Save
+                <ModalBody pb={6}></ModalBody>
+                    <VStack
+                        mx="auto"
+                        w={{ base: "90%", md: 400 }}
+                        h="30vh"
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                    <FormLabel> Are you sure you would like to delete this task? </FormLabel>
+                    <Heading>{task.name}</Heading>
+                    <Spacer/>
+                    <Stack spacing={4} direction="row" align="center">
+                    <Button
+                        colorScheme="teal"
+                        variant="solid"
+                        onClick={deleteModal.onClose}
+                    >
+                        Cancel
                     </Button>
-                    <Button onClick={onClose}>Cancel</Button>
-                </ModalFooter>
+
+                    <Button 
+                        colorScheme="red" 
+                        variant="solid" 
+                        onClick={
+                            handleDeleteTask
+                        }
+                        id="taskDeleteButton"
+                    >
+                        Delete Task
+                    </Button>
+                    </Stack>
+                    <Spacer />
+                    </VStack>
                 </ModalContent>
                 </Modal>
                 </>
@@ -142,7 +199,8 @@ export function KanbanItemMilestone({milestone, index, change} : {milestone: Mil
             duration: 8000,
             isClosable: true,
             position: "top",
-        });}
+        });
+        }
     }
 
     function handleDeleteMilestone() {
@@ -320,8 +378,9 @@ export function KanbanItemMilestone({milestone, index, change} : {milestone: Mil
                         justifyContent="center"
                         alignItems="center"
                     >
-                    <Heading>{milestone.name}</Heading>
                     <FormLabel> Are you sure you would like to delete this milestone? All of its subtasks will be deleted as well. </FormLabel>
+                    <Heading>{milestone.name}</Heading>
+                    <Spacer/>
                     <Stack spacing={4} direction="row" align="center">
                     <Button
                         colorScheme="teal"

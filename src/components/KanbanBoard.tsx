@@ -296,6 +296,16 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
         }
     }
 
+    function handleTaskDeletion(deleted: Task) {
+        let temp_list
+        temp_list = plannedTaskItems.filter(item => item.id !== deleted.id);
+        updateTaskList("t0", temp_list);
+        temp_list = inProgressTaskItems.filter(item => item.id !== deleted.id);
+        updateTaskList("t1", temp_list);
+        temp_list = completedTaskList.filter(item => item.id !== deleted.id);
+        updateTaskList("t2", temp_list);
+    }
+
     function handleMilestoneDeletion(deleted: Milestone) {
         let temp_list
         temp_list = plannedMilestoneItems.filter(item => item.id !== deleted.id);
@@ -332,9 +342,9 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
                     </Menu>  
                 </Flex> 
                 <Flex justifyContent={"space-evenly"} gap={20} id="taskDisplay" display={"flex"}>
-                        <KanbanColumnTask name="To Do" id={"t0"} tasks={plannedTaskItems}/>
-                        <KanbanColumnTask name="In Progress" id={"t1"} tasks={inProgressTaskItems}/>
-                        <KanbanColumnTask name="Completed" id={"t2"} tasks={completedTaskItems}/>
+                        <KanbanColumnTask name="To Do" id={"t0"} tasks={plannedTaskItems} change={handleTaskDeletion}/>
+                        <KanbanColumnTask name="In Progress" id={"t1"} tasks={inProgressTaskItems} change={handleTaskDeletion}/>
+                        <KanbanColumnTask name="Completed" id={"t2"} tasks={completedTaskItems} change={handleTaskDeletion}/>
                 </Flex>
 
                 <Flex justifyContent={"space-evenly"} gap={20} id="milestoneDisplay" display={"none"}>
