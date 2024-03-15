@@ -38,9 +38,9 @@ export function KanbanColumnTask({name, id, tasks=[]} : { name: string, id: stri
     )
 }
 
-export function KanbanColumnMilestone({name, id, milestones=[]} : { name: string, id: string, milestones: Milestone[] }) {
+export function KanbanColumnMilestone({name, id, milestones=[], change} : { name: string, id: string, milestones: Milestone[], change: any }) {
     let mItems = milestones.map((milestone) => <li key={milestone.id}>
-        <KanbanItemMilestone milestone={milestone} index={milestones.indexOf(milestone)}/></li>);
+        <KanbanItemMilestone milestone={milestone} index={milestones.indexOf(milestone)} change={change}/></li>);
 
     return (
         <Card width={"20vw"}>

@@ -296,6 +296,16 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
         }
     }
 
+    function handleMilestoneDeletion(deleted: Milestone) {
+        let temp_list
+        temp_list = plannedMilestoneItems.filter(item => item.id !== deleted.id);
+        updateMilestoneList("m0", temp_list);
+        temp_list = inProgressMilestoneItems.filter(item => item.id !== deleted.id);
+        updateMilestoneList("m1", temp_list);
+        temp_list = completedMilestoneList.filter(item => item.id !== deleted.id);
+        updateMilestoneList("m2", temp_list);
+    }
+
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
         <KanbanTopBar onLogout={onLogout}/>
@@ -328,9 +338,9 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
                 </Flex>
 
                 <Flex justifyContent={"space-evenly"} gap={20} id="milestoneDisplay" display={"none"}>
-                        <KanbanColumnMilestone name="To Do" id={"m0"} milestones={plannedMilestoneItems}/>
-                        <KanbanColumnMilestone name="In Progress" id={"m1"} milestones={inProgressMilestoneItems}/>
-                        <KanbanColumnMilestone name="Completed" id={"m2"} milestones={completedMilestoneItems}/>
+                        <KanbanColumnMilestone name="To Do" id={"m0"} milestones={plannedMilestoneItems} change={handleMilestoneDeletion}/>
+                        <KanbanColumnMilestone name="In Progress" id={"m1"} milestones={inProgressMilestoneItems} change={handleMilestoneDeletion}/>
+                        <KanbanColumnMilestone name="Completed" id={"m2"} milestones={completedMilestoneItems} change={handleMilestoneDeletion}/>
                 </Flex>
             </Box>
         </HStack>

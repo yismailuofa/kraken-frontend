@@ -22,6 +22,8 @@ import {
     Input,
     Heading,
     useToast,
+    HStack,
+    Spacer
 } from "@chakra-ui/react"
 import { Draggable } from "react-beautiful-dnd";
 import { Milestone, Task } from "../contexts/ApiContext";
@@ -34,6 +36,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useContext } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
+import { DeleteIcon, EditIcon} from "@chakra-ui/icons";
 
 
 
@@ -98,8 +101,10 @@ export function KanbanItemTask({task, index} : {task: Task, index: number}) {
     )
 }
 
-export function KanbanItemMilestone({milestone, index} : {milestone: Milestone, index: number}) {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+export function KanbanItemMilestone({milestone, index, change} : {milestone: Milestone, index: number, change: any}) {
+    const editModal = useDisclosure();
+    const deleteModal = useDisclosure();
+    // const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
     const toast = useToast();
@@ -110,6 +115,41 @@ export function KanbanItemMilestone({milestone, index} : {milestone: Milestone, 
     const [milestoneDescription, setMilestoneDescription] = useState(milestone.description)
     const [milestoneDueDate, setMilestoneDueDate] = useState(milestone.dueDate)
 
+    const deleteMilestone = async () => {
+        const { data, error, response } = await client.DELETE("/milestones/{id}", {
+            params: {
+                path: {
+                    id: milestone.id || ""
+                }
+            },
+        });
+
+        if (error) {
+        console.log(error);
+        toast({
+            title: "Milestone Deletion Failed",
+            description: "There was an error deleting your milestone.",
+            status: "error",
+            duration: 8000,
+            isClosable: true,
+            position: "top",
+        });
+        } else if (response.status === 200) {
+        toast({
+            title: "Milestone Deleted",
+            description: "Your milestone has been successfully deleted.",
+            status: "success",
+            duration: 8000,
+            isClosable: true,
+            position: "top",
+        });}
+    }
+
+    function handleDeleteMilestone() {
+        deleteModal.onClose();
+        deleteMilestone();
+        change(milestone);
+    }
 
     return (
         // requires task id
@@ -120,19 +160,23 @@ export function KanbanItemMilestone({milestone, index} : {milestone: Milestone, 
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
-                onClick={onOpen}>
+                >
                     <CardBody>
                         <Stack divider={<StackDivider />} spacing='4'>
                             <Box>  #{milestone.id} </Box>
                             <Box>  {milestoneName} </Box>
+                            <HStack>
+                                <EditIcon onClick={editModal.onOpen}/>
+                                <DeleteIcon onClick={deleteModal.onOpen}/>
+                            </HStack>
                         </Stack>
                     </CardBody>
                 </Card>
                 <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
-                isOpen={isOpen}
-                onClose={onClose}
+                isOpen={editModal.isOpen}
+                onClose={editModal.onClose}
                 size="xl"
                 >
                 <ModalOverlay />
@@ -235,12 +279,12 @@ export function KanbanItemMilestone({milestone, index} : {milestone: Milestone, 
                         <Button
                             colorScheme="teal"
                             variant="solid"
-                            onClick={onClose}
+                            onClick={editModal.onClose}
                         >
                             Cancel
                         </Button>
 
-                        <Button type="submit" colorScheme="teal" variant="solid" onClick={onClose}>
+                        <Button type="submit" colorScheme="teal" variant="solid" onClick={editModal.onClose}>
                             Update Milestone
                         </Button>
                         </Stack>
@@ -256,6 +300,50 @@ export function KanbanItemMilestone({milestone, index} : {milestone: Milestone, 
                     </Button>
                     <Button onClick={onClose}>Cancel</Button>
                 </ModalFooter> */}
+                </ModalContent>
+                </Modal>
+                <Modal
+                initialFocusRef={initialRef}
+                finalFocusRef={finalRef}
+                isOpen={deleteModal.isOpen}
+                onClose={deleteModal.onClose}
+                size="lg">
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>Delete Milestone</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}></ModalBody>
+                    <VStack
+                        mx="auto"
+                        w={{ base: "90%", md: 400 }}
+                        h="30vh"
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                    <Heading>{milestone.name}</Heading>
+                    <FormLabel> Are you sure you would like to delete this milestone? All of its subtasks will be deleted as well. </FormLabel>
+                    <Stack spacing={4} direction="row" align="center">
+                    <Button
+                        colorScheme="teal"
+                        variant="solid"
+                        onClick={deleteModal.onClose}
+                    >
+                        Cancel
+                    </Button>
+
+                    <Button 
+                        colorScheme="red" 
+                        variant="solid" 
+                        onClick={
+                            handleDeleteMilestone
+                        }
+                        id="milestoneDeleteButton"
+                    >
+                        Delete Milestone
+                    </Button>
+                    </Stack>
+                    <Spacer />
+                    </VStack>
                 </ModalContent>
                 </Modal>
                 </>
