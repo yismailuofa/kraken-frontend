@@ -11,11 +11,12 @@ import { Task, Milestone } from "../contexts/ApiContext";
 import { SideNavBar } from "./SideNavBar";
 
 interface KanbanBoardProps {
-    onLogout: (token: MaybeUser) => void;
-    onProjectUpdated: (project: MaybeProject) => void;
+  onLogout: (token: MaybeUser) => void;
+  onProjectUpdated: (project: MaybeProject) => void;
 }
 
 export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
+
     const [currentDisplay, setCurrentDisplay] = useState(1);
     const plannedTaskList: Task[] = [];
     const inProgressTaskList: Task[] = [];
@@ -24,7 +25,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
     const [plannedTaskItems, setPlannedTaskItems] = useState(plannedTaskList)
     const [inProgressTaskItems, setInProgressTaskItems] = useState(inProgressTaskList)
     const [completedTaskItems, setCompletedTaskItems] = useState(completedTaskList)
-    
+
     const plannedMilestoneList: Milestone[] = [];
     const inProgressMilestoneList: Milestone[] = [];
     const completedMilestoneList: Milestone[] = [];
@@ -51,7 +52,7 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
             setCompletedTaskItems(temp_completed);
             console.log(plannedTaskItems, inProgressTaskItems, completedTaskItems);
         }
-    }
+    };
 
     const setMilestoneByStatus = (data: MaybeProject) => {
         if (data && data.milestones) {
