@@ -12,9 +12,15 @@ import { DateRangeChooser } from "./DateRangeChooser";
 export function AddSprintForm() {
   const navigate = useNavigate();
   const client = useContext(ApiContext).client;
+  const project = useContext(ApiContext).project;
   const defaultStartDate = new Date();
   let defaultEndDate = new Date();
   defaultEndDate.setDate(defaultEndDate.getDate() + 6);
+
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
 
   return (
     <Box>
@@ -29,7 +35,24 @@ export function AddSprintForm() {
           sprintName: Yup.string().required("Sprint name required"),
         })}
         onSubmit={async (values, actions) => {
-            console.log(values);
+          // Make a request to add the sprint in the database
+          const { data, error, response } = await client.POST("/sprints/", {
+            body: {
+              name: values.sprintName,
+              description: values.description,
+              startDate: values.startDate,
+              endDate: values.endDate,
+              projectId: project.id!,
+            },
+          });
+
+          if (error) {
+            console.log(error);
+          } else if (response.status === 200) {
+            console.log("Adding Sprint");
+          } else {
+            console.log(response);
+          }
         }}
       >
         {(formik) => (

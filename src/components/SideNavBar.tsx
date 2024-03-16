@@ -27,7 +27,7 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: "Kanban", icon: BsKanban, page: "/kanban" },
-  { name: "Sprints", icon: GrCycle, page: "/sprintslist" }, // TODO: update the page route when the sprint list page is created
+  { name: "Sprints", icon: GrCycle, page: "/sprintslist" },
   { name: "Backlog", icon: FaThList, page: "/projectlist" }, // TODO: update the page route when the backlog page is created
   { name: "Projects", icon: BsFillGrid3X3GapFill, page: "/projectlist" },
   { name: "Dependencies", icon: CgArrowLongRightC, page: "/dependencies" },
