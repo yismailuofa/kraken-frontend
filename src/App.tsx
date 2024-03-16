@@ -23,6 +23,7 @@ import {
 import { EditProjectForm } from "./components/EditProjectForm";
 import { Dependencies } from "./components/Dependencies";
 import { SprintsList } from "./components/SprintsList";
+import { AddSprintForm } from "./components/AddSprintForm";
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
@@ -114,6 +115,7 @@ export const App = () => {
                     }
                   />
                   <Route path="/sprintslist" element={<SprintsList onLogout={onClientChange}/>} />
+                  <Route path="/addsprint" element={<AddSprintForm/>} />
                 </Routes>
               </ProtectedRoute>
             }
