@@ -5,11 +5,15 @@ import { TextField } from "./TextField";
 import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 import { useContext } from "react";
-import { ApiContext } from "../contexts/ApiContext";
+import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DateChooser } from "./DateChooser";
 import { DateRangeChooser } from "./DateRangeChooser";
 
-export function AddSprintForm() {
+interface AddSprintProps {
+  onProjectUpdated: (project: MaybeProject) => void;
+}
+
+export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
   const navigate = useNavigate();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
@@ -58,6 +62,19 @@ export function AddSprintForm() {
               position: "top",
             });
           } else if (response.status === 200) {
+            actions.resetForm();
+
+            const { data, error, response } = await client.GET("/projects/{id}", {
+              params: {
+                path: {
+                  id: project.id!
+                },
+              },
+            });
+
+            if (data) {
+              onProjectUpdated(data); // Update the project context
+            }
             navigate("/sprintslist");
             toast({
               title: "Sprint Successfully Created",

@@ -4,6 +4,7 @@ import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
 import { SideNavBar } from "./SideNavBar";
 import { SprintsTopBar } from "./SprintsTopBar";
+import { Sprint } from "./Sprint";
 
 
 interface SprintsListProps {
@@ -12,8 +13,16 @@ interface SprintsListProps {
 
 export function SprintsList({onLogout}: SprintsListProps) {
   const client = useContext(ApiContext).client;
+  const project = useContext(ApiContext).project;
   const navigate = useNavigate();
 
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
+
+  // Sort the sprints by increasing start date
+  const sprints = project.sprints?.sort((a, b) => new Date(b.startDate).valueOf() - new Date(a.startDate).valueOf());
 
   return (
     <Box>
@@ -22,41 +31,15 @@ export function SprintsList({onLogout}: SprintsListProps) {
         <SideNavBar />
         <Box h="100vh" w="80vw" mt={10} alignContent={"top"}>
           <Accordion defaultIndex={[0]} allowMultiple={true}>
-            <AccordionItem>
-                <h2>
-                <AccordionButton>
-                    <Box as="span" flex='1' textAlign='left'>
-                    Sprint 1
-                    </Box>
-                    <AccordionIcon />
-                </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                commodo consequat.
-                </Text>
-                
-                </AccordionPanel>
-            </AccordionItem>
-
-            <AccordionItem>
-              <h2>
-              <AccordionButton>
-                  <Box as="span" flex='1' textAlign='left'>
-                  Sprint 2
-                  </Box>
-                  <AccordionIcon />
-              </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-              commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
+            {sprints?.map((sprint) => (
+              <Sprint
+                key={sprint.id}
+                name={sprint.name}
+                description={sprint.description}
+                milestones={sprint.milestones}
+                tasks={sprint.tasks}
+              />
+            ))}
           </Accordion>
         </Box>
         </HStack>

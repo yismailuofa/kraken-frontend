@@ -115,7 +115,7 @@ export const App = () => {
                     }
                   />
                   <Route path="/sprintslist" element={<SprintsList onLogout={onClientChange}/>} />
-                  <Route path="/addsprint" element={<AddSprintForm/>} />
+                  <Route path="/addsprint" element={<AddSprintForm onProjectUpdated={onProjectChange}/>} />
                 </Routes>
               </ProtectedRoute>
             }
