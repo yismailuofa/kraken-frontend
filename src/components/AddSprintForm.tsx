@@ -1,4 +1,4 @@
-import { VStack, Stack, Heading, Button, Box, } from "@chakra-ui/react";
+import { VStack, Stack, Heading, Button, Box, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -13,6 +13,7 @@ export function AddSprintForm() {
   const navigate = useNavigate();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
+  const toast = useToast();
   const defaultStartDate = new Date();
   let defaultEndDate = new Date();
   defaultEndDate.setDate(defaultEndDate.getDate() + 6);
@@ -48,8 +49,24 @@ export function AddSprintForm() {
 
           if (error) {
             console.log(error);
+            toast({
+              title: "Create Sprint Failed",
+              description: error.detail?.toString() ? error.detail?.toString() : "There was an error creating the sprint.",
+              status: "error",
+              duration: 8000,
+              isClosable: true,
+              position: "top",
+            });
           } else if (response.status === 200) {
-            console.log("Adding Sprint");
+            navigate("/sprintslist");
+            toast({
+              title: "Sprint Successfully Created",
+              description: "Your sprint has been successfully created.",
+              status: "success",
+              duration: 8000,
+              isClosable: true,
+              position: "top",
+            });
           } else {
             console.log(response);
           }
