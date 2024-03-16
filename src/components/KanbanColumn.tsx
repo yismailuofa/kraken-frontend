@@ -10,9 +10,9 @@ import { KanbanItemTask, KanbanItemMilestone } from "./KanbanItem";
 import { Milestone, Task } from "../contexts/ApiContext";
 
 
-export function KanbanColumnTask({name, id, tasks=[]} : { name: string, id: string, tasks: Task[] }) {
+export function KanbanColumnTask({name, id, tasks=[], change} : { name: string, id: string, tasks: Task[], change: any }) {
     let taskItems = tasks.map((task) => <li key={task.id}>
-        <KanbanItemTask task={task} index={tasks.indexOf(task)}/></li>);
+        <KanbanItemTask task={task} index={tasks.indexOf(task)} change={change}/></li>);
 
     return (
         <Card width={"20vw"}>
