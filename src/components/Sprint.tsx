@@ -1,5 +1,5 @@
-import { SimpleGrid, GridItem, Flex, Center, Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast, Avatar, Tooltip } from "@chakra-ui/react";
+import { useContext } from "react";
 import { components } from "../client/api";
 import { FaWindowClose } from "react-icons/fa";
 import { DeleteSprintModal } from "./DeleteSprintModal";
@@ -10,14 +10,12 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 type Milestone = components["schemas"]["Milestone"];
 type Task = components["schemas"]["Task"];
 type Sprint = components["schemas"]["Sprint"];
+type SprintView = components["schemas"]["SprintView"];
 
 export function Sprint({ sprint, onProjectUpdated }: any) {
   const {user, client, project} = useContext(ApiContext);
-  // const {milestoneIds, setMilestoneIds} = useState<string[]>([]);
   const navigate = useNavigate();
   const toast = useToast();
-
-  // console.log(project);
 
   const { 
     isOpen: isOpenDeleteSprintModal, 
@@ -38,9 +36,36 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
     ))
   ));
 
-  async function addMilestone(item: Milestone) {
-    const milestones = sprint.milestones;
-    milestones.push(item);
+  // Get the ids of tasks that are already part of a sprint
+  const tasksInSprints: string[] = [];
+  project.sprints?.map((sprint: any) => (
+    sprint.tasks.map((task: Task) => (
+      tasksInSprints.push(task.id!)
+    ))
+  ));
+
+  async function fetchProject() {
+    const { data, error, response } = await client.GET("/projects/{id}", {
+      params: {
+        path: {
+          id: project?.id!
+        },
+      },
+    });
+
+    if (error) {
+      console.log(error);
+    }
+
+    return data;
+  }
+
+  // Request to add a milestone to a sprint
+  async function addMilestone(newMilestone: Milestone) {
+    const milestones = sprint.milestones.map((milestone: Milestone) => (
+      milestone.id
+    ));
+    milestones.push(newMilestone.id);
 
     const { data, error, response } = await client.PATCH("/sprints/{id}", {
       params: {
@@ -49,7 +74,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
         },
       },
       body: {
-        milestones: [item.id!],
+        milestones: milestones,
       },
     });
     
@@ -57,6 +82,47 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
       console.log(error);
     } else if (response.status === 200) {
       console.log("added milestone");
+      // Fetch the updated project and update the project context
+      let data = await fetchProject();
+
+      console.log(data);
+      if (data) {
+        onProjectUpdated(data); // Update the project context
+      }
+    } else {
+      console.log(response);
+    }
+  }
+
+  // Request to add a task to a sprint
+  async function addTask(newTask: Task) {
+    const tasks = sprint.tasks.map((task: Task) => (
+      task.id
+    ));
+    tasks.push(newTask.id);
+
+    const { data, error, response } = await client.PATCH("/sprints/{id}", {
+      params: {
+        path: {
+          id: sprint.id!
+        },
+      },
+      body: {
+        tasks: tasks,
+      },
+    });
+    
+    if (error) {
+      console.log(error);
+    } else if (response.status === 200) {
+      console.log("added task");
+      // Fetch the updated project and update the project context
+      let data = await fetchProject();
+
+      console.log(data);
+      if (data) {
+        onProjectUpdated(data); // Update the project context
+      }
     } else {
       console.log(response);
     }
@@ -94,13 +160,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
       });
 
       // Fetch the updated project and update the project context
-      const { data, error, response } = await client.GET("/projects/{id}", {
-        params: {
-          path: {
-            id: project?.id!
-          },
-        },
-      });
+      let data = await fetchProject();
 
       if (data) {
         onProjectUpdated(data); // Update the project context
@@ -147,7 +207,6 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
               <Thead>
                 <Tr>
                   <Th>Title</Th>
-                  <Th>Description</Th>
                   <Th>Status</Th>
                   <Th>Priority</Th>
                   <Th>Assigned To</Th>
@@ -158,7 +217,6 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                 {sprint.milestones?.map((milestone: Milestone) => (
                   <Tr key={milestone.id}>
                     <Td>{milestone.name}</Td>
-                    <Td overflow="clip">{milestone.description}</Td>
                     <Td>{milestone.status}</Td>
                     <Td></Td>
                     <Td></Td>
@@ -168,11 +226,14 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                 {sprint.tasks?.map((task: Task) => (
                   <Tr key={task.id}>
                     <Td>{task.name}</Td>
-                    <Td overflow="clip">{task.description}</Td>
                     <Td>{task.status}</Td>
                     <Td>{task.priority}</Td>
-                    <Td>{task.assignedTo}</Td>
-                    <Td>{task.dueDate}</Td>
+                    <Td>{
+                      <Tooltip label={task.assignedTo}>
+                        <Avatar name={task.assignedTo}/>
+                      </Tooltip>
+                      }</Td>
+                    <Td>{(new Date(task.dueDate).getFullYear().toString()) + "-" + (new Date(task.dueDate).getMonth().toString()) + "-" + (new Date(task.dueDate).getDate().toString())}</Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -184,21 +245,16 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
               <Text>Add Milestone/Task</Text>
             </MenuButton>
             <MenuList>
-            <HStack mt={3} mb={3} spacing={10}>
-              <Box>
-                <Center fontWeight="bold" w="20vw">
+            <HStack m={3} pb={3} spacing={10} borderBottom="1px" borderColor={'gray.200'}>
+              <Box fontWeight="bold" w="50vw">
                   Title
-                </Center>
               </Box>
-              <Box>
-                <Center fontWeight="bold" w="45vw">
-                  Description
-                </Center>
+              <Box fontWeight="bold" w="10vw">
+                  Priority
               </Box>
-              <Box>
-                <Center fontWeight="bold" w="10vw">
+
+              <Box fontWeight="bold" w="10vw">
                   Due Date
-                </Center>
               </Box>
             </HStack>
             {project?.milestones?.filter((milestone) => (
@@ -210,16 +266,37 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                   onClick={() => { addMilestone(milestone) }}
                 >
                   <HStack spacing={10}>
-                    <Box w="20vw">
+                    <Box w="50vw">
                       {milestone.name}
                     </Box>
-                    <Box w="45vw">
-                      {milestone.description}
+                    <Box w="10vw">
+                      {}
                     </Box>
-                    <Box>
-                      <Center w="10vw">
+                    <Box w="10vw">
                         {(new Date(milestone.dueDate).getFullYear().toString()) + "-" + (new Date(milestone.dueDate).getMonth().toString()) + "-" + (new Date(milestone.dueDate).getDate().toString())}
-                      </Center>
+                    </Box>
+                  </HStack>
+                </MenuItem>
+                <MenuDivider />
+              </Box>
+            ))}
+            {project?.tasks?.filter((task) => (
+              !tasksInSprints.includes(task.id!)
+            )).map((task) => (
+              <Box>
+                <MenuItem
+                  key={task.id}
+                  onClick={() => { addTask(task) }}
+                >
+                  <HStack spacing={10}>
+                    <Box w="50vw">
+                      {task.name}
+                    </Box>
+                    <Box w="10vw">
+                      {task.priority}
+                    </Box>
+                    <Box w="10vw">
+                        {(new Date(task.dueDate).getFullYear().toString()) + "-" + (new Date(task.dueDate).getMonth().toString()) + "-" + (new Date(task.dueDate).getDate().toString())}
                     </Box>
                   </HStack>
                 </MenuItem>
