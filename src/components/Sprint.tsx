@@ -1,10 +1,11 @@
-import { Stack, HStack, StackDivider, IconButton, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from "@chakra-ui/react";
-import { useContext } from "react";
+import { SimpleGrid, GridItem, Flex, Center, Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast } from "@chakra-ui/react";
+import { useContext, useState } from "react";
 import { components } from "../client/api";
 import { FaWindowClose } from "react-icons/fa";
 import { DeleteSprintModal } from "./DeleteSprintModal";
 import { ApiContext } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 type Milestone = components["schemas"]["Milestone"];
 type Task = components["schemas"]["Task"];
@@ -12,8 +13,11 @@ type Sprint = components["schemas"]["Sprint"];
 
 export function Sprint({ sprint, onProjectUpdated }: any) {
   const {user, client, project} = useContext(ApiContext);
+  // const {milestoneIds, setMilestoneIds} = useState<string[]>([]);
   const navigate = useNavigate();
   const toast = useToast();
+
+  // console.log(project);
 
   const { 
     isOpen: isOpenDeleteSprintModal, 
@@ -24,6 +28,38 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
   if (!project) {
     navigate("/projectlist");
     return null;
+  }
+
+  // Get the ids of milestones that are already part of a sprint
+  const milestonesInSprints: string[] = [];
+  project.sprints?.map((sprint: any) => (
+    sprint.milestones.map((milestone: Milestone) => (
+      milestonesInSprints.push(milestone.id!)
+    ))
+  ));
+
+  async function addMilestone(item: Milestone) {
+    const milestones = sprint.milestones;
+    milestones.push(item);
+
+    const { data, error, response } = await client.PATCH("/sprints/{id}", {
+      params: {
+        path: {
+          id: sprint.id!
+        },
+      },
+      body: {
+        milestones: [item.id!],
+      },
+    });
+    
+    if (error) {
+      console.log(error);
+    } else if (response.status === 200) {
+      console.log("added milestone");
+    } else {
+      console.log(response);
+    }
   }
 
   async function onConfirmDeleteSprint(sprint: Sprint) {
@@ -126,7 +162,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                     <Td>{milestone.status}</Td>
                     <Td></Td>
                     <Td></Td>
-                    <Td>{milestone.dueDate}</Td>
+                    <Td>{(new Date(milestone.dueDate).getFullYear().toString()) + "-" + (new Date(milestone.dueDate).getMonth().toString()) + "-" + (new Date(milestone.dueDate).getDate().toString())}</Td>
                   </Tr>
                 ))}
                 {sprint.tasks?.map((task: Task) => (
@@ -142,6 +178,56 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
               </Tbody>
             </Table>
           </TableContainer>
+
+          <Menu>           
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              <Text>Add Milestone/Task</Text>
+            </MenuButton>
+            <MenuList>
+            <HStack mt={3} mb={3} spacing={10}>
+              <Box>
+                <Center fontWeight="bold" w="20vw">
+                  Title
+                </Center>
+              </Box>
+              <Box>
+                <Center fontWeight="bold" w="45vw">
+                  Description
+                </Center>
+              </Box>
+              <Box>
+                <Center fontWeight="bold" w="10vw">
+                  Due Date
+                </Center>
+              </Box>
+            </HStack>
+            {project?.milestones?.filter((milestone) => (
+              !milestonesInSprints.includes(milestone.id!)
+            )).map((milestone) => (
+              <Box>
+                <MenuItem
+                  key={milestone.id}
+                  onClick={() => { addMilestone(milestone) }}
+                >
+                  <HStack spacing={10}>
+                    <Box w="20vw">
+                      {milestone.name}
+                    </Box>
+                    <Box w="45vw">
+                      {milestone.description}
+                    </Box>
+                    <Box>
+                      <Center w="10vw">
+                        {(new Date(milestone.dueDate).getFullYear().toString()) + "-" + (new Date(milestone.dueDate).getMonth().toString()) + "-" + (new Date(milestone.dueDate).getDate().toString())}
+                      </Center>
+                    </Box>
+                  </HStack>
+                </MenuItem>
+                <MenuDivider />
+              </Box>
+            ))}
+            </MenuList>
+          </Menu>
         </Stack>
       </AccordionPanel>
     </AccordionItem>
