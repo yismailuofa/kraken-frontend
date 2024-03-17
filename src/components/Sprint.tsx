@@ -13,6 +13,7 @@ type Sprint = components["schemas"]["Sprint"];
 export function Sprint({ sprint, onProjectUpdated }: any) {
   const {user, client, project} = useContext(ApiContext);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const { 
     isOpen: isOpenDeleteSprintModal, 
@@ -34,9 +35,28 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
       },
     });
 
+    // If there is an error deleting the sprint notify the user with a toast message
     if (error) {
       console.log(error);
+      toast({
+        title: "Sprint Deletion Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error deleting your sprint.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
+    // If the response is valid notify the user with a success toast message
     } else if (response.status === 200) {
+      toast({
+        title: "Sprint Deleted",
+        description: "Your sprint has been successfully deleted.",
+        status: "success",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
+
       // Fetch the updated project and update the project context
       const { data, error, response } = await client.GET("/projects/{id}", {
         params: {
