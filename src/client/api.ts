@@ -276,7 +276,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-04T15:45:15
+       * @default 2024-03-17T13:15:10
        */
       createdAt?: string;
     };
@@ -291,7 +291,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-04T15:45:15
+       * @default 2024-03-17T13:15:10
        */
       createdAt?: string;
       /**
@@ -341,6 +341,37 @@ export interface components {
        */
       milestones?: string[];
     };
+    /** SprintView */
+    SprintView: {
+      /** Name */
+      name: string;
+      /** Description */
+      description: string;
+      /**
+       * Startdate
+       * Format: date-time
+       */
+      startDate: string;
+      /**
+       * Enddate
+       * Format: date-time
+       */
+      endDate: string;
+      /** Projectid */
+      projectId: string;
+      /** Id */
+      id?: string | null;
+      /**
+       * Tasks
+       * @default []
+       */
+      tasks?: components["schemas"]["Task"][];
+      /**
+       * Milestones
+       * @default []
+       */
+      milestones?: components["schemas"]["Milestone"][];
+    };
     /**
      * Status
      * @enum {string}
@@ -386,7 +417,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-04T15:45:15
+       * @default 2024-03-17T13:15:10
        */
       createdAt?: string;
     };
@@ -1020,7 +1051,7 @@ export interface operations {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["Sprint"];
+          "application/json": components["schemas"]["SprintView"];
         };
       };
       /** @description Validation Error */
