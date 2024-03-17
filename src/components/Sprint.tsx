@@ -1,4 +1,4 @@
-import { Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast, Avatar, Tooltip } from "@chakra-ui/react";
+import { Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast, Avatar, Tooltip, Heading, Wrap } from "@chakra-ui/react";
 import { useContext } from "react";
 import { components } from "../client/api";
 import { FaWindowClose } from "react-icons/fa";
@@ -44,6 +44,15 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
     ))
   ));
 
+  // Function to truncate a string that is too long
+  function truncateString(str: string, num: number) {
+    if (str.length > num) {
+      return str.slice(0, num) + "...";
+    } else {
+      return str;
+    }
+  }
+
   async function fetchProject() {
     const { data, error, response } = await client.GET("/projects/{id}", {
       params: {
@@ -80,8 +89,15 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
     
     if (error) {
       console.log(error);
+      toast({
+        title: "Add Milestone to Sprint Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error adding the milestone to the sprint.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else if (response.status === 200) {
-      console.log("added milestone");
       // Fetch the updated project and update the project context
       let data = await fetchProject();
 
@@ -114,8 +130,15 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
     
     if (error) {
       console.log(error);
+      toast({
+        title: "Add Task to Sprint Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error adding the task to the sprint.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
     } else if (response.status === 200) {
-      console.log("added task");
       // Fetch the updated project and update the project context
       let data = await fetchProject();
 
@@ -172,14 +195,24 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
 
   return (
     <AccordionItem>
-      <h2>
+      <Heading>
       <AccordionButton border="1px" borderColor={'gray.200'} alignContent="center" minH={16}>
           <Box as="span" flex='1' textAlign='left'>
           {sprint.name}
           </Box>
+          <Spacer />
+          <Box mr={3}>
+            {(new Date(sprint.startDate).getFullYear().toString()) + "-" + (new Date(sprint.startDate).getMonth().toString()) + "-" + (new Date(sprint.startDate).getDate().toString())}
+          </Box>
+          <Box mr={3}>
+            ---
+          </Box>
+          <Box mr={10}>
+          {(new Date(sprint.endDate).getFullYear().toString()) + "-" + (new Date(sprint.endDate).getMonth().toString()) + "-" + (new Date(sprint.endDate).getDate().toString())}
+          </Box>
           <AccordionIcon />
       </AccordionButton>
-      </h2>
+      </Heading>
       <AccordionPanel border="1px" borderColor={'gray.200'} pb={4}>
 
         <DeleteSprintModal sprint={sprint} onConfirmDeleteSprint={onConfirmDeleteSprint} isOpen={isOpenDeleteSprintModal} onClose={onCloseDeleteSprintModal}/>
@@ -216,7 +249,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
               <Tbody>
                 {sprint.milestones?.map((milestone: Milestone) => (
                   <Tr key={milestone.id}>
-                    <Td>{milestone.name}</Td>
+                    <Td>{truncateString(milestone.name, 80)}</Td>
                     <Td>{milestone.status}</Td>
                     <Td></Td>
                     <Td></Td>
@@ -225,7 +258,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                 ))}
                 {sprint.tasks?.map((task: Task) => (
                   <Tr key={task.id}>
-                    <Td>{task.name}</Td>
+                    <Td ><Wrap>{truncateString(task.name, 80)}</Wrap></Td>
                     <Td>{task.status}</Td>
                     <Td>{task.priority}</Td>
                     <Td>{
