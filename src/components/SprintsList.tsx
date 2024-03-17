@@ -34,10 +34,7 @@ export function SprintsList({onLogout}: SprintsListProps) {
             {sprints?.map((sprint) => (
               <Sprint
                 key={sprint.id}
-                name={sprint.name}
-                description={sprint.description}
-                milestones={sprint.milestones}
-                tasks={sprint.tasks}
+                sprint={sprint}
               />
             ))}
           </Accordion>

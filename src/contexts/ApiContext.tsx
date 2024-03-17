@@ -6,6 +6,7 @@ export type MaybeUser = components["schemas"]["User"] | null;
 export type MaybeProject = components["schemas"]["ProjectView"] | null;
 export type Task = components["schemas"]["Task"];
 export type Milestone = components["schemas"]["Milestone"];
+export type Sprint = components["schemas"]["Sprint"];
 
 
 interface ApiContextProps {
