@@ -1,21 +1,57 @@
 import { Stack, HStack, StackDivider, IconButton, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from "@chakra-ui/react";
+import { useContext } from "react";
 import { components } from "../client/api";
 import { FaWindowClose } from "react-icons/fa";
 import { DeleteSprintModal } from "./DeleteSprintModal";
+import { ApiContext } from "../contexts/ApiContext";
+import { useNavigate } from "react-router-dom";
 
 type Milestone = components["schemas"]["Milestone"];
 type Task = components["schemas"]["Task"];
 type Sprint = components["schemas"]["Sprint"];
 
-export function Sprint({ sprint }: any) {
+export function Sprint({ sprint, onProjectUpdated }: any) {
+  const {user, client, project} = useContext(ApiContext);
+  const navigate = useNavigate();
+
   const { 
     isOpen: isOpenDeleteSprintModal, 
     onOpen: onOpenDeleteSprintModal, 
     onClose: onCloseDeleteSprintModal 
   } = useDisclosure()
 
-  function onConfirmDeleteSprint(sprint: Sprint) {
-    console.log("Deleting Sprint");
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
+
+  async function onConfirmDeleteSprint(sprint: Sprint) {
+    const { data, error, response } = await client.DELETE("/sprints/{id}", {
+      params: {
+        path: {
+            id: sprint.id!
+        },
+      },
+    });
+
+    if (error) {
+      console.log(error);
+    } else if (response.status === 200) {
+      // Fetch the updated project and update the project context
+      const { data, error, response } = await client.GET("/projects/{id}", {
+        params: {
+          path: {
+            id: project?.id!
+          },
+        },
+      });
+
+      if (data) {
+        onProjectUpdated(data); // Update the project context
+      }
+    } else {
+      console.log(response);
+    }
   }
 
   return (

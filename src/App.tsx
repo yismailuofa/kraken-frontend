@@ -114,7 +114,7 @@ export const App = () => {
                       <EditProjectForm onProjectUpdated={onProjectChange} />
                     }
                   />
-                  <Route path="/sprintslist" element={<SprintsList onLogout={onClientChange}/>} />
+                  <Route path="/sprintslist" element={<SprintsList onLogout={onClientChange} onProjectUpdated={onProjectChange}/>} />
                   <Route path="/addsprint" element={<AddSprintForm onProjectUpdated={onProjectChange}/>} />
                 </Routes>
               </ProtectedRoute>

@@ -1,6 +1,6 @@
 import { Box, Button, Accordion, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Text, HStack } from "@chakra-ui/react";
 import { useContext } from "react";
-import { ApiContext, MaybeUser } from "../contexts/ApiContext";
+import { ApiContext, MaybeProject, MaybeUser } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
 import { SideNavBar } from "./SideNavBar";
 import { SprintsTopBar } from "./SprintsTopBar";
@@ -9,9 +9,10 @@ import { Sprint } from "./Sprint";
 
 interface SprintsListProps {
   onLogout: (user: MaybeUser) => void;
+  onProjectUpdated: (project: MaybeProject) => void;
 }
 
-export function SprintsList({onLogout}: SprintsListProps) {
+export function SprintsList({onLogout, onProjectUpdated}: SprintsListProps) {
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export function SprintsList({onLogout}: SprintsListProps) {
               <Sprint
                 key={sprint.id}
                 sprint={sprint}
+                onProjectUpdated={onProjectUpdated}
               />
             ))}
           </Accordion>
