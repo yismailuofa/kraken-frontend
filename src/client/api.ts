@@ -276,7 +276,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-17T13:15:10
+       * @default 2024-03-17T15:44:56
        */
       createdAt?: string;
     };
@@ -291,7 +291,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-17T13:15:10
+       * @default 2024-03-17T15:44:56
        */
       createdAt?: string;
       /**
@@ -308,7 +308,7 @@ export interface components {
        * Sprints
        * @default []
        */
-      sprints?: components["schemas"]["Sprint"][];
+      sprints?: components["schemas"]["SprintView"][];
     };
     /** Sprint */
     Sprint: {
@@ -417,7 +417,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-17T13:15:10
+       * @default 2024-03-17T15:44:56
        */
       createdAt?: string;
     };
