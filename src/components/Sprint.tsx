@@ -110,6 +110,48 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
     }
   }
 
+  // Request to remove milestone from a sprint
+  async function removeMilestone(milestone: Milestone) {
+    const milestones = sprint.milestones.map((milestone: Milestone) => (
+      milestone.id
+    )).filter((milestoneId: string) => (
+      milestoneId !== milestone.id
+    ));
+
+    const { data, error, response } = await client.PATCH("/sprints/{id}", {
+      params: {
+        path: {
+          id: sprint.id!
+        },
+      },
+      body: {
+        milestones: milestones,
+      },
+    });
+
+    if (error) {
+      console.log(error);
+      toast({
+        title: "Remove Milestone Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error removing the milestone from the sprint.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
+    } else if (response.status === 200) {
+      // Fetch the updated project and update the project context
+      let data = await fetchProject();
+
+      console.log(data);
+      if (data) {
+        onProjectUpdated(data); // Update the project context
+      }
+    } else {
+      console.log(response);
+    }
+  }
+
   // Request to add a task to a sprint
   async function addTask(newTask: Task) {
     const tasks = sprint.tasks.map((task: Task) => (
@@ -133,6 +175,48 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
       toast({
         title: "Add Task to Sprint Failed",
         description: error.detail?.toString() ? error.detail?.toString() : "There was an error adding the task to the sprint.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+        position: "top",
+      });
+    } else if (response.status === 200) {
+      // Fetch the updated project and update the project context
+      let data = await fetchProject();
+
+      console.log(data);
+      if (data) {
+        onProjectUpdated(data); // Update the project context
+      }
+    } else {
+      console.log(response);
+    }
+  }
+
+  // Request to remove milestone from a sprint
+  async function removeTask(task: Task) {
+    const tasks = sprint.tasks.map((task: Task) => (
+      task.id
+    )).filter((taskId: string) => (
+      taskId !== task.id
+    ));
+
+    const { data, error, response } = await client.PATCH("/sprints/{id}", {
+      params: {
+        path: {
+          id: sprint.id!
+        },
+      },
+      body: {
+        tasks: tasks,
+      },
+    });
+
+    if (error) {
+      console.log(error);
+      toast({
+        title: "Remove Task Failed",
+        description: error.detail?.toString() ? error.detail?.toString() : "There was an error removing the task from the sprint.",
         status: "error",
         duration: 8000,
         isClosable: true,
@@ -257,6 +341,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                   <Th>Priority</Th>
                   <Th>Assigned To</Th>
                   <Th>Due Date</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -267,6 +352,21 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                     <Td></Td>
                     <Td></Td>
                     <Td>{new Date(milestone.dueDate).toDateString()}</Td>
+                    <Td>
+                      <IconButton
+                      colorScheme="red"
+                      _hover={{
+                          background: "white",
+                          color: "red.700",
+                      }}
+                      aria-label="Remove Milestone"
+                      size="lg"
+                      fontSize={32}
+                      variant='ghost'
+                      icon={<FaWindowClose />}
+                      onClick={() => {removeMilestone(milestone)}}
+                      />
+                    </Td>
                   </Tr>
                 ))}
                 {sprint.tasks?.map((task: Task) => (
@@ -280,6 +380,21 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                       </Tooltip>
                       }</Td>
                     <Td>{new Date(task.dueDate).toDateString()}</Td>
+                    <Td>
+                      <IconButton
+                      colorScheme="red"
+                      _hover={{
+                          background: "white",
+                          color: "red.700",
+                      }}
+                      aria-label="Remove Task"
+                      size="lg"
+                      fontSize={32}
+                      variant='ghost'
+                      icon={<FaWindowClose />}
+                      onClick={() => {removeTask(task)}}
+                      />
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
