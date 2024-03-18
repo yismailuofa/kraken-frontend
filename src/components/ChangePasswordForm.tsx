@@ -25,6 +25,10 @@ export function ChangePasswordForm() {
     setErrorMessage("Password and password verification do not match");
   };
 
+  const redirect = () => {
+    navigate(-1);
+  };
+
   return (
     <Formik
       initialValues={{
@@ -43,7 +47,7 @@ export function ChangePasswordForm() {
         // Only submit the request if the new password matches the confirmed password
         if (values.password === values.passwordConfirmation) {
           // Make a request to change user's password
-          const { data, error, response } = await client.PATCH(
+          const { error, response } = await client.PATCH(
             "/users/password/reset",
             {
               params: {
@@ -68,7 +72,7 @@ export function ChangePasswordForm() {
             // If the response is valid navigate to the project list page and notify the user with a success toast message
           } else if (response.status === 200) {
             actions.resetForm();
-            navigate(-1);
+            redirect();
             toast({
               title: "Password Changed Successfully",
               description: "Your password has been successfully changed.",
@@ -119,11 +123,7 @@ export function ChangePasswordForm() {
             )}
 
             <Stack spacing={4} direction="row" align="center">
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                onClick={() => navigate("/projectlist")}
-              >
+              <Button colorScheme="teal" variant="solid" onClick={redirect}>
                 Cancel
               </Button>
 
