@@ -333,9 +333,10 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
             />
           </HStack>
           <TableContainer>
-            <Table variant="simple">
+            <Table variant="striped">
               <Thead>
                 <Tr>
+                  <Th>Type</Th>
                   <Th>Title</Th>
                   <Th>Status</Th>
                   <Th>Priority</Th>
@@ -347,7 +348,8 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
               <Tbody>
                 {sprint.milestones?.map((milestone: Milestone) => (
                   <Tr key={milestone.id}>
-                    <Td>{truncateString(milestone.name, 80)}</Td>
+                    <Td>Milestone</Td>
+                    <Td w={"50%"} whiteSpace={"normal"} wordBreak={"break-word"}>{truncateString(milestone.name, 50)}</Td>
                     <Td>{milestone.status}</Td>
                     <Td></Td>
                     <Td></Td>
@@ -372,7 +374,8 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                 {sprint.tasks?.map((task: Task) => (
                   <>
                     <Tr key={task.id}>
-                      <Td ><Wrap>{truncateString(task.name, 80)}</Wrap></Td>
+                      <Td>Task</Td>
+                      <Td w={"50%"} whiteSpace={"normal"} wordBreak={"break-word"}><Wrap>{truncateString(task.name, 50)}</Wrap></Td>
                       <Td>{task.status}</Td>
                       <Td>{task.priority}</Td>
                       <Td>{
@@ -398,26 +401,26 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                       </Td>
                     </Tr>
                     <Tr key={task.id}>
-                    <Td ><Wrap>{truncateString(task.qaTask.name, 80)}</Wrap></Td>
-                    <Td>{task.qaTask.status}</Td>
-                    <Td>{task.qaTask.priority}</Td>
-                    <Td>{
-                      <Tooltip label={task.qaTask.assignedTo}>
-                        <Avatar name={task.qaTask.assignedTo}/>
-                      </Tooltip>
-                      }</Td>
-                    <Td>{new Date(task.qaTask.dueDate).toDateString()}</Td>
-                    <Td>
-                    </Td>
-                  </Tr>
-                </>
+                      <Td>QA Task</Td>
+                      <Td w={"30%"} whiteSpace={"normal"} wordBreak={"break-word"}><Wrap>{truncateString(task.qaTask.name, 50)}</Wrap></Td>
+                      <Td>{task.qaTask.status}</Td>
+                      <Td>{task.qaTask.priority}</Td>
+                      <Td>{
+                        <Tooltip label={task.qaTask.assignedTo}>
+                          <Avatar name={task.qaTask.assignedTo}/>
+                        </Tooltip>
+                        }</Td>
+                      <Td>{new Date(task.qaTask.dueDate).toDateString()}</Td>
+                      <Td></Td>
+                    </Tr>
+                  </>
                 ))}
               </Tbody>
             </Table>
           </TableContainer>
 
           <Menu>           
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            <MenuButton as={Button} colorScheme="teal" rightIcon={<ChevronDownIcon />}>
               <Text>Add Milestone/Task</Text>
             </MenuButton>
             <MenuList>
