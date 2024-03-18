@@ -370,32 +370,47 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                   </Tr>
                 ))}
                 {sprint.tasks?.map((task: Task) => (
-                  <Tr key={task.id}>
-                    <Td ><Wrap>{truncateString(task.name, 80)}</Wrap></Td>
-                    <Td>{task.status}</Td>
-                    <Td>{task.priority}</Td>
+                  <>
+                    <Tr key={task.id}>
+                      <Td ><Wrap>{truncateString(task.name, 80)}</Wrap></Td>
+                      <Td>{task.status}</Td>
+                      <Td>{task.priority}</Td>
+                      <Td>{
+                        <Tooltip label={task.assignedTo}>
+                          <Avatar name={task.assignedTo}/>
+                        </Tooltip>
+                        }</Td>
+                      <Td>{new Date(task.dueDate).toDateString()}</Td>
+                      <Td>
+                        <IconButton
+                        colorScheme="red"
+                        _hover={{
+                            background: "white",
+                            color: "red.700",
+                        }}
+                        aria-label="Remove Task"
+                        size="lg"
+                        fontSize={32}
+                        variant='ghost'
+                        icon={<FaWindowClose />}
+                        onClick={() => {removeTask(task)}}
+                        />
+                      </Td>
+                    </Tr>
+                    <Tr key={task.id}>
+                    <Td ><Wrap>{truncateString(task.qaTask.name, 80)}</Wrap></Td>
+                    <Td>{task.qaTask.status}</Td>
+                    <Td>{task.qaTask.priority}</Td>
                     <Td>{
-                      <Tooltip label={task.assignedTo}>
-                        <Avatar name={task.assignedTo}/>
+                      <Tooltip label={task.qaTask.assignedTo}>
+                        <Avatar name={task.qaTask.assignedTo}/>
                       </Tooltip>
                       }</Td>
-                    <Td>{new Date(task.dueDate).toDateString()}</Td>
+                    <Td>{new Date(task.qaTask.dueDate).toDateString()}</Td>
                     <Td>
-                      <IconButton
-                      colorScheme="red"
-                      _hover={{
-                          background: "white",
-                          color: "red.700",
-                      }}
-                      aria-label="Remove Task"
-                      size="lg"
-                      fontSize={32}
-                      variant='ghost'
-                      icon={<FaWindowClose />}
-                      onClick={() => {removeTask(task)}}
-                      />
                     </Td>
                   </Tr>
+                </>
                 ))}
               </Tbody>
             </Table>
