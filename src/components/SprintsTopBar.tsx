@@ -11,7 +11,7 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd, IoMdSettings } from "react-icons/io";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import { useContext } from "react";
 
@@ -40,6 +40,19 @@ export function SprintsTopBar({ onLogout }: ProjectListTopBarProps) {
           size="lg"
           icon={<IoMdAdd />}
           onClick={() => navigate("/addsprint")}
+        />
+        <IconButton
+          colorScheme="teal"
+          _hover={{
+              background: "white",
+              color: "teal.700",
+          }}
+          aria-label="Settings"
+          size="lg"
+          fontSize={55}
+          variant='ghost'
+          icon={<IoMdSettings />}
+          onClick={() => navigate("/settings", {state: {location: "/sprintslist"}})}
         />
         <Menu>
           <MenuButton

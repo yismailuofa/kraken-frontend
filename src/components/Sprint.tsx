@@ -319,7 +319,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                       {}
                     </Box>
                     <Box w="10vw">
-                        {(new Date(milestone.dueDate).getFullYear().toString()) + "-" + (new Date(milestone.dueDate).getMonth().toString()) + "-" + (new Date(milestone.dueDate).getDate().toString())}
+                        {new Date(milestone.dueDate).toDateString()}
                     </Box>
                   </HStack>
                 </MenuItem>
@@ -342,7 +342,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                       {task.priority}
                     </Box>
                     <Box w="10vw">
-                        {(new Date(task.dueDate).getFullYear().toString()) + "-" + (new Date(task.dueDate).getMonth().toString()) + "-" + (new Date(task.dueDate).getDate().toString())}
+                        {new Date(task.dueDate).toDateString()}
                     </Box>
                   </HStack>
                 </MenuItem>
