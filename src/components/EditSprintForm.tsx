@@ -2,45 +2,55 @@ import { VStack, Stack, Heading, Button, Box, useToast } from "@chakra-ui/react"
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 import { useContext } from "react";
-import { ApiContext, MaybeProject } from "../contexts/ApiContext";
+import { ApiContext, MaybeProject, Sprint } from "../contexts/ApiContext";
 import { DateRangeChooser } from "./DateRangeChooser";
 
-interface AddSprintProps {
+interface EditSprintProps {
   onProjectUpdated: (project: MaybeProject) => void;
 }
 
-export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
+export function EditSprintForm({onProjectUpdated}: EditSprintProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
   const toast = useToast();
-  const defaultStartDate = new Date();
-  let defaultEndDate = new Date();
-  defaultEndDate.setDate(defaultEndDate.getDate() + 6);
+
+  if (!location) {
+    navigate("/sprintslist")
+    return null;
+  }
 
   if (!project) {
     navigate("/projectlist");
     return null;
   }
 
+  const currentSprint = location.state.sprint;
+
   return (
     <Box>
       <Formik
         initialValues={{
-            sprintName: "",
-            description: "",
-            startDate: defaultStartDate.toISOString(),
-            endDate: defaultEndDate.toISOString(),
+            sprintName: currentSprint.name,
+            description: currentSprint.description,
+            startDate: (new Date(currentSprint.startDate)).toISOString(),
+            endDate: (new Date(currentSprint.endDate)).toISOString(),
         }}
         validationSchema={Yup.object({
           sprintName: Yup.string().required("Sprint name required"),
         })}
         onSubmit={async (values, actions) => {
-          // Make a request to add the sprint in the database
-          const { data, error, response } = await client.POST("/sprints/", {
+          // Make a request to update the sprint in the database
+          const { data, error, response } = await client.PATCH("/sprints/{id}", {
+            params: {
+              path: {
+                id: currentSprint.id
+              },
+            },
             body: {
               name: values.sprintName,
               description: values.description,
@@ -53,8 +63,8 @@ export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
           if (error) {
             console.log(error);
             toast({
-              title: "Create Sprint Failed",
-              description: error.detail?.toString() ? error.detail?.toString() : "There was an error creating the sprint.",
+              title: "Update Sprint Failed",
+              description: error.detail?.toString() ? error.detail?.toString() : "There was an error updating the sprint.",
               status: "error",
               duration: 8000,
               isClosable: true,
@@ -74,10 +84,11 @@ export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
             if (data) {
               onProjectUpdated(data); // Update the project context
             }
+            
             navigate("/sprintslist");
             toast({
-              title: "Sprint Successfully Created",
-              description: "Your sprint has been successfully created.",
+              title: "Sprint Successfully Updated",
+              description: "Your sprint has been successfully updated.",
               status: "success",
               duration: 8000,
               isClosable: true,
@@ -96,7 +107,7 @@ export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
               h="100vh"
               justifyContent="center"
             >
-              <Heading>Create Sprint</Heading>
+              <Heading>Edit Sprint</Heading>
 
               <TextField
                 id="sprintName"
@@ -119,8 +130,8 @@ export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
                 id="date"
                 name="date"
                 label="Start Date - End Date"
-                initStartDate={defaultStartDate}
-                initEndDate={defaultEndDate}
+                initStartDate={currentSprint.startDate}
+                initEndDate={currentSprint.endDate}
                 selectedStartDateString={formik.values.startDate}
                 selectedEndDateString={formik.values.startDate}
                 setSelectedStartDateString={(startDate: any) => formik.setFieldValue("startDate", startDate)}
@@ -137,7 +148,7 @@ export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
                 </Button>
 
                 <Button type="submit" colorScheme="teal" variant="solid">
-                  Create
+                  Save
                 </Button>
               </Stack>
             </VStack>

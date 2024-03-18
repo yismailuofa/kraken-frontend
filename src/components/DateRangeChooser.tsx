@@ -3,11 +3,8 @@ import { Box, HStack, Text, border, Button, FormLabel, Center } from "@chakra-ui
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export function DateRangeChooser({ label, setSelectedStartDateString, setSelectedEndDateString, ...props }: any){
-  let initEndDate = new Date();
-  initEndDate.setDate(initEndDate.getDate() + 6);
-
-  const [startDate, setStartDate] = useState(new Date());
+export function DateRangeChooser({ label, initStartDate, initEndDate, setSelectedStartDateString, setSelectedEndDateString, ...props }: any){
+  const [startDate, setStartDate] = useState(initStartDate);
   const [endDate, setEndDate] = useState(initEndDate);
   const onChange = (dates: any) => {
     const [start, end] = dates;
@@ -30,7 +27,7 @@ export function DateRangeChooser({ label, setSelectedStartDateString, setSelecte
       <DatePicker
       selected={startDate}
       onChange={onChange}
-      minDate={new Date()}
+      minDate={initStartDate}
       startDate={startDate}
       endDate={endDate}
       selectsRange

@@ -1,7 +1,7 @@
 import { Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast, Avatar, Tooltip, Heading, Wrap } from "@chakra-ui/react";
 import { useContext } from "react";
 import { components } from "../client/api";
-import { FaWindowClose } from "react-icons/fa";
+import { FaEdit, FaWindowClose } from "react-icons/fa";
 import { DeleteSprintModal } from "./DeleteSprintModal";
 import { ApiContext } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
@@ -202,13 +202,13 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
           </Box>
           <Spacer />
           <Box mr={3}>
-            {(new Date(sprint.startDate).getFullYear().toString()) + "-" + (new Date(sprint.startDate).getMonth().toString()) + "-" + (new Date(sprint.startDate).getDate().toString())}
+            {new Date(sprint.startDate).toDateString()}
           </Box>
           <Box mr={3}>
             ---
           </Box>
           <Box mr={10}>
-          {(new Date(sprint.endDate).getFullYear().toString()) + "-" + (new Date(sprint.endDate).getMonth().toString()) + "-" + (new Date(sprint.endDate).getDate().toString())}
+          {new Date(sprint.endDate).toDateString()}
           </Box>
           <AccordionIcon />
       </AccordionButton>
@@ -227,12 +227,25 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                   background: "white",
                   color: "red.700",
               }}
-              aria-label="Settings"
+              aria-label="Delete Sprint"
               size="lg"
               fontSize={32}
               variant='ghost'
               icon={<FaWindowClose />}
               onClick={onOpenDeleteSprintModal}
+            />
+            <IconButton
+              colorScheme="teal"
+              _hover={{
+                  background: "white",
+                  color: "teal.700",
+              }}
+              aria-label="Edit Sprint"
+              size="lg"
+              fontSize={32}
+              variant='ghost'
+              icon={<FaEdit />}
+              onClick={() => navigate("/editsprint", {state: {sprint: sprint}})}
             />
           </HStack>
           <TableContainer>
@@ -253,7 +266,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                     <Td>{milestone.status}</Td>
                     <Td></Td>
                     <Td></Td>
-                    <Td>{(new Date(milestone.dueDate).getFullYear().toString()) + "-" + (new Date(milestone.dueDate).getMonth().toString()) + "-" + (new Date(milestone.dueDate).getDate().toString())}</Td>
+                    <Td>{new Date(milestone.dueDate).toDateString()}</Td>
                   </Tr>
                 ))}
                 {sprint.tasks?.map((task: Task) => (
@@ -266,7 +279,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
                         <Avatar name={task.assignedTo}/>
                       </Tooltip>
                       }</Td>
-                    <Td>{(new Date(task.dueDate).getFullYear().toString()) + "-" + (new Date(task.dueDate).getMonth().toString()) + "-" + (new Date(task.dueDate).getDate().toString())}</Td>
+                    <Td>{new Date(task.dueDate).toDateString()}</Td>
                   </Tr>
                 ))}
               </Tbody>
