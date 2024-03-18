@@ -1,4 +1,12 @@
-import { VStack, Stack, Heading, Button, useToast, Box, Text } from "@chakra-ui/react";
+import {
+  VStack,
+  Stack,
+  Heading,
+  Button,
+  useToast,
+  Box,
+  Text,
+} from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -8,7 +16,7 @@ import { ApiContext } from "../contexts/ApiContext";
 
 export function ChangePasswordForm() {
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const navigate = useNavigate();
   const toast = useToast();
   const client = useContext(ApiContext).client;
@@ -21,27 +29,30 @@ export function ChangePasswordForm() {
     <Formik
       initialValues={{
         password: "",
-        passwordConfirmation: ""
+        passwordConfirmation: "",
       }}
       validationSchema={Yup.object({
         password: Yup.string()
-        .required("Password required")
-        .min(8, "Password must be at least 8 characters"),
+          .required("Password required")
+          .min(8, "Password must be at least 8 characters"),
         passwordConfirmation: Yup.string()
-        .required("Password verification required")
-        .min(8, "Password must be at least 8 characters"),
+          .required("Password verification required")
+          .min(8, "Password must be at least 8 characters"),
       })}
       onSubmit={async (values, actions) => {
         // Only submit the request if the new password matches the confirmed password
         if (values.password === values.passwordConfirmation) {
           // Make a request to change user's password
-          const { data, error, response } = await client.PATCH("/users/password/reset", {
-            params: {
-              query: {
-                newPassword: values.password
+          const { data, error, response } = await client.PATCH(
+            "/users/password/reset",
+            {
+              params: {
+                query: {
+                  newPassword: values.password,
+                },
               },
-            },
-          });
+            }
+          );
 
           // If there is an error changing the password notify the user with a toast message
           if (error) {
@@ -54,10 +65,10 @@ export function ChangePasswordForm() {
               isClosable: true,
               position: "top",
             });
-          // If the response is valid navigate to the project list page and notify the user with a success toast message
+            // If the response is valid navigate to the project list page and notify the user with a success toast message
           } else if (response.status === 200) {
             actions.resetForm();
-            navigate("/projectlist");
+            navigate(-1);
             toast({
               title: "Password Changed Successfully",
               description: "Your password has been successfully changed.",
@@ -72,7 +83,6 @@ export function ChangePasswordForm() {
         } else {
           displayErrorMessage();
         }
-        
       }}
     >
       {(formik) => (
