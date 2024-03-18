@@ -9,9 +9,10 @@ interface DateChooserProps {
   selectedDateString: string;
   setSelectedDateString: (date: string) => void;
   startDate: Date;
+  label?: string;
 }
 
-export function DateChooser({ id, name, selectedDateString, setSelectedDateString, startDate }: DateChooserProps){
+export function DateChooser({ id, name, selectedDateString, setSelectedDateString, startDate, label="Due Date:" }: DateChooserProps){
   const [selectedDate, setSelectedDate] = useState(startDate);
 
   function updateSelectedDate(date: Date | null) {
@@ -23,8 +24,10 @@ export function DateChooser({ id, name, selectedDateString, setSelectedDateStrin
 
   return (
     <HStack justifyContent="flex-start" width="100%" alignItems="center">    
-      <FormLabel> Due Date: </FormLabel>
-      <DatePicker selected={selectedDate} onChange={(date) => updateSelectedDate(date)} className="custom-datepicker"/>
+      <FormLabel minW={20}>{label}</FormLabel>
+      <Box borderWidth='1px' p={3}>
+        <DatePicker selected={selectedDate} onChange={(date) => updateSelectedDate(date)} className="custom-datepicker"/>
+      </Box>
     </HStack>
   );
 };
