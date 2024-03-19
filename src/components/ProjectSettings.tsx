@@ -164,7 +164,7 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
         <Spacer />
 
         <Stack w="100vw" direction='row' spacing={4} align='center' mt={10} mb={10}>
-        <Button colorScheme='teal' variant='solid' ml={10} onClick={() => navigate(state ? state.location : "/kanban")}>
+        <Button colorScheme='teal' variant='solid' ml={10} onClick={() => navigate(state ? state.location : -1)}>
           Back
         </Button>
         <Spacer />

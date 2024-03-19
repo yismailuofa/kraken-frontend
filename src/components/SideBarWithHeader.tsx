@@ -193,7 +193,7 @@ export const MobileNav = ({ onOpen, onLogout, headerButtons, pageTitle, ...rest 
             fontSize={55}
             variant='ghost'
             icon={<IoMdSettings />}
-            onClick={() => navigate("/settings", {state: {location: "/sprintslist"}})}
+            onClick={() => navigate("/settings")}
           />
           <Menu>
             <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>

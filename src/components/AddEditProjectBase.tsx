@@ -59,7 +59,7 @@ export function AddEditProjectBase({onSubmitForm, title, posButton, originPage}:
                 <Button
                   colorScheme="teal"
                   variant="solid"
-                  onClick={() => navigate(originPage)}
+                  onClick={() => navigate(originPage, {state: {location: "/kanban"}})}
                 >
                   Cancel
                 </Button>
