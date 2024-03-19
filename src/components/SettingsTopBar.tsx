@@ -3,12 +3,13 @@ import {
   Flex,
   Spacer,
   HStack,
-  IconButton,
   Menu,
   MenuItem,
   MenuButton,
   MenuList,
   Avatar,
+  MenuDivider,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";
@@ -22,31 +23,45 @@ export function SettingsTopBar({ onLogout }: ProjectSettingsTopBarProps) {
   const navigate = useNavigate();
   const { client, user } = useContext(ApiContext);
 
+  const backgroundColor = useColorModeValue('white', 'gray.900');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+
   if (!user) {
     navigate("/login");
     return null;
   }
 
   return (
-    <Flex as="nav" p="20px" h="12vh" alignItems="center" borderBottom="1px" borderBottomColor={'gray.200'}>
-      <Heading as="h1">Settings</Heading>
+    <Flex
+      px={{ base: 4, md: 4 }}
+      height="20"
+      alignItems="center"
+      bg={backgroundColor}
+      borderBottomWidth="1px"
+      borderBottomColor={borderColor}
+    >
+
+      <Heading alignContent={"left"} as="h1" ml={3}>Settings</Heading>
+
       <Spacer />
 
-      <HStack spacing="20px" alignItems="right">
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<Avatar name={user.username} />}
-            variant="nooutline"
-          />
-          <MenuList>
-            <MenuItem onClick={() => navigate("/changepassword")}>
-              Change Password
-            </MenuItem>
-            <MenuItem onClick={() => onLogout(null)}>Logout</MenuItem>
-          </MenuList>
-        </Menu>
+      <HStack spacing={{ base: '0', md: '6' }} mr={3}>
+        <Flex alignItems={'center'}>
+          <Menu>
+            <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
+              <HStack>
+                <Avatar name={user.username}/>  
+              </HStack>
+            </MenuButton>
+            <MenuList
+              bg={backgroundColor}
+              borderColor={borderColor}>
+              <MenuItem onClick={() => navigate("/changepassword")}>Change Password</MenuItem>
+              <MenuDivider />
+              <MenuItem onClick={() => onLogout(null)}>Logout</MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
       </HStack>
     </Flex>
   );
