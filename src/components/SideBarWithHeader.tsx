@@ -62,6 +62,7 @@ interface MobileProps extends FlexProps {
   onOpen: () => void
   onLogout: (user: MaybeUser) => void;
   headerButtons: React.ReactNode;
+  pageTitle: string;
 }
 
 interface SidebarProps extends BoxProps {
@@ -142,7 +143,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   )
 }
 
-export const MobileNav = ({ onOpen, onLogout, headerButtons, ...rest }: MobileProps) => {
+export const MobileNav = ({ onOpen, onLogout, headerButtons, pageTitle, ...rest }: MobileProps) => {
   const navigate = useNavigate();
   const { user } = useContext(ApiContext);
 
@@ -173,7 +174,7 @@ export const MobileNav = ({ onOpen, onLogout, headerButtons, ...rest }: MobilePr
         icon={<FiMenu />}
       />
 
-      <Heading alignContent={"left"} as="h1" ml={3}>Sprints</Heading>
+      <Heading alignContent={"left"} as="h1" ml={3}>{pageTitle}</Heading>
 
       <Spacer />
 
@@ -218,9 +219,10 @@ interface LayoutProps {
     content: React.ReactNode;
     onLogout: (user: MaybeUser) => void;
     headerButtons: React.ReactNode;
+    pageTitle: string;
   }
 
-const SidebarWithHeader = ({content, onLogout, headerButtons}: LayoutProps) => {
+const SidebarWithHeader = ({content, onLogout, headerButtons, pageTitle}: LayoutProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -238,7 +240,7 @@ const SidebarWithHeader = ({content, onLogout, headerButtons}: LayoutProps) => {
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav onOpen={onOpen} onLogout={onLogout} headerButtons={headerButtons}/>
+      <MobileNav onOpen={onOpen} onLogout={onLogout} headerButtons={headerButtons} pageTitle={pageTitle}/>
       <Box ml={{ base: 0, md: 60 }} p="4">
         {/* Content */}
         {content}

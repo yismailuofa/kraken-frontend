@@ -72,6 +72,7 @@ export function SprintsList({onLogout, onProjectUpdated}: SprintsListProps) {
             onClick={() => navigate("/addsprint")}
           />
         }
+        pageTitle="Sprints"
     />
     </>
   );
