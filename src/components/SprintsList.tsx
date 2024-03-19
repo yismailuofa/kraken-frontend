@@ -1,10 +1,10 @@
-import { Box, Button, Accordion, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Text, HStack } from "@chakra-ui/react";
+import { Box, Button, Accordion, HStack, IconButton } from "@chakra-ui/react";
 import { useContext } from "react";
 import { ApiContext, MaybeProject, MaybeUser } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
-import { SideNavBar } from "./SideNavBar";
-import { SprintsTopBar } from "./SprintsTopBar";
 import { Sprint } from "./Sprint";
+import SidebarWithHeader from "./SideBarWithHeader";
+import { IoMdAdd } from "react-icons/io";
 
 
 interface SprintsListProps {
@@ -12,8 +12,12 @@ interface SprintsListProps {
   onProjectUpdated: (project: MaybeProject) => void;
 }
 
-export function SprintsList({onLogout, onProjectUpdated}: SprintsListProps) {
-  const client = useContext(ApiContext).client;
+interface SprintPageContentProps {
+  onProjectUpdated: (project: MaybeProject) => void;
+}
+
+
+function SprintPageContent({onProjectUpdated}: SprintPageContentProps) {
   const project = useContext(ApiContext).project;
   const navigate = useNavigate();
 
@@ -27,9 +31,7 @@ export function SprintsList({onLogout, onProjectUpdated}: SprintsListProps) {
 
   return (
     <Box>
-        <SprintsTopBar onLogout={onLogout}/>
         <HStack>
-        <SideNavBar />
         <Box h="100vh" w="80vw" mt={10} alignContent={"top"}>
           <Accordion defaultIndex={[0]} allowMultiple={true}>
             {sprints?.map((sprint) => (
@@ -43,5 +45,34 @@ export function SprintsList({onLogout, onProjectUpdated}: SprintsListProps) {
         </Box>
         </HStack>
     </Box>
+  );
+}
+
+export function SprintsList({onLogout, onProjectUpdated}: SprintsListProps) {
+  const project = useContext(ApiContext).project;
+  const navigate = useNavigate();
+
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
+
+  return (
+    <>
+    <SidebarWithHeader
+        onLogout={onLogout}
+        content={<SprintPageContent onProjectUpdated={onProjectUpdated}></SprintPageContent>}
+        headerButtons={
+          <IconButton
+            mr={5}
+            colorScheme="teal"
+            aria-label="Add Sprint"
+            size="lg"
+            icon={<IoMdAdd />}
+            onClick={() => navigate("/addsprint")}
+          />
+        }
+    />
+    </>
   );
 }

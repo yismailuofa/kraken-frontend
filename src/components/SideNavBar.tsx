@@ -40,7 +40,7 @@ export function SideNavBar() {
       h="100vh"
       w="60"
       mr="10"
-      bg={useColorModeValue("gray.100", "gray.900")}
+      bg={useColorModeValue("white.100", "white.900")}
     >
       <SidebarContent
         onClose={() => onClose}
@@ -81,7 +81,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
       w={{ base: "full", md: 60 }}
       pos="fixed"
-      h="full"
+      h="80%"
       {...rest}
     >
       {LinkItems.map((link) => (
