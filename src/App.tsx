@@ -102,7 +102,7 @@ export const App = () => {
                       />
                     }
                   />
-                  <Route path="/dependencies" element={<Dependencies />} />
+                  <Route path="/dependencies" element={<Dependencies onLogout={onClientChange}/>} />
                   <Route path="/addtask" element={<AddTaskForm />} />
                   <Route path="/addmilestone" element={<AddMilestoneForm />} />
                   <Route

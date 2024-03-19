@@ -11,6 +11,7 @@ import {
   Avatar,
   useDisclosure,
   useColorModeValue,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
@@ -26,8 +27,11 @@ interface ProjectListTopBarProps {
 
 export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBarProps) {
   const navigate = useNavigate();
-  const { client, user } = useContext(ApiContext);
+  const { user } = useContext(ApiContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const backgroundColor = useColorModeValue('white', 'gray.900');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
 
   if (!user) {
     navigate("/login");
@@ -35,14 +39,25 @@ export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBar
   }
 
   return (
-    <Flex as="nav" p="20px" alignItems="center" borderBottom="1px" borderBottomColor={'gray.200'}>
-      <Heading as="h1">Projects</Heading>
-      <Spacer />
+    <Flex
+    px={{ base: 4, md: 4 }}
+    height="20"
+    alignItems="center"
+    bg={backgroundColor}
+    borderBottomWidth="1px"
+    borderBottomColor={borderColor}
+    >
+    
+    <JoinProjectModal isOpen={isOpen} onClose={onClose} fetchProjects={fetchProjects}></JoinProjectModal>
 
-      <JoinProjectModal isOpen={isOpen} onClose={onClose} fetchProjects={fetchProjects}></JoinProjectModal>
+    <Heading alignContent={"left"} as="h1" ml={3}>Projects</Heading>
 
-      <HStack spacing="20px" alignItems="right">
-        <IconButton
+    <Spacer />
+
+    <HStack spacing={{ base: '0', md: '6' }} mr={3}>
+      <Flex alignItems={'center'}>
+      <IconButton
+          mr={5}
           colorScheme="teal"
           aria-label="Add Project"
           size="lg"
@@ -50,6 +65,7 @@ export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBar
           onClick={() => navigate("/addproject")}
         />
         <IconButton
+          mr={5}
           colorScheme="teal"
           aria-label="Join Project"
           size="lg"
@@ -57,20 +73,21 @@ export function ProjectListTopBar({ onLogout, fetchProjects }: ProjectListTopBar
           onClick={onOpen}
         />
         <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<Avatar name={user.username} />}
-            variant="nooutline"
-          />
-          <MenuList>
-            <MenuItem onClick={() => navigate("/changepassword")}>
-              Change Password
-            </MenuItem>
+          <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
+            <HStack>
+              <Avatar name={user.username}/>  
+            </HStack>
+          </MenuButton>
+          <MenuList
+            bg={backgroundColor}
+            borderColor={borderColor}>
+            <MenuItem onClick={() => navigate("/changepassword")}>Change Password</MenuItem>
+            <MenuDivider />
             <MenuItem onClick={() => onLogout(null)}>Logout</MenuItem>
           </MenuList>
         </Menu>
-      </HStack>
-    </Flex>
+      </Flex>
+    </HStack>
+  </Flex>
   );
 }

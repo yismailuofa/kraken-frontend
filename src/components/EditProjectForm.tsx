@@ -48,7 +48,7 @@ export function EditProjectForm({onProjectUpdated}: EditProjectProps) {
     } else if (response.status === 200) {
       actions.resetForm();
       onProjectUpdated(data); // Update the project context
-      navigate("/settings");
+      navigate("/settings", {state: {location: "/kanban"}});
       toast({
         title: "Project Successfully Updated",
         description: "The project has been successfully updated.",

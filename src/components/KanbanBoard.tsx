@@ -6,26 +6,72 @@ import {
   Menu,
   MenuList,
   MenuItem,
-  HStack,
   Text,
   MenuButton,
+  IconButton,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { KanbanTopBar } from "./KanbanTopBar";
 import { KanbanColumnTask, KanbanColumnMilestone } from "./KanbanColumn";
 import { Task, Milestone } from "../contexts/ApiContext";
-import { SideNavBar } from "./SideNavBar";
+import SidebarWithHeader from "./SideBarWithHeader";
+import { IoMdAdd } from "react-icons/io";
 
 interface KanbanBoardProps {
   onLogout: (token: MaybeUser) => void;
   onProjectUpdated: (project: MaybeProject) => void;
 }
 
-export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
+interface KanbanBoardContentProps {
+  onProjectUpdated: (project: MaybeProject) => void;
+}
+
+export function KanbanBoard({onLogout, onProjectUpdated}: KanbanBoardProps) {
+  const { user, project } = useContext(ApiContext);
+  const navigate = useNavigate();
+
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
+
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
+
+  return (
+    <>
+    <SidebarWithHeader
+        onLogout={onLogout}
+        content={<KanbanBoardContent onProjectUpdated={onProjectUpdated}></KanbanBoardContent>}
+        headerButtons={
+          <Menu>
+            <MenuButton
+                mr={5}
+                as={IconButton}
+                colorScheme="teal"
+                size="lg"
+                aria-label='Options'
+                icon={<IoMdAdd />}
+                variant='solid'
+            />
+            <MenuList>
+                <MenuItem onClick={() => navigate("/addtask")}> Add Task </MenuItem>
+                <MenuItem onClick={() => navigate("/addmilestone")}> Add Milestone </MenuItem>
+            </MenuList>
+          </Menu>
+        }
+        pageTitle="Kanban"
+    />
+    </>
+  );
+}
+
+export function KanbanBoardContent({ onProjectUpdated }: KanbanBoardContentProps) {
   const [currentDisplay, setCurrentDisplay] = useState(1);
   const plannedTaskList: Task[] = [];
   const inProgressTaskList: Task[] = [];
@@ -372,9 +418,6 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <KanbanTopBar onLogout={onLogout} />
-      <HStack w="100vw">
-        <SideNavBar />
         <Box h="100vh" alignContent={"top"}>
           <Flex
             justifyContent={"center"}
@@ -455,7 +498,6 @@ export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
             />
           </Flex>
         </Box>
-      </HStack>
     </DragDropContext>
   );
 }

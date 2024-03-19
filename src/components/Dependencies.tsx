@@ -3,13 +3,39 @@ import { Alert, Box, Button, Container } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import CytoscapeComponent from "react-cytoscapejs";
 import { useContext, useEffect, useState } from "react";
-import { ApiContext } from "../contexts/ApiContext";
+import { ApiContext, MaybeUser } from "../contexts/ApiContext";
 import Cytoscape from "cytoscape";
 import dagre from "cytoscape-dagre";
+import SidebarWithHeader from "./SideBarWithHeader";
 
 Cytoscape.use(dagre);
 
-export const Dependencies = () => {
+interface DependenciesProps {
+  onLogout: (user: MaybeUser) => void;
+}
+
+export function Dependencies({onLogout}: DependenciesProps) {
+  const project = useContext(ApiContext).project;
+  const navigate = useNavigate();
+
+  if (!project) {
+    navigate("/projectlist");
+    return null;
+  }
+
+  return (
+    <>
+    <SidebarWithHeader
+        onLogout={onLogout}
+        content={<DependenciesContent />}
+        headerButtons={null}
+        pageTitle="Dependency Analysis"
+    />
+    </>
+  );
+}
+
+export const DependenciesContent = () => {
   const navigate = useNavigate();
   const { project } = useContext(ApiContext);
   const [elements, setElements] = useState<cytoscape.ElementDefinition[]>([]);
