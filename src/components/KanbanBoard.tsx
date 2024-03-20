@@ -29,7 +29,7 @@ interface KanbanBoardContentProps {
   onProjectUpdated: (project: MaybeProject) => void;
 }
 
-export function KanbanBoard({onLogout, onProjectUpdated}: KanbanBoardProps) {
+export function KanbanBoard({ onLogout, onProjectUpdated }: KanbanBoardProps) {
   const { user, project } = useContext(ApiContext);
   const navigate = useNavigate();
 
@@ -45,33 +45,45 @@ export function KanbanBoard({onLogout, onProjectUpdated}: KanbanBoardProps) {
 
   return (
     <>
-    <SidebarWithHeader
+      <SidebarWithHeader
         onLogout={onLogout}
-        content={<KanbanBoardContent onProjectUpdated={onProjectUpdated}></KanbanBoardContent>}
+        content={
+          <KanbanBoardContent
+            onProjectUpdated={onProjectUpdated}
+          ></KanbanBoardContent>
+        }
         headerButtons={
           <Menu>
             <MenuButton
-                mr={5}
-                as={IconButton}
-                colorScheme="teal"
-                size="lg"
-                aria-label='Options'
-                icon={<IoMdAdd />}
-                variant='solid'
+              mr={5}
+              as={IconButton}
+              colorScheme="teal"
+              size="lg"
+              aria-label="Options"
+              icon={<IoMdAdd />}
+              variant="solid"
             />
             <MenuList>
-                <MenuItem onClick={() => navigate("/addtask")}> Add Task </MenuItem>
-                <MenuItem onClick={() => navigate("/addmilestone")}> Add Milestone </MenuItem>
+              <MenuItem onClick={() => navigate("/addtask")}>
+                {" "}
+                Add Task{" "}
+              </MenuItem>
+              <MenuItem onClick={() => navigate("/addmilestone")}>
+                {" "}
+                Add Milestone{" "}
+              </MenuItem>
             </MenuList>
           </Menu>
         }
         pageTitle="Kanban"
-    />
+      />
     </>
   );
 }
 
-export function KanbanBoardContent({ onProjectUpdated }: KanbanBoardContentProps) {
+export function KanbanBoardContent({
+  onProjectUpdated,
+}: KanbanBoardContentProps) {
   const [currentDisplay, setCurrentDisplay] = useState(1);
   const plannedTaskList: Task[] = [];
   const inProgressTaskList: Task[] = [];
@@ -246,7 +258,7 @@ export function KanbanBoardContent({ onProjectUpdated }: KanbanBoardContentProps
     }
     if (textToChange && taskBlock && milestoneBlock && num === 2) {
       setCurrentDisplay(2);
-      textToChange.innerHTML = "Milstone";
+      textToChange.innerHTML = "Milestone";
       taskBlock.style.display = "none";
       milestoneBlock.style.display = "flex";
     }
@@ -418,86 +430,86 @@ export function KanbanBoardContent({ onProjectUpdated }: KanbanBoardContentProps
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-        <Box h="100vh" alignContent={"top"}>
-          <Flex
-            justifyContent={"center"}
-            paddingBottom={"10px"}
-            paddingTop={"10px"}
-          >
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <Text id="currentDisplayText">Task</Text>
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  onClick={() => {
-                    handleDisplayChange(1);
-                  }}
-                >
-                  Task
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleDisplayChange(2);
-                  }}
-                >
-                  Milestone
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
-          <Flex
-            justifyContent={"space-evenly"}
-            gap={20}
-            id="taskDisplay"
-            display={"flex"}
-          >
-            <KanbanColumnTask
-              name="To Do"
-              id={"t0"}
-              tasks={plannedTaskItems}
-              change={handleTaskDeletion}
-            />
-            <KanbanColumnTask
-              name="In Progress"
-              id={"t1"}
-              tasks={inProgressTaskItems}
-              change={handleTaskDeletion}
-            />
-            <KanbanColumnTask
-              name="Completed"
-              id={"t2"}
-              tasks={completedTaskItems}
-              change={handleTaskDeletion}
-            />
-          </Flex>
+      <Box h="100vh" alignContent={"top"}>
+        <Flex
+          justifyContent={"center"}
+          paddingBottom={"10px"}
+          paddingTop={"10px"}
+        >
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              <Text id="currentDisplayText">Task</Text>
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  handleDisplayChange(1);
+                }}
+              >
+                Task
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleDisplayChange(2);
+                }}
+              >
+                Milestone
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+        <Flex
+          justifyContent={"space-evenly"}
+          gap={20}
+          id="taskDisplay"
+          display={"flex"}
+        >
+          <KanbanColumnTask
+            name="To Do"
+            id={"t0"}
+            tasks={plannedTaskItems}
+            change={handleTaskDeletion}
+          />
+          <KanbanColumnTask
+            name="In Progress"
+            id={"t1"}
+            tasks={inProgressTaskItems}
+            change={handleTaskDeletion}
+          />
+          <KanbanColumnTask
+            name="Completed"
+            id={"t2"}
+            tasks={completedTaskItems}
+            change={handleTaskDeletion}
+          />
+        </Flex>
 
-          <Flex
-            justifyContent={"space-evenly"}
-            gap={20}
-            id="milestoneDisplay"
-            display={"none"}
-          >
-            <KanbanColumnMilestone
-              name="To Do"
-              id={"m0"}
-              milestones={plannedMilestoneItems}
-              change={handleMilestoneDeletion}
-            />
-            <KanbanColumnMilestone
-              name="In Progress"
-              id={"m1"}
-              milestones={inProgressMilestoneItems}
-              change={handleMilestoneDeletion}
-            />
-            <KanbanColumnMilestone
-              name="Completed"
-              id={"m2"}
-              milestones={completedMilestoneItems}
-              change={handleMilestoneDeletion}
-            />
-          </Flex>
-        </Box>
+        <Flex
+          justifyContent={"space-evenly"}
+          gap={20}
+          id="milestoneDisplay"
+          display={"none"}
+        >
+          <KanbanColumnMilestone
+            name="To Do"
+            id={"m0"}
+            milestones={plannedMilestoneItems}
+            change={handleMilestoneDeletion}
+          />
+          <KanbanColumnMilestone
+            name="In Progress"
+            id={"m1"}
+            milestones={inProgressMilestoneItems}
+            change={handleMilestoneDeletion}
+          />
+          <KanbanColumnMilestone
+            name="Completed"
+            id={"m2"}
+            milestones={completedMilestoneItems}
+            change={handleMilestoneDeletion}
+          />
+        </Flex>
+      </Box>
     </DragDropContext>
   );
 }

@@ -7,7 +7,8 @@ export type MaybeProject = components["schemas"]["ProjectView"] | null;
 export type Task = components["schemas"]["Task"];
 export type Milestone = components["schemas"]["Milestone"];
 export type Sprint = components["schemas"]["Sprint"];
-
+export type ProjectView = components["schemas"]["ProjectView"];
+export type Status = components["schemas"]["Status"];
 
 interface ApiContextProps {
   client: ReturnType<typeof createClientWithToken>;
