@@ -2,9 +2,12 @@ import {
   Alert,
   Box,
   Container,
+  FormControl,
+  FormLabel,
   List,
   ListIcon,
   ListItem,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +61,7 @@ interface DependenciesContentProps {
 export const DependenciesContent = ({ project }: DependenciesContentProps) => {
   const [elements, setElements] = useState<cytoscape.ElementDefinition[]>([]);
   const [cy, setCy] = useState<cytoscape.Core | null>(null);
+  const [showQaTasks, setShowQaTasks] = useState(false);
 
   useEffect(() => {
     if (!project) {
@@ -77,15 +81,24 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
         },
       });
 
-      // Add qa task node
-      elements.push({
-        data: {
-          id: task.id + "_qa",
-          label: "[QA] " + task.qaTask.name,
-          type: "qaTask",
-          status: task.qaTask.status,
-        },
-      });
+      if (showQaTasks) {
+        elements.push({
+          data: {
+            id: task.id + "_qa",
+            label: "[QA] " + task.qaTask.name,
+            type: "qaTask",
+            status: task.qaTask.status,
+          },
+        });
+
+        elements.push({
+          data: {
+            source: task.id,
+            target: task.id + "_qa",
+            type: "qaTask",
+          },
+        });
+      }
 
       // Add tasks and milestones this task depends on
       for (const dep of [
@@ -107,15 +120,6 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
           source: task.milestoneId,
           target: task.id,
           type: "milestone",
-        },
-      });
-
-      // Add the qa task dependency
-      elements.push({
-        data: {
-          source: task.id,
-          target: task.id + "_qa",
-          type: "qaTask",
         },
       });
     }
@@ -147,7 +151,7 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
     }
 
     setElements(elements);
-  }, [project]);
+  }, [project, showQaTasks]);
 
   useEffect(() => {
     if (cy) {
@@ -212,8 +216,21 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
   }
 
   return (
-    <Container maxW="container.xl" p={2}>
-      <Box p={4} borderWidth="4px" borderRadius="sm">
+    <Container maxW="container.xl">
+      <Box mb={2}>
+        <FormControl display="flex" alignItems="center">
+          <FormLabel htmlFor="qa-toggle" mb="0">
+            Toggle QA Tasks
+          </FormLabel>
+          <Switch
+            id="qa-toggle"
+            colorScheme="teal"
+            onChange={() => setShowQaTasks(!showQaTasks)}
+            isChecked={showQaTasks}
+          />
+        </FormControl>
+      </Box>
+      <Box px={4} borderWidth="4px" borderRadius="sm">
         <CytoscapeComponent
           elements={elements}
           style={{ width: "100%", height: "70vh" }}
