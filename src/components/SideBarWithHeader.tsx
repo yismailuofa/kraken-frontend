@@ -72,7 +72,7 @@ interface SidebarProps extends BoxProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: "Kanban", icon: BsKanban, page: "/kanban" },
   { name: "Sprints", icon: GrCycle, page: "/sprintslist" },
-  { name: "Timeline", icon: MdTimeline, page: "/projectlist" }, // TODO: update the page route when the backlog page is created
+  { name: "Timeline", icon: MdTimeline, page: "/timeline" }, // TODO: update the page route when the backlog page is created
   { name: "Dependencies", icon: CgArrowLongRightC, page: "/dependencies" },
   { name: "Projects", icon: BsFillGrid3X3GapFill, page: "/projectlist" },
 ]
@@ -93,8 +93,7 @@ export const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" w="100%">
           <Center w="100%">
-            <Text mr={3}>Kraken</Text> 
-            <SiOctopusdeploy size={32}/>
+            <Text mr={3}>Kraken 🐙</Text>
           </Center>
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />

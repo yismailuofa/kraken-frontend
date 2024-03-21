@@ -20,12 +20,8 @@ export function Home() {
       justifyContent="center"
       spacing={10}
     >
-      <Stack align="center">
-        <Stack spacing={4} direction="row" align="center">
-          <Heading fontSize={128}>Kraken</Heading>
-          <SiOctopusdeploy size={128} />
-        </Stack>
-
+      <Stack w="100vw" align="center">
+        <Heading fontSize={128}>Kraken 🐙</Heading>
         <Text fontSize={32}>Get Crackin'</Text>
       </Stack>
 

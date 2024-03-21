@@ -25,6 +25,7 @@ import { Dependencies } from "./components/Dependencies";
 import { SprintsList } from "./components/SprintsList";
 import { AddSprintForm } from "./components/AddSprintForm";
 import { EditSprintForm } from "./components/EditSprintForm";
+import { TimelinePage } from "./components/TimelinePage";
 
 export const App = () => {
   const [client, setClient] = React.useState(createClientWithToken(null));
@@ -118,6 +119,7 @@ export const App = () => {
                   <Route path="/sprintslist" element={<SprintsList onLogout={onClientChange} onProjectUpdated={onProjectChange}/>} />
                   <Route path="/addsprint" element={<AddSprintForm onProjectUpdated={onProjectChange}/>} />
                   <Route path="/editsprint" element={<EditSprintForm onProjectUpdated={onProjectChange}/>} />
+                  <Route path="/timeline" element={<TimelinePage onLogout={onClientChange}/>} />
                 </Routes>
               </ProtectedRoute>
             }
