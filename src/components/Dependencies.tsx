@@ -289,7 +289,7 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
 
     setElements(elements);
 
-    setCompleteness(completedTasks / tasks);
+    setCompleteness(tasks === 0 ? 1 : completedTasks / tasks);
   }, [project, showQaTasks, filter]);
 
   useEffect(() => {
