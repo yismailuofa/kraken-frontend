@@ -259,6 +259,11 @@ export interface components {
        * @default []
        */
       tasks?: string[];
+      /**
+       * Createdat
+       * Format: date-time
+       */
+      createdAt?: string;
     };
     /**
      * Priority
@@ -276,7 +281,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-17T15:44:56
+       * @default 2024-03-20T23:10:28
        */
       createdAt?: string;
     };
@@ -291,7 +296,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-17T15:44:56
+       * @default 2024-03-20T23:10:28
        */
       createdAt?: string;
       /**
@@ -417,7 +422,6 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-17T15:44:56
        */
       createdAt?: string;
     };
