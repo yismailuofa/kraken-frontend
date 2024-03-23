@@ -10,6 +10,9 @@ import {
   MenuButton,
   IconButton,
   Spacer,
+  FormLabel,
+  HStack,
+  VStack
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
@@ -96,18 +99,13 @@ export function KanbanBoardContent({
   const [completedTaskItems, setCompletedTaskItems] =
     useState<Task[]>([]);
 
-  const plannedMilestoneList: Milestone[] = [];
-  const inProgressMilestoneList: Milestone[] = [];
-  const completedMilestoneList: Milestone[] = [];
+  const [plannedMilestoneList, setPlannedMilestoneList] = useState<Milestone[]>([]);
+  const [inProgressMilestoneList, setInProgressMilestoneList]= useState<Milestone[]>([]);
+  const [completedMilestoneList, setCompletedMilestoneList] = useState<Milestone[]>([]);
 
-  const [plannedMilestoneItems, setPlannedMilestoneItems] =
-    useState(plannedMilestoneList);
-  const [inProgressMilestoneItems, setInProgressMilestoneItems] = useState(
-    inProgressMilestoneList
-  );
-  const [completedMilestoneItems, setCompletedMilestoneItems] = useState(
-    completedMilestoneList
-  );
+  const [plannedMilestoneItems, setPlannedMilestoneItems] = useState<Milestone[]>([]);
+  const [inProgressMilestoneItems, setInProgressMilestoneItems] = useState<Milestone[]>([]);
+  const [completedMilestoneItems, setCompletedMilestoneItems] = useState<Milestone[]>([]);
 
   const { client, project } = useContext(ApiContext);
   const navigate = useNavigate();
@@ -153,6 +151,10 @@ export function KanbanBoardContent({
         (milestone) => milestone.status === "Completed"
       );
 
+      setPlannedMilestoneList(temp_planned);
+      setInProgressMilestoneList(temp_started);
+      setCompletedMilestoneList(temp_completed);
+
       setPlannedMilestoneItems(temp_planned);
       setInProgressMilestoneItems(temp_started);
       setCompletedMilestoneItems(temp_completed);
@@ -197,12 +199,15 @@ export function KanbanBoardContent({
 
   const updateMilestoneList = (id: string, list: Milestone[]) => {
     if (id === "m0") {
+      setPlannedMilestoneList([...list]);
       setPlannedMilestoneItems([...list]);
     }
     if (id === "m1") {
+      setInProgressMilestoneList([...list]);
       setInProgressMilestoneItems([...list]);
     }
     if (id === "m2") {
+      setCompletedMilestoneList([...list]);
       setCompletedMilestoneItems([...list]);
     }
   };
@@ -257,18 +262,21 @@ export function KanbanBoardContent({
     let textToChange = document.getElementById("currentDisplayText");
     let taskBlock = document.getElementById("taskDisplay");
     let milestoneBlock = document.getElementById("milestoneDisplay");
+    let priorityFilter = document.getElementById("priorityFilter");
 
-    if (textToChange && taskBlock && milestoneBlock && num === 1) {
+    if (textToChange && taskBlock && milestoneBlock && priorityFilter && num === 1) {
       setCurrentDisplay(1);
       textToChange.innerHTML = "Task";
       taskBlock.style.display = "flex";
       milestoneBlock.style.display = "none";
+      priorityFilter.style.display = "inline-block";
     }
-    if (textToChange && taskBlock && milestoneBlock && num === 2) {
+    if (textToChange && taskBlock && milestoneBlock && priorityFilter && num === 2) {
       setCurrentDisplay(2);
       textToChange.innerHTML = "Milestone";
       taskBlock.style.display = "none";
       milestoneBlock.style.display = "flex";
+      priorityFilter.style.display = "none";
     }
   };
 
@@ -428,45 +436,47 @@ export function KanbanBoardContent({
     let temp_list;
     temp_list = plannedMilestoneItems.filter((item) => item.id !== deleted.id);
     updateMilestoneList("m0", temp_list);
-    temp_list = inProgressMilestoneItems.filter(
-      (item) => item.id !== deleted.id
-    );
+    temp_list = inProgressMilestoneItems.filter((item) => item.id !== deleted.id);
     updateMilestoneList("m1", temp_list);
-    temp_list = completedMilestoneList.filter((item) => item.id !== deleted.id);
+    temp_list = completedMilestoneItems.filter((item) => item.id !== deleted.id);
     updateMilestoneList("m2", temp_list);
   }
 
   function handleFilterChange(index: number) {
-    const planned_column = document.getElementById('t0div');
-    const in_progress_column = document.getElementById('t1div');
-    const completed_column = document.getElementById('t2div');
+    const planned_task_column = document.getElementById('t0div');
+    const in_progress_task_column = document.getElementById('t1div');
+    const completed_task_column = document.getElementById('t2div');
+    const planned_milestone_column = document.getElementById('m0div');
+    const in_progress_milestone_column = document.getElementById('m1div');
+    const completed_milestone_column = document.getElementById('m2div');
     const status_filter_text = document.getElementById('currentStatusFilterText');
     const priority_filter_text = document.getElementById('currentPriorityFilterText');
 
-    if (planned_column && in_progress_column && completed_column && status_filter_text && priority_filter_text) {
+    if (currentDisplay === 1 && planned_task_column && in_progress_task_column && 
+      completed_task_column && status_filter_text && priority_filter_text) {
       if (index === 0) {
         status_filter_text.innerHTML = 'All'
-        planned_column.style.display = 'flex';
-        in_progress_column.style.display = 'flex'
-        completed_column.style.display = 'flex'
+        planned_task_column.style.display = 'flex';
+        in_progress_task_column.style.display = 'flex'
+        completed_task_column.style.display = 'flex'
       }
       if (index === 1) {
         status_filter_text.innerHTML = 'To Do'
-        planned_column.style.display = 'flex';
-        in_progress_column.style.display = 'none'
-        completed_column.style.display = 'none'
+        planned_task_column.style.display = 'flex';
+        in_progress_task_column.style.display = 'none'
+        completed_task_column.style.display = 'none'
       }
       if (index === 2) {
         status_filter_text.innerHTML = 'In Progress'
-        planned_column.style.display = 'none';
-        in_progress_column.style.display = 'flex'
-        completed_column.style.display = 'none'
+        planned_task_column.style.display = 'none';
+        in_progress_task_column.style.display = 'flex'
+        completed_task_column.style.display = 'none'
       }
       if (index === 3) {
         status_filter_text.innerHTML = 'Completed'
-        planned_column.style.display = 'none';
-        in_progress_column.style.display = 'none'
-        completed_column.style.display = 'flex'
+        planned_task_column.style.display = 'none';
+        in_progress_task_column.style.display = 'none'
+        completed_task_column.style.display = 'flex'
       }
       if (index === 4) {
         priority_filter_text.innerHTML = 'Low Priority'
@@ -517,15 +527,42 @@ export function KanbanBoardContent({
         setCompletedTaskItems(completedTaskList)
       }
     }
+
+    if (currentDisplay === 2 && planned_milestone_column && in_progress_milestone_column && 
+      completed_milestone_column && status_filter_text && priority_filter_text) {
+      if (index === 0) {
+        status_filter_text.innerHTML = 'All'
+        planned_milestone_column.style.display = 'flex';
+        in_progress_milestone_column.style.display = 'flex'
+        completed_milestone_column.style.display = 'flex'
+      }
+      if (index === 1) {
+        status_filter_text.innerHTML = 'To Do'
+        planned_milestone_column.style.display = 'flex';
+        in_progress_milestone_column.style.display = 'none'
+        completed_milestone_column.style.display = 'none'
+      }
+      if (index === 2) {
+        status_filter_text.innerHTML = 'In Progress'
+        planned_milestone_column.style.display = 'none';
+        in_progress_milestone_column.style.display = 'flex'
+        completed_milestone_column.style.display = 'none'
+      }
+      if (index === 3) {
+        status_filter_text.innerHTML = 'Completed'
+        planned_milestone_column.style.display = 'none';
+        in_progress_milestone_column.style.display = 'none'
+        completed_milestone_column.style.display = 'flex'
+      }
+    }
   }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Box h="100vh" alignContent={"top"} justifyContent={"right"}>
-        <Flex
+      <VStack h="80vh" alignContent={"top"} justifyContent={"right"}>
+        <HStack
           justifyContent={"space-between"}
-          paddingBottom={"10px"}
-          paddingTop={"10px"}
+          paddingBottom={"5px"}
           w={"100%"}
         >
           <Menu>
@@ -550,114 +587,118 @@ export function KanbanBoardContent({
             </MenuList>
           </Menu>
 
-          <div>
-          <label> Status: </label>
-
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              <Text id="currentStatusFilterText"> Choose a status </Text>
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(0);
-                }}
-              >
-                All
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(1);
-                }}
-              >
-                To Do
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(2);
-                }}
-              >
-                In Progress
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(3);
-                }}
-              >
-                Completed
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          <HStack justifyContent="flex-start" alignItems="center">
+            <HStack id="statusFilter">
+            <FormLabel minW={15}> Status: </FormLabel>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <Text id="currentStatusFilterText"> Choose a status </Text>
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(0);
+                  }}
+                >
+                  All
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(1);
+                  }}
+                >
+                  To Do
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(2);
+                  }}
+                >
+                  In Progress
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(3);
+                  }}
+                >
+                  Completed
+                </MenuItem>
+              </MenuList>
+            </Menu>
+            </HStack>
           
-          <label> Priority: </label>
-
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              <Text id="currentPriorityFilterText"> Choose a filter </Text>
-            </MenuButton>
-            <MenuList>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(7);
-                }}
-              >
-                All
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(4);
-                }}
-              >
-                Low Priority
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(5);
-                }}
-              >
-                Medium Priority
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleFilterChange(6);
-                }}
-              >
-                High Priority
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          </div>
-        </Flex>
+            <Flex id="priorityFilter">
+            <HStack paddingLeft={"20px"}>
+            <FormLabel minW={15}> Priority: </FormLabel>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <Text id="currentPriorityFilterText"> Choose a prioirity </Text>
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(7);
+                  }}
+                >
+                  All
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(4);
+                  }}
+                >
+                  Low Priority
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(5);
+                  }}
+                >
+                  Medium Priority
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleFilterChange(6);
+                  }}
+                >
+                  High Priority
+                </MenuItem>
+              </MenuList>
+            </Menu>
+            </HStack>
+            </Flex>
+          </HStack>
+        </HStack>
         <Flex
           justifyContent={"space-evenly"}
           gap={20}
           id="taskDisplay"
           display={"flex"}
         >
-          <div id="t0div">
+          <Flex id="t0div">
           <KanbanColumnTask
             name="To Do"
             id={"t0"}
             tasks={plannedTaskItems}
             change={handleTaskDeletion}
           />
-          </div>
-          <div id="t1div">
+          </Flex>
+          <Flex id="t1div">
           <KanbanColumnTask
             name="In Progress"
             id={"t1"}
             tasks={inProgressTaskItems}
             change={handleTaskDeletion}
           />
-          </div>
-          <div id="t2div">
+          </Flex>
+          <Flex id="t2div">
           <KanbanColumnTask
             name="Completed"
             id={"t2"}
             tasks={completedTaskItems}
             change={handleTaskDeletion}
           />
-          </div>
+          </Flex>
         </Flex>
 
         <Flex
@@ -666,26 +707,32 @@ export function KanbanBoardContent({
           id="milestoneDisplay"
           display={"none"}
         >
+          <Flex id="m0div">
           <KanbanColumnMilestone
             name="To Do"
             id={"m0"}
             milestones={plannedMilestoneItems}
             change={handleMilestoneDeletion}
           />
+          </Flex>
+          <Flex id="m1div">
           <KanbanColumnMilestone
             name="In Progress"
             id={"m1"}
             milestones={inProgressMilestoneItems}
             change={handleMilestoneDeletion}
           />
+          </Flex>
+          <Flex id="m2div">
           <KanbanColumnMilestone
             name="Completed"
             id={"m2"}
             milestones={completedMilestoneItems}
             change={handleMilestoneDeletion}
           />
+          </Flex>
         </Flex>
-      </Box>
+      </VStack>
     </DragDropContext>
   );
 }
