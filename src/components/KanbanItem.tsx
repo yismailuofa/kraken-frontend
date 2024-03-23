@@ -127,7 +127,6 @@ export function KanbanItemTask({task, index, change} : {task: Task, index: numbe
                 onClick={onOpen}    >
                     <CardBody>
                         <Stack divider={<StackDivider />} spacing='4'>
-                            <Box>  #{taskItem.id} </Box>
                             <Box>  {taskItem.name} </Box>
                             <HStack>
                                 <EditIcon onClick={editModal.onOpen}/>
@@ -136,6 +135,7 @@ export function KanbanItemTask({task, index, change} : {task: Task, index: numbe
                         </Stack>
                     </CardBody>
                 </Card>
+                <Card opacity={0}><Text maxH={"10px"}> spacer </Text></Card>
                 <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -526,8 +526,9 @@ export function KanbanItemMilestone({milestone, index, change} : {milestone: Mil
                 >
                     <CardBody>
                         <Stack divider={<StackDivider />} spacing='4'>
-                            <Box>  #{milestone.id} </Box>
-                            <Box>  {milestoneName} </Box>
+                            <Box>  
+                                <FormLabel paddingBlockEnd={"20px"}>{milestoneName}</FormLabel>
+                            </Box>
                             <HStack>
                                 <EditIcon onClick={editModal.onOpen}/>
                                 <DeleteIcon onClick={deleteModal.onOpen}/>
@@ -535,6 +536,7 @@ export function KanbanItemMilestone({milestone, index, change} : {milestone: Mil
                         </Stack>
                     </CardBody>
                 </Card>
+                <Card opacity={0}><Text maxH={"10px"}> spacer </Text></Card>
                 <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}

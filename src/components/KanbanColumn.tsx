@@ -24,7 +24,7 @@ export function KanbanColumnTask({name, id, tasks=[], change} : { name: string, 
                 style={{ 
                     width: '20vw',
                     backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray',
-                    overflowY: "auto", maxHeight: "75vh"
+                    overflowY: "auto", maxHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
@@ -52,7 +52,7 @@ export function KanbanColumnMilestone({name, id, milestones=[], change} : { name
                 style={{ 
                     width: '20vw',
                     backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray',
-                    overflowY: "auto", maxHeight: "75vh"
+                    overflowY: "auto", maxHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
