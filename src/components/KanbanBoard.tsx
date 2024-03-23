@@ -94,10 +94,8 @@ export function KanbanBoardContent({
   const [completedTaskList, setCompletedTaskList] = useState<Task[]>([]);
 
   const [plannedTaskItems, setPlannedTaskItems] = useState<Task[]>([]);
-  const [inProgressTaskItems, setInProgressTaskItems] =
-    useState<Task[]>([]);
-  const [completedTaskItems, setCompletedTaskItems] =
-    useState<Task[]>([]);
+  const [inProgressTaskItems, setInProgressTaskItems] = useState<Task[]>([]);
+  const [completedTaskItems, setCompletedTaskItems] = useState<Task[]>([]);
 
   const [plannedMilestoneList, setPlannedMilestoneList] = useState<Milestone[]>([]);
   const [inProgressMilestoneList, setInProgressMilestoneList]= useState<Milestone[]>([]);
@@ -182,32 +180,47 @@ export function KanbanBoardContent({
     fetchTasks();
   }, [client]);
 
-  const updateTaskList = (id: string, list: Task[]) => {
+  const updateTaskList = (id: string, list: Task[], taskItem: Task, add: Boolean) => {
+    let temp_list;
     if (id === "t0") {
-      setPlannedTaskList([...list]);
+      if (add) {
+        setPlannedTaskList([...plannedTaskList, taskItem]);
+      } else {
+        temp_list = plannedTaskList.filter(item => item.id !== taskItem.id);
+        setPlannedTaskList([...temp_list]);
+      }
+
       setPlannedTaskItems([...list]);
     }
     if (id === "t1") {
-      setInProgressTaskList([...list]);
+      if (add) {
+        setInProgressTaskList([...inProgressTaskList, taskItem])
+      } else {
+        temp_list = inProgressTaskList.filter(item => item.id !== taskItem.id);
+        setInProgressTaskList([...temp_list]);
+      }
       setInProgressTaskItems([...list]);
     }
     if (id === "t2") {
-      setCompletedTaskList([...list]);
+      if (add) {
+        setCompletedTaskList([...completedTaskList, taskItem])
+      } else {
+        temp_list = completedTaskList.filter(item => item.id !== taskItem.id);
+        setCompletedTaskList([...temp_list]);
+      }
+
       setCompletedTaskItems([...list]);
     }
   };
 
   const updateMilestoneList = (id: string, list: Milestone[]) => {
     if (id === "m0") {
-      setPlannedMilestoneList([...list]);
       setPlannedMilestoneItems([...list]);
     }
     if (id === "m1") {
-      setInProgressMilestoneList([...list]);
       setInProgressMilestoneItems([...list]);
     }
     if (id === "m2") {
-      setCompletedMilestoneList([...list]);
       setCompletedMilestoneItems([...list]);
     }
   };
@@ -326,8 +339,10 @@ export function KanbanBoardContent({
       dest_status = "In Progress";
     }
 
-    updateTaskList(source.droppableId, temp_src);
-    updateTaskList(destination.droppableId, temp_dest);
+    if (draggedItem) {
+      updateTaskList(source.droppableId, temp_src, draggedItem, false);
+      updateTaskList(destination.droppableId, temp_dest, draggedItem, true);
+    }
     if (draggedItem) updateTaskStatus(draggedItem, dest_status);
     console.log(plannedTaskItems, inProgressTaskItems, completedTaskItems);
   };
@@ -423,13 +438,19 @@ export function KanbanBoardContent({
   };
 
   function handleTaskDeletion(deleted: Task) {
-    let temp_list;
+    let temp_list, temp_item;
     temp_list = plannedTaskItems.filter((item) => item.id !== deleted.id);
-    updateTaskList("t0", temp_list);
+    temp_item = plannedTaskItems.find((item) => item.id !== deleted.id);
+    if (temp_item) 
+      updateTaskList("t0", temp_list, temp_item, false);
     temp_list = inProgressTaskItems.filter((item) => item.id !== deleted.id);
-    updateTaskList("t1", temp_list);
-    temp_list = completedTaskList.filter((item) => item.id !== deleted.id);
-    updateTaskList("t2", temp_list);
+    temp_item = inProgressTaskItems.find((item) => item.id !== deleted.id);
+    if (temp_item) 
+      updateTaskList("t1", temp_list, temp_item, false);
+    temp_list = completedTaskItems.filter((item) => item.id !== deleted.id);
+    temp_item = completedTaskItems.find((item) => item.id !== deleted.id);
+    if (temp_item) 
+      updateTaskList("t2", temp_list, temp_item, false);
   }
 
   function handleMilestoneDeletion(deleted: Milestone) {
