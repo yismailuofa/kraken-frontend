@@ -19,7 +19,7 @@ import { ApiContext, MaybeUser, MaybeProject } from "../contexts/ApiContext";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { KanbanColumnTask, KanbanColumnMilestone } from "./KanbanColumn";
+import { KanbanColumnTask, KanbanColumnMilestone, KanbanColumnQATask } from "./KanbanColumn";
 import { Task, Milestone } from "../contexts/ApiContext";
 import SidebarWithHeader from "./SideBarWithHeader";
 import { IoMdAdd } from "react-icons/io";
@@ -105,6 +105,14 @@ export function KanbanBoardContent({
   const [inProgressMilestoneItems, setInProgressMilestoneItems] = useState<Milestone[]>([]);
   const [completedMilestoneItems, setCompletedMilestoneItems] = useState<Milestone[]>([]);
 
+  const [plannedQATaskList, setPlannedQATaskList] = useState<Task[]>([]);
+  const [inProgressQATaskList, setInProgressQATaskList] = useState<Task[]>([]);
+  const [completedQATaskList, setCompletedQATaskList] = useState<Task[]>([]);
+
+  const [plannedQATaskItems, setPlannedQATaskItems] = useState<Task[]>([]);
+  const [inProgressQATaskItems, setInProgressQATaskItems] = useState<Task[]>([]);
+  const [completedQATaskItems, setCompletedQATaskItems] = useState<Task[]>([]);
+
   const { client, project } = useContext(ApiContext);
   const navigate = useNavigate();
   const toast = useToast();
@@ -114,7 +122,7 @@ export function KanbanBoardContent({
   }
 
   const setTaskByStatus = (data: MaybeProject) => {
-    // TO DO: display QA tasks?
+    // sets both task and qa task
     if (data && data.tasks) {
       const tasklist = data.tasks;
       const plannedTaskList = tasklist?.filter((task) => task.status === "Todo");
@@ -125,6 +133,14 @@ export function KanbanBoardContent({
         (task) => task.status === "Completed"
       );
 
+      const plannedQATaskList = tasklist?.filter((task) => task.qaTask.status === "Todo");
+      const inProgressQATaskList = tasklist?.filter(
+        (task) => task.qaTask.status === "In Progress"
+      );
+      const completedQATaskList = tasklist?.filter(
+        (task) => task.qaTask.status === "Completed"
+      );
+
       setPlannedTaskList(plannedTaskList);
       setInProgressTaskList(inProgressTaskList);
       setCompletedTaskList(completedTaskList);
@@ -133,6 +149,14 @@ export function KanbanBoardContent({
       setInProgressTaskItems(inProgressTaskList);
       setCompletedTaskItems(completedTaskList);
       console.log(plannedTaskList, inProgressTaskList, completedTaskList);
+
+      setPlannedQATaskList(plannedQATaskList);
+      setInProgressQATaskList(inProgressQATaskList);
+      setCompletedQATaskList(completedQATaskList);
+
+      setPlannedQATaskItems(plannedQATaskList);
+      setInProgressTaskItems(inProgressQATaskList);
+      setCompletedQATaskList(completedQATaskList);
     }
   };
 
@@ -213,6 +237,39 @@ export function KanbanBoardContent({
     }
   };
 
+  const updateQATaskList = (id: string, list: Task[], taskItem: Task, add: Boolean) => {
+    let temp_list;
+    if (id === "qt0") {
+      if (add) {
+        setPlannedTaskList([...plannedQATaskList, taskItem]);
+      } else {
+        temp_list = plannedQATaskList.filter(item => item.id !== taskItem.id);
+        setPlannedQATaskList([...temp_list]);
+      }
+
+      setPlannedQATaskItems([...list]);
+    }
+    if (id === "qt1") {
+      if (add) {
+        setInProgressTaskList([...inProgressQATaskList, taskItem])
+      } else {
+        temp_list = inProgressQATaskList.filter(item => item.id !== taskItem.id);
+        setInProgressQATaskList([...temp_list]);
+      }
+      setInProgressQATaskItems([...list]);
+    }
+    if (id === "qt2") {
+      if (add) {
+        setCompletedQATaskList([...completedQATaskList, taskItem])
+      } else {
+        temp_list = completedQATaskList.filter(item => item.id !== taskItem.id);
+        setCompletedQATaskList([...temp_list]);
+      }
+
+      setCompletedQATaskItems([...list]);
+    }
+  };
+
   const updateMilestoneList = (id: string, list: Milestone[]) => {
     if (id === "m0") {
       setPlannedMilestoneItems([...list]);
@@ -227,7 +284,8 @@ export function KanbanBoardContent({
 
   const updateTaskStatus = async (
     task: Task,
-    endStatus: "Todo" | "In Progress" | "Completed" | null | undefined
+    endTaskStatus: "Todo" | "In Progress" | "Completed" | null | undefined,
+    endQATaskStatus: "Todo" | "In Progress" | "Completed" | null | undefined
   ) => {
     // TO DO: update QA task
     const { data, error, response } = await client.PATCH(`/tasks/{id}`, {
@@ -237,7 +295,10 @@ export function KanbanBoardContent({
         },
       },
       body: {
-        status: endStatus,
+        status: endTaskStatus,
+        qaTask: {
+          status: endQATaskStatus,
+        }
       },
     });
 
@@ -275,21 +336,32 @@ export function KanbanBoardContent({
     let textToChange = document.getElementById("currentDisplayText");
     let taskBlock = document.getElementById("taskDisplay");
     let milestoneBlock = document.getElementById("milestoneDisplay");
+    let qaTaskBlock = document.getElementById("QATaskDisplay");
     let priorityFilter = document.getElementById("priorityFilter");
 
-    if (textToChange && taskBlock && milestoneBlock && priorityFilter && num === 1) {
+    if (textToChange && taskBlock && milestoneBlock && qaTaskBlock && priorityFilter && num === 1) {
       setCurrentDisplay(1);
       textToChange.innerHTML = "Task";
       taskBlock.style.display = "flex";
       milestoneBlock.style.display = "none";
+      qaTaskBlock.style.display = "none";
       priorityFilter.style.display = "inline-block";
     }
-    if (textToChange && taskBlock && milestoneBlock && priorityFilter && num === 2) {
+    if (textToChange && taskBlock && milestoneBlock && qaTaskBlock && priorityFilter && num === 2) {
       setCurrentDisplay(2);
       textToChange.innerHTML = "Milestone";
       taskBlock.style.display = "none";
       milestoneBlock.style.display = "flex";
+      qaTaskBlock.style.display = "none";
       priorityFilter.style.display = "none";
+    }
+    if (textToChange && taskBlock && milestoneBlock && qaTaskBlock && priorityFilter && num === 3) {
+      setCurrentDisplay(3);
+      textToChange.innerHTML = "QA Task";
+      taskBlock.style.display = "none";
+      milestoneBlock.style.display = "none";
+      qaTaskBlock.style.display = "flex";
+      priorityFilter.style.display = "inline-block";
     }
   };
 
@@ -343,7 +415,7 @@ export function KanbanBoardContent({
       updateTaskList(source.droppableId, temp_src, draggedItem, false);
       updateTaskList(destination.droppableId, temp_dest, draggedItem, true);
     }
-    if (draggedItem) updateTaskStatus(draggedItem, dest_status);
+    if (draggedItem) updateTaskStatus(draggedItem, dest_status, draggedItem.qaTask.status);
     console.log(plannedTaskItems, inProgressTaskItems, completedTaskItems);
   };
 
@@ -605,6 +677,13 @@ export function KanbanBoardContent({
               >
                 Milestone
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleDisplayChange(3);
+                }}
+              >
+                QA Task
+              </MenuItem>
             </MenuList>
           </Menu>
 
@@ -750,6 +829,38 @@ export function KanbanBoardContent({
             id={"m2"}
             milestones={completedMilestoneItems}
             change={handleMilestoneDeletion}
+          />
+          </Flex>
+        </Flex>
+
+        <Flex
+          justifyContent={"space-evenly"}
+          gap={20}
+          id="QATaskDisplay"
+          display={"none"}
+        >
+          <Flex id="qt0div">
+          <KanbanColumnQATask
+            name="To Do"
+            id={"qt0"}
+            tasks={plannedTaskItems}
+            change={handleTaskDeletion}
+          />
+          </Flex>
+          <Flex id="qt1div">
+          <KanbanColumnQATask
+            name="In Progress"
+            id={"qt1"}
+            tasks={inProgressTaskItems}
+            change={handleTaskDeletion}
+          />
+          </Flex>
+          <Flex id="qt2div">
+          <KanbanColumnQATask
+            name="Completed"
+            id={"qt2"}
+            tasks={completedTaskItems}
+            change={handleTaskDeletion}
           />
           </Flex>
         </Flex>
