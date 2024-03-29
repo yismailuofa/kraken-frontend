@@ -1,4 +1,4 @@
-import { VStack, Stack, Heading, Button } from "@chakra-ui/react";
+import { VStack, Stack, Heading, Button, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
@@ -9,6 +9,7 @@ import { ApiContext } from "../contexts/ApiContext";
 export function RegistrationForm() {
   const navigate = useNavigate();
   const client = useContext(ApiContext).client;
+  const toast = useToast();
 
   return (
     <Formik
@@ -24,15 +25,35 @@ export function RegistrationForm() {
           .required("Password required")
           .min(8, "Password must be at least 8 characters"),
       })}
-      onSubmit={(values, actions) => {
-        alert(JSON.stringify(values, null, 3));
-        actions.resetForm();
-
-        const res = client.POST("/users/register", {
+      onSubmit={async (values, actions) => {
+        const {data, error, response} = await client.POST("/users/register", {
           body: values,
         });
 
-        console.log(res);
+        if (error) {
+          console.log(error);
+          toast({
+            title: "Registration Failed",
+            description: error.detail?.toString() ? error.detail?.toString() : "There is already an account associated with this email.",
+            status: "error",
+            duration: 8000,
+            isClosable: true,
+            position: "top",
+          });
+        } else if (response.status === 201) {
+          actions.resetForm();
+          navigate("/login");
+          toast({
+            title: "Successfully Registered",
+            description: "You have successfully registered an account with Kraken.",
+            status: "success",
+            duration: 8000,
+            isClosable: true,
+            position: "top",
+          });
+        } else {
+          console.log(response);
+        }
       }}
     >
       {(formik) => (

@@ -29,7 +29,6 @@ export function AddMilestoneForm() {
         description: Yup.string().required("Milestone description required"),
       })}
       onSubmit={async (values, actions) => {
-        alert(JSON.stringify(values, null, 2));
         actions.resetForm();
 
         const { data, error, response } = await client.POST("/milestones/", {

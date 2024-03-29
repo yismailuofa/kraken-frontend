@@ -58,7 +58,6 @@ export function AddTaskForm() {
         milestoneId: Yup.string().required("Parent milestone required"),
       })}
       onSubmit={async (values, actions) => {
-        alert(JSON.stringify(values, null, 1));
         actions.resetForm();
 
         const { data, error, response } = await client.POST("/tasks/", { body: { 
