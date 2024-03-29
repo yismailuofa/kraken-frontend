@@ -7,7 +7,7 @@ import { TextArea } from "./TextArea";
 import { useContext } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DateChooser } from "./DateChooser";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 
@@ -16,7 +16,34 @@ export function AddTaskForm() {
   const toast = useToast();
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
-  const default_date = new Date()
+  const default_date = new Date();
+
+  const fetchProjectUsers = async() => {
+    if (project && project.id) {
+      const { error, data } = await client.GET("/projects/{id}/users", {
+        params: { path: { id: project.id } },
+      });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (data) {
+        initAvailableUsers(data);
+      }
+    }
+  } 
+
+  useEffect(() => {
+    fetchProjectUsers();
+  }, [client]);
+
+  const initAvailableUsers = (data: any) => {
+    if (data) {
+      console.log(data);
+    }
+  }
 
   function updateMenuButton(pri: string) {
     const btn = document.getElementById("priorityStr");

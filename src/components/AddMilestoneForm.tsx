@@ -1,13 +1,13 @@
-import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton } from "@chakra-ui/react";
+import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, FormLabel } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { TextField } from "./TextField";
 import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DateChooser } from "./DateChooser";
-
+import Multiselect from 'multiselect-react-dropdown';
 
 
 export function AddMilestoneForm() {
@@ -16,6 +16,24 @@ export function AddMilestoneForm() {
     const client = useContext(ApiContext).client;
     const project = useContext(ApiContext).project;
     const default_date = new Date()
+
+    const possibleChildTasks = project?.tasks?.map(({ name, id }) => {
+      return { name: name, id: id };
+    });
+
+    const possibleChildMilestones = project?.milestones?.map(({name, id}) => {
+      return { name: name, id: id };
+    });
+
+    const task_state = {
+      options: possibleChildTasks,
+      selectedValue:[] 
+    };
+
+    const milestone_state = {
+      options: possibleChildMilestones,
+      selectedValue:[] 
+    };
 
   return (
     <Formik
@@ -37,8 +55,8 @@ export function AddMilestoneForm() {
                 description: values.description,
                 dueDate: values.dueDate,
                 projectId: (project?.id || "") as string,
-                dependentMilestones: [],
-                dependentTasks: [],
+                dependentMilestones: milestone_state.selectedValue,
+                dependentTasks: task_state.selectedValue
             }
         });
 
@@ -102,6 +120,28 @@ export function AddMilestoneForm() {
                 setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
                 startDate={new Date()}
             />
+
+            <HStack justifyContent="flex-start" width="100%" alignItems="center">
+            <FormLabel>Dependent Tasks:</FormLabel>
+            <Multiselect
+            options={task_state.options} // Options to display in the dropdown
+            selectedValues={task_state.selectedValue} // Preselected value to persist in dropdown
+            // onSelect={this.onSelect} // Function will trigger on select event
+            // onRemove={this.onRemove} // Function will trigger on remove event
+            displayValue="name" // Property name to display in the dropdown options
+            />
+            </HStack>
+
+            <HStack justifyContent="flex-start" width="100%" alignItems="center">
+            <FormLabel>Dependent Milestones:</FormLabel>
+            <Multiselect
+            options={milestone_state.options} // Options to display in the dropdown
+            selectedValues={milestone_state.selectedValue} // Preselected value to persist in dropdown
+            // onSelect={this.onSelect} // Function will trigger on select event
+            // onRemove={this.onRemove} // Function will trigger on remove event
+            displayValue="name" // Property name to display in the dropdown options
+            /> 
+            </HStack>
 
             <Stack spacing={4} direction="row" align="center">
               <Button
