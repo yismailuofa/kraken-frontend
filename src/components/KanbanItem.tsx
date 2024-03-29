@@ -40,7 +40,7 @@ import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DeleteIcon, EditIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import Multiselect from 'multiselect-react-dropdown';
@@ -66,6 +66,9 @@ interface KanbanItemQATaskProps {
     deleteParentTask: (deleted: Task) => void
 }
 
+interface ProjUser { id: string | null, username: string, email: string }
+
+
 export function KanbanItemTask({task, index, updateParentTask, deleteParentTask} : KanbanItemTaskProps) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
@@ -77,6 +80,29 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
     const project = useContext(ApiContext).project;
 
     const [taskItem, setTaskItem] = useState(task);
+
+    const [projectUsers, setProjectUsers] = useState<ProjUser[]>([]);
+
+    const fetchProjectUsers = async() => {
+      if (project && project.id) {
+        const { error, data } = await client.GET("/projects/{id}/users", {
+          params: { path: { id: project.id } },
+        });
+  
+        if (error) {
+          console.error(error);
+          return;
+        }
+  
+        if (data) {
+          setProjectUsers(data);
+        }
+      }
+    } 
+  
+    useEffect(() => {
+      fetchProjectUsers();
+    }, [client]);
 
     function updateMilestoneButton(mname: string) {
         const btn = document.getElementById("mnameString");
@@ -93,11 +119,25 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
       }
     
     function updateQAMenuButton(pri: string){
-    const btn = document.getElementById("qaPriorityStr");
-    if (btn) {
-        btn.innerText = pri;
+        const btn = document.getElementById("qaPriorityStr");
+        if (btn) {
+            btn.innerText = pri;
+        }
     }
-    }
+
+    function updateAssignButton(a: string) {
+        const btn = document.getElementById("assignStr");
+        if (btn) {
+            btn.innerText = a;
+        }
+      }
+    
+      function updateQAAssignButton(a: string) {
+        const btn = document.getElementById("qaAssignStr");
+        if (btn) {
+            btn.innerText = a;
+        }
+      }
 
     const deleteTask = async () => {
         const { data, error, response } = await client.DELETE("/tasks/{id}", {
@@ -183,10 +223,12 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                     dueDate: taskItem.dueDate,
                     priority: taskItem.priority,    
                     milestoneId: taskItem.milestoneId,
+                    assignedTo: taskItem.assignedTo,
                     qaTaskName: taskItem.qaTask.name,
                     qaDescription: taskItem.qaTask.description,
                     qaDueDate: taskItem.qaTask.dueDate,
-                    qaPriority: taskItem.qaTask.priority,     
+                    qaPriority: taskItem.qaTask.priority,  
+                    qaAssignedTo: taskItem.qaTask.assignedTo   
                 }}
                 validationSchema={Yup.object({
                     taskName: Yup.string().required("Task name required"),
@@ -208,14 +250,14 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                         projectId: (project?.id || "") as string,
                         milestoneId: values.milestoneId,
                         status: taskItem.status,
-                        assignedTo: taskItem.assignedTo,
+                        assignedTo: values.assignedTo,
                         qaTask: {
                             name: values.qaTaskName,
                             description: values.qaDescription,
                             dueDate: values.qaDueDate,
                             priority: values.qaPriority,
                             status: taskItem.qaTask.status,
-                            assignedTo: taskItem.qaTask.assignedTo
+                            assignedTo: values.qaAssignedTo
                         },
                         dependentMilestones: taskItem.dependentMilestones,
                         dependentTasks: taskItem.dependentTasks
@@ -249,7 +291,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                         milestoneId: values.milestoneId,
                         projectId: (project?.id || "") as string,
                         status: taskItem.status,
-                        assignedTo: taskItem.assignedTo,
+                        assignedTo: values.assignedTo,
                         dependentMilestones: taskItem.dependentMilestones,
                         dependentTasks: taskItem.dependentTasks,
                         qaTask: {
@@ -258,7 +300,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                             dueDate: values.qaDueDate,
                             priority: values.qaPriority,
                             status: taskItem.qaTask.status,
-                            assignedTo: taskItem.qaTask.assignedTo,
+                            assignedTo: values.qaAssignedTo,
                         },
                         id: taskItem.id,
                         createdAt: taskItem.createdAt
@@ -355,6 +397,25 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                                     </MenuList>
                                 </Menu>   
                         </HStack>
+
+                        <HStack justifyContent="flex-start" width={"100%"}>
+                                <FormLabel> Assigned To: </FormLabel> 
+                                <Menu>           
+                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                                    <Text id="assignStr">{taskItem.assignedTo}</Text>
+                                    </MenuButton>
+                                    <MenuList>
+                                    {projectUsers.map((user) => 
+                                    <MenuItem onClick={() => {
+                                        formik.setFieldValue("assignedTo", user.username);
+                                        updateAssignButton(user.username)
+                                        }}
+                                        key={user.id}> 
+                                        {user.username}
+                                    </MenuItem>)}
+                                    </MenuList>
+                                </Menu>   
+                        </HStack>
                         </VStack>
 
                         <Divider orientation="vertical" borderColor="gray.200" height="100%" />
@@ -414,6 +475,25 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                                     </MenuItem>
                                 </MenuList>
                             </Menu>   
+                        </HStack>
+
+                        <HStack justifyContent="flex-start" width={"100%"}>
+                                <FormLabel> Assigned To: </FormLabel> 
+                                <Menu>           
+                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                                    <Text id="qaAssignStr">{taskItem.qaTask.assignedTo}</Text>
+                                    </MenuButton>
+                                    <MenuList>
+                                    {projectUsers.map((user) => 
+                                    <MenuItem onClick={() => {
+                                        formik.setFieldValue("qaAssignedTo", user.username);
+                                        updateQAAssignButton(user.username)
+                                        }}
+                                        key={user.id}> 
+                                        {user.username}
+                                    </MenuItem>)}
+                                    </MenuList>
+                                </Menu>   
                         </HStack>
 
                         </VStack>

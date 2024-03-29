@@ -21,7 +21,6 @@ export function AddTaskForm() {
   const default_date = new Date();
 
   const [projectUsers, setProjectUsers] = useState<ProjUser[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<ProjUser[]>([]);
 
   const fetchProjectUsers = async() => {
     if (project && project.id) {
