@@ -167,7 +167,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                 finalFocusRef={finalRef}
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
-                size="xl"
+                size="full"
                 >
                 <ModalOverlay />
                 <ModalContent maxW="900px">
@@ -571,10 +571,10 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                 finalFocusRef={finalRef}
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
-                size="xl"
+                size="full"
                 >
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent maxW="900px">
                 <ModalHeader>Edit Milestone</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
@@ -845,7 +845,7 @@ export function KanbanItemQATask({task, index, updateParentTask, deleteParentTas
                 finalFocusRef={finalRef}
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
-                size="xl"
+                size="full"
                 >
                 <ModalOverlay />
                 <ModalContent maxW="900px">
