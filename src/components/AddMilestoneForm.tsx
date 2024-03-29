@@ -90,8 +90,6 @@ export function AddMilestoneForm() {
       onSubmit={async (values, actions) => {
         actions.resetForm();
 
-        console.log(task_state.selectedValue);
-
         const { data, error, response } = await client.POST("/milestones/", {
             body: {
                 name: values.milestoneName,

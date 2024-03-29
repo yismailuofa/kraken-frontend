@@ -513,21 +513,75 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
         return { name: name, id: id };
     });
 
-    const possibleChildMilestones = project?.milestones?.map(({name, id}) => {
-        return { name: name, id: id };
-    });
+    const possibleChildMilestones = project?.milestones
+    ? project.milestones
+        .filter(item => item.id !== milestone.id)
+        .filter((item) => {
+            const checkingMilestone = project?.milestones?.find((m) => m.id === item.id);
+            if (milestone.id)
+                return !(checkingMilestone?.dependentMilestones?.includes(milestone.id));
+        })
+        .map(({ name, id }) => ({ name, id }))
+    : [];
 
     const task_state = {
         options: possibleChildTasks,
-        selectedValue: milestoneTasks 
-    };
+        selectedValue: project?.tasks
+          ?.map(({ name, id }) => {
+            if (id && milestoneTasks?.includes(id)) 
+                return {name: name, id: id};
+          })
+          .filter((value) => value !== undefined),
+      };
 
     const milestone_state = {
         options: possibleChildMilestones,
-        selectedValue: milestoneMilestones 
+        selectedValue: project?.milestones?.map(({name, id}) => {
+            if (id && milestoneMilestones?.includes(id) && name)
+            return {name: name, id: id};
+        })
+        .filter((value) => value !== undefined),
     };
 
-    console.log(milestone.dependentTasks);
+    function onTaskSelect(selectedList: any, selectedItem: any) {
+        const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+        console.log(selectedTask);
+  
+        if (selectedTask && selectedTask.id && milestoneTasks){
+          const newList = [...milestoneTasks, selectedTask.id];
+          console.log(newList)
+          setMilestoneTasks(newList);
+        }
+    }
+
+    function onTaskRemove(selectedList: any, selectedItem: any) {
+        const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+        console.log(selectedItem);
+  
+        if (selectedTask && selectedTask.id){
+          const newList = milestoneTasks?.filter((item) => item !== selectedTask.id);
+          console.log(newList);
+          setMilestoneTasks(newList);
+        }
+    }
+  
+    function onMilestoneSelect(selectedList: any, selectedItem: any) {
+        const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+        if (selectedM && selectedM.id && milestoneMilestones){
+            const newList = [...milestoneMilestones, selectedM.id];
+            setMilestoneMilstones(newList);
+        }
+    }
+
+    function onMilestoneRemove(selectedList: any, selectedItem: any) {
+        const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+        if (selectedM && selectedM.id && milestoneMilestones){
+            const newList = milestoneMilestones.filter((item) => item !== selectedM.id);
+            setMilestoneMilstones(newList);
+        }
+    }
 
     const deleteMilestone = async () => {
         const { data, error, response } = await client.DELETE("/milestones/{id}", {
@@ -614,7 +668,7 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                 })}
                 onSubmit={async (values, actions) => {
                     actions.resetForm();
-
+                    console.log(milestoneTasks)
                     const { data, error, response } = await client.PATCH("/milestones/{id}", {
                         params: {
                             path: {
@@ -625,6 +679,8 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                             name: values.milestoneName,
                             description: values.description,
                             dueDate: values.dueDate,
+                            dependentMilestones: milestoneMilestones,
+                            dependentTasks: milestoneTasks
                         }
                     });
 
@@ -651,8 +707,6 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                     setMilestoneName(values.milestoneName)
                     setMilestoneDescription(values.description)
                     setMilestoneDueDate(values.dueDate)
-                    setMilestoneTasks(task_state.selectedValue)
-                    setMilestoneMilstones(milestone_state.selectedValue)
                     } else {
                     console.log(response);
                     }
@@ -699,6 +753,8 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                         options={task_state.options} // Options to display in the dropdown
                         selectedValues={task_state.selectedValue} // Preselected value to persist in dropdown
                         displayValue="name" // Property name to display in the dropdown options
+                        onSelect={onTaskSelect}
+                        onRemove={onTaskRemove}
                         />
                         </HStack>
 
@@ -708,6 +764,8 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                         options={milestone_state.options} // Options to display in the dropdown
                         selectedValues={milestone_state.selectedValue} // Preselected value to persist in dropdown
                         displayValue="name" // Property name to display in the dropdown options
+                        onSelect={onMilestoneSelect}
+                        onRemove={onMilestoneRemove}
                         /> 
                         </HStack>
 
