@@ -829,14 +829,14 @@ export function KanbanBoardContent({
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <VStack h="80vh" alignContent={"top"} justifyContent={"right"}>
+      <VStack h="100%" alignContent={"top"} justifyContent={"right"}>
         <HStack
           justifyContent={"space-between"}
-          paddingBottom={"5px"}
+          paddingBottom={"15px"}
           w={"100%"}
         >
           <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal">
               <Text id="currentDisplayText">Task</Text>
             </MenuButton>
             <MenuList>
@@ -868,8 +868,8 @@ export function KanbanBoardContent({
             <HStack id="statusFilter">
             <FormLabel minW={15}> Status: </FormLabel>
             <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <Text id="currentStatusFilterText"> Choose a status </Text>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal">
+                <Text id="currentStatusFilterText"> All </Text>
               </MenuButton>
               <MenuList>
                 <MenuItem
@@ -908,8 +908,8 @@ export function KanbanBoardContent({
             <HStack paddingLeft={"20px"}>
             <FormLabel minW={15}> Priority: </FormLabel>
             <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <Text id="currentPriorityFilterText"> Choose a prioirity </Text>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal">
+                <Text id="currentPriorityFilterText"> All </Text>
               </MenuButton>
               <MenuList>
                 <MenuItem
@@ -948,7 +948,7 @@ export function KanbanBoardContent({
         </HStack>
         <Flex
           justifyContent={"space-evenly"}
-          gap={20}
+          gap={5}
           id="taskDisplay"
           display={"flex"}
         >
@@ -983,7 +983,7 @@ export function KanbanBoardContent({
 
         <Flex
           justifyContent={"space-evenly"}
-          gap={20}
+          gap={5}
           id="milestoneDisplay"
           display={"none"}
         >
@@ -1015,7 +1015,7 @@ export function KanbanBoardContent({
 
         <Flex
           justifyContent={"space-evenly"}
-          gap={20}
+          gap={5}
           id="QATaskDisplay"
           display={"none"}
         >

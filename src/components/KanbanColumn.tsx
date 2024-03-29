@@ -3,7 +3,8 @@ import {
     Heading,
     Card, 
     CardHeader, 
-    CardBody, 
+    CardBody,
+    Box, 
 } from "@chakra-ui/react"
 import { Droppable } from "react-beautiful-dnd";
 import { KanbanItemTask, KanbanItemMilestone, KanbanItemQATask } from "./KanbanItem";
@@ -33,24 +34,24 @@ interface KanbanColumnQATaskProps {
 }
 
 export function KanbanColumnTask({name, id, tasks, updateParentTask, deleteParentTask} : KanbanColumnTaskProps) {
-    let taskItems = tasks.map((task) => <li key={task.id}>
-        <KanbanItemTask task={task} index={tasks.indexOf(task)} updateParentTask={updateParentTask} deleteParentTask={deleteParentTask}/></li>);
+    let taskItems = tasks.map((task) => <Box key={task.id}>
+        <KanbanItemTask task={task} index={tasks.indexOf(task)} updateParentTask={updateParentTask} deleteParentTask={deleteParentTask}/></Box>);
 
     return (
-        <Card width={"20vw"}>
+        <Card width={"25vw"}>
             <CardHeader><Heading as="h1">{name}</Heading> </CardHeader>
             <Droppable droppableId={id}>
             {(provided, snapshot) => (
                 <CardBody
                 ref={provided.innerRef}
                 style={{ 
-                    width: '20vw',
-                    backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray',
+                    width: '25vw',
+                    backgroundColor: snapshot.isDraggingOver ? 'teal' : '#B6D6CC',
                     overflowY: "auto", maxHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
-                    <ul>{taskItems}</ul>
+                    {taskItems}
 
                     {provided.placeholder}
                 </CardBody>
@@ -61,24 +62,24 @@ export function KanbanColumnTask({name, id, tasks, updateParentTask, deleteParen
 }
 
 export function KanbanColumnMilestone({name, id, milestones=[], change} : KanbanColumnMilestoneProps) {
-    let mItems = milestones.map((milestone) => <li key={milestone.id}>
-        <KanbanItemMilestone milestone={milestone} index={milestones.indexOf(milestone)} change={change}/></li>);
+    let mItems = milestones.map((milestone) => <Box key={milestone.id}>
+        <KanbanItemMilestone milestone={milestone} index={milestones.indexOf(milestone)} change={change}/></Box>);
 
     return (
-        <Card width={"20vw"}>
+        <Card width={"25vw"}>
             <CardHeader><Heading as="h1">{name}</Heading> </CardHeader>
             <Droppable droppableId={id}>
             {(provided, snapshot) => (
                 <CardBody
                 ref={provided.innerRef}
                 style={{ 
-                    width: '20vw',
-                    backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray',
+                    width: '25vw',
+                    backgroundColor: snapshot.isDraggingOver ? 'teal' : '#B6D6CC',
                     overflowY: "auto", maxHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
-                    <ul>{mItems}</ul>
+                    {mItems}
 
                     {provided.placeholder}
                 </CardBody>
@@ -89,25 +90,25 @@ export function KanbanColumnMilestone({name, id, milestones=[], change} : Kanban
 }
 
 export function KanbanColumnQATask({name, id, tasks=[], updateParentTask, deleteParentTask} : KanbanColumnQATaskProps) {    
-    let taskItems = tasks.map((task) => <li key={task.id + "QA"}>
+    let taskItems = tasks.map((task) => <Box key={task.id + "QA"}>
         <KanbanItemQATask task={task} index={tasks.indexOf(task)} 
-        updateParentTask={updateParentTask} deleteParentTask={deleteParentTask}/></li>);
+        updateParentTask={updateParentTask} deleteParentTask={deleteParentTask}/></Box>);
 
     return (
-        <Card width={"20vw"}>
+        <Card width={"25vw"}>
             <CardHeader><Heading as="h1">{name}</Heading> </CardHeader>
             <Droppable droppableId={id}>
             {(provided, snapshot) => (
                 <CardBody
                 ref={provided.innerRef}
                 style={{ 
-                    width: '20vw',
-                    backgroundColor: snapshot.isDraggingOver ? 'teal' : 'LightGray',
+                    width: '25vw',
+                    backgroundColor: snapshot.isDraggingOver ? 'teal' : '#B6D6CC',
                     overflowY: "auto", maxHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
-                    <ul>{taskItems}</ul>
+                    {taskItems}
 
                     {provided.placeholder}
                 </CardBody>

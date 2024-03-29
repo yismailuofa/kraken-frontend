@@ -16,7 +16,7 @@ export function DeleteProjectModal({onConfirmDelete, isOpen, onClose}: any) {
               <Button colorScheme='teal' mr={3} onClick={() => onClose()}>
                   Cancel
               </Button>
-              <Button colorScheme='red' mr={3} type="submit" onClick={() => {onClose(); onConfirmDelete();}}>Delete</Button>
+              <Button colorScheme='red' mr={3} type="submit" onClick={() => {onClose(); onConfirmDelete();}}>Delete Project</Button>
           </ModalFooter>
 				</ModalContent>
 			</Modal>

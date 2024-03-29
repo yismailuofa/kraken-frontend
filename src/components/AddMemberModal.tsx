@@ -97,7 +97,7 @@ export function AddMemberModal({fetchProjectMembers, isOpen, onClose}: any) {
                   <Button colorScheme='teal' mr={3} onClick={onClose}>
                       Close
                   </Button>
-                  <Button colorScheme='teal' mr={3} type="submit">Add</Button>
+                  <Button colorScheme='teal' mr={3} type="submit">Add Member</Button>
                 </ModalFooter>                    
               </form>
             )}
