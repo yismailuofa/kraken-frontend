@@ -5,11 +5,13 @@ import { TextField } from "./TextField";
 import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 import { useContext } from "react";
-import { ApiContext, MaybeProject } from "../contexts/ApiContext";
+import { ApiContext, MaybeProject, MaybeUser } from "../contexts/ApiContext";
 import { DateChooser } from "./DateChooser";
 import { useState, useEffect } from "react";
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import Multiselect from 'multiselect-react-dropdown';
 
+interface ProjUser { id: string | null, username: string, email: string }
 
 export function AddTaskForm() {
   const navigate = useNavigate();
@@ -17,6 +19,9 @@ export function AddTaskForm() {
   const client = useContext(ApiContext).client;
   const project = useContext(ApiContext).project;
   const default_date = new Date();
+
+  const [projectUsers, setProjectUsers] = useState<ProjUser[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<ProjUser[]>([]);
 
   const fetchProjectUsers = async() => {
     if (project && project.id) {
@@ -30,7 +35,7 @@ export function AddTaskForm() {
       }
 
       if (data) {
-        initAvailableUsers(data);
+        setProjectUsers(data);
       }
     }
   } 
@@ -38,12 +43,6 @@ export function AddTaskForm() {
   useEffect(() => {
     fetchProjectUsers();
   }, [client]);
-
-  const initAvailableUsers = (data: any) => {
-    if (data) {
-      console.log(data);
-    }
-  }
 
   function updateMenuButton(pri: string) {
     const btn = document.getElementById("priorityStr");
@@ -66,6 +65,20 @@ export function AddTaskForm() {
     }
   }
 
+  function updateAssignButton(a: string) {
+    const btn = document.getElementById("assignStr");
+    if (btn) {
+        btn.innerText = a;
+    }
+  }
+
+  function updateQAAssignButton(a: string) {
+    const btn = document.getElementById("qaAssignStr");
+    if (btn) {
+        btn.innerText = a;
+    }
+  }
+
   return (
     <Formik
       initialValues={{
@@ -74,10 +87,12 @@ export function AddTaskForm() {
         dueDate: default_date.toISOString(),
         priority: undefined as "Low" | "Medium" | "High" | undefined,    
         milestoneId: "",
+        assignTo: "",
         qaTaskName: "",
         qaDescription: "",
         qaDueDate: default_date.toISOString(),
-        qaPriority: undefined as "Low" | "Medium" | "High" | undefined,     
+        qaPriority: undefined as "Low" | "Medium" | "High" | undefined,   
+        qaAssignTo:""  
       }}
       validationSchema={Yup.object({
         taskName: Yup.string().required("Task name required"),
@@ -93,7 +108,7 @@ export function AddTaskForm() {
             dueDate: values.dueDate,
             priority: values.priority, 
             status: "Todo", 
-            assignedTo: "Unassigned",
+            assignedTo: values.assignTo,
             projectId: (project?.id || "") as string,
             milestoneId: values.milestoneId,
             dependentMilestones: [],
@@ -104,7 +119,7 @@ export function AddTaskForm() {
               dueDate: values.qaDueDate,
               priority: values.qaPriority,
               status: "Todo",
-              assignedTo: "Unassigned"
+              assignedTo: values.qaAssignTo
             }
         }});
 
@@ -195,7 +210,7 @@ export function AddTaskForm() {
                     <FormLabel> Priority: </FormLabel> 
                     <Menu>           
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                        <Text id="priorityStr">Change Priority</Text>
+                        <Text id="priorityStr">Medium</Text>
                         </MenuButton>
                         <MenuList>
                             <MenuItem onClick={() => {
@@ -219,6 +234,26 @@ export function AddTaskForm() {
                         </MenuList>
                     </Menu>   
             </HStack>
+
+            <HStack justifyContent="flex-start" width={"100%"}>
+                    <FormLabel> Assign To: </FormLabel> 
+                    <Menu>           
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                        <Text id="assignStr"></Text>
+                        </MenuButton>
+                        <MenuList>
+                        {projectUsers.map((user) => 
+                          <MenuItem onClick={() => {
+                            formik.setFieldValue("assignTo", user.username);
+                            updateAssignButton(user.username)
+                            }}
+                            key={user.id}> 
+                            {user.username}
+                          </MenuItem>)}
+                        </MenuList>
+                    </Menu>   
+            </HStack>
+            
             </VStack>
 
             <Divider orientation="vertical" borderColor="gray.200" height="100%" />
@@ -257,7 +292,7 @@ export function AddTaskForm() {
                 <FormLabel> QA Priority: </FormLabel> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                    <Text id="qaPriorityStr">Change QA Priority</Text>
+                    <Text id="qaPriorityStr">Medium</Text>
                     </MenuButton>
                     <MenuList>
                         <MenuItem onClick={() => {
@@ -278,6 +313,25 @@ export function AddTaskForm() {
                             }}> 
                             High 
                         </MenuItem>
+                    </MenuList>
+                </Menu>   
+            </HStack>
+
+            <HStack justifyContent="flex-start" width={"100%"}>
+                <FormLabel> Assign To: </FormLabel> 
+                <Menu>           
+                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                    <Text id="qaAssignStr"></Text>
+                    </MenuButton>
+                    <MenuList>
+                      {projectUsers.map((user) => 
+                      <MenuItem onClick={() => {
+                        formik.setFieldValue("qaAssignTo", user.username);
+                        updateQAAssignButton(user.username)
+                        }}
+                        key={user.id}> 
+                        {user.username}
+                      </MenuItem>)}
                     </MenuList>
                 </Menu>   
             </HStack>
