@@ -155,8 +155,10 @@ export function KanbanBoardContent({
       setCompletedQATaskList(completedQATaskList);
 
       setPlannedQATaskItems(plannedQATaskList);
-      setInProgressTaskItems(inProgressQATaskList);
-      setCompletedQATaskList(completedQATaskList);
+      setInProgressQATaskItems(inProgressQATaskList);
+      setCompletedQATaskItems(completedQATaskList);
+
+      console.log(plannedQATaskList, inProgressQATaskList, completedQATaskList)
     }
   };
 
@@ -241,17 +243,19 @@ export function KanbanBoardContent({
     let temp_list;
     if (id === "qt0") {
       if (add) {
-        setPlannedTaskList([...plannedQATaskList, taskItem]);
+        setPlannedQATaskList([...plannedQATaskList, taskItem]);
       } else {
         temp_list = plannedQATaskList.filter(item => item.id !== taskItem.id);
         setPlannedQATaskList([...temp_list]);
       }
 
+      console.log("sadsa:" + plannedQATaskList)
+
       setPlannedQATaskItems([...list]);
     }
     if (id === "qt1") {
       if (add) {
-        setInProgressTaskList([...inProgressQATaskList, taskItem])
+        setInProgressQATaskList([...inProgressQATaskList, taskItem])
       } else {
         temp_list = inProgressQATaskList.filter(item => item.id !== taskItem.id);
         setInProgressQATaskList([...temp_list]);
@@ -287,7 +291,6 @@ export function KanbanBoardContent({
     endTaskStatus: "Todo" | "In Progress" | "Completed" | null | undefined,
     endQATaskStatus: "Todo" | "In Progress" | "Completed" | null | undefined
   ) => {
-    // TO DO: update QA task
     const { data, error, response } = await client.PATCH(`/tasks/{id}`, {
       params: {
         path: {
@@ -332,6 +335,43 @@ export function KanbanBoardContent({
     }
   };
 
+  const handleTaskUpdate = (updated: Task) => {
+    let temp_task_list, temp_qa_list;
+
+    if (plannedTaskList.find((item) => item.id === updated.id)){
+      temp_task_list = plannedTaskList.filter((item) => item.id !== updated.id);
+      console.log("handle: " + updated.priority)
+      setPlannedTaskList([...temp_task_list, updated]);
+      console.log(plannedTaskList);
+    }
+    if (plannedQATaskList.find((item) => item.id === updated.id)){
+      temp_qa_list = plannedQATaskList.filter((item) => item.id !== updated.id);
+      setPlannedQATaskList([...temp_qa_list, updated]);
+    }
+    if (inProgressTaskList.find((item) => item.id === updated.id)){
+      temp_task_list = inProgressTaskList.filter((item) => item.id !== updated.id);
+      setInProgressTaskList([...temp_task_list, updated]);
+    }
+    if (inProgressQATaskList.find((item) => item.id === updated.id)){
+      temp_qa_list = inProgressQATaskList.filter((item) => item.id !== updated.id);
+      setInProgressQATaskList([...temp_qa_list, updated]);
+    }
+    if (completedTaskList.find((item) => item.id === updated.id)){
+      temp_task_list = completedTaskList.filter((item) => item.id !== updated.id);
+      setCompletedTaskList([...temp_task_list, updated]);
+    }
+    if (completedQATaskList.find((item) => item.id === updated.id)){
+      temp_qa_list = completedQATaskList.filter((item) => item.id !== updated.id);
+      setCompletedQATaskList([...temp_qa_list, updated]);
+      console.log(updated.priority);
+      console.log(completedQATaskList);
+    }
+
+    handleFilterChange(7);
+
+    console.log(plannedTaskList, inProgressTaskList, completedTaskList);
+  }
+
   const handleDisplayChange = (num: number) => {
     let textToChange = document.getElementById("currentDisplayText");
     let taskBlock = document.getElementById("taskDisplay");
@@ -346,6 +386,9 @@ export function KanbanBoardContent({
       milestoneBlock.style.display = "none";
       qaTaskBlock.style.display = "none";
       priorityFilter.style.display = "inline-block";
+
+      handleFilterChange(0);
+      handleFilterChange(7);
     }
     if (textToChange && taskBlock && milestoneBlock && qaTaskBlock && priorityFilter && num === 2) {
       setCurrentDisplay(2);
@@ -354,6 +397,7 @@ export function KanbanBoardContent({
       milestoneBlock.style.display = "flex";
       qaTaskBlock.style.display = "none";
       priorityFilter.style.display = "none";
+      handleFilterChange(0);
     }
     if (textToChange && taskBlock && milestoneBlock && qaTaskBlock && priorityFilter && num === 3) {
       setCurrentDisplay(3);
@@ -362,6 +406,8 @@ export function KanbanBoardContent({
       milestoneBlock.style.display = "none";
       qaTaskBlock.style.display = "flex";
       priorityFilter.style.display = "inline-block";
+      handleFilterChange(0);
+      handleFilterChange(7);
     }
   };
 
@@ -499,6 +545,60 @@ export function KanbanBoardContent({
     );
   };
 
+  const handleDragQATask = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+    let draggedItem: Task | undefined;
+    let temp_dest: Task[] = [];
+    let temp_src: Task[] = [];
+    let dest_status: "Todo" | "In Progress" | "Completed" | null | undefined;
+
+    if (!destination || source.droppableId === destination.droppableId) return;
+
+    if (source.droppableId === "qt0" && destination.droppableId === "qt1") {
+      draggedItem = plannedQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
+      temp_src = plannedQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
+      if (draggedItem) temp_dest = [...inProgressQATaskItems, draggedItem];
+      dest_status = "In Progress";
+    }
+    if (source.droppableId === "qt0" && destination.droppableId === "qt2") {
+      draggedItem = plannedQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
+      temp_src = plannedQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
+      if (draggedItem) temp_dest = [...completedQATaskItems, draggedItem];
+      dest_status = "Completed";
+    }
+    if (source.droppableId === "qt1" && destination.droppableId === "qt0") {
+      draggedItem = inProgressQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
+      temp_src = inProgressQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
+      if (draggedItem) temp_dest = [...plannedQATaskItems, draggedItem];
+      dest_status = "Todo";
+    }
+    if (source.droppableId === "qt1" && destination.droppableId === "qt2") {
+      draggedItem = inProgressQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
+      temp_src = inProgressQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
+      if (draggedItem) temp_dest = [...completedQATaskItems, draggedItem];
+      dest_status = "Completed";
+    }
+    if (source.droppableId === "qt2" && destination.droppableId === "qt0") {
+      draggedItem = completedQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
+      temp_src = completedQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
+      if (draggedItem) temp_dest = [...plannedQATaskItems, draggedItem];
+      dest_status = "Todo";
+    }
+    if (source.droppableId === "qt2" && destination.droppableId === "qt1") {
+      draggedItem = completedQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
+      temp_src = completedQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
+      if (draggedItem) temp_dest = [...inProgressQATaskItems, draggedItem];
+      dest_status = "In Progress";
+    }
+
+    if (draggedItem) {
+      updateQATaskList(source.droppableId, temp_src, draggedItem, false);
+      updateQATaskList(destination.droppableId, temp_dest, draggedItem, true);
+    }
+    if (draggedItem) updateTaskStatus(draggedItem, draggedItem.status, dest_status);
+    console.log(plannedQATaskItems, inProgressQATaskItems, completedQATaskItems);
+  };
+
   const handleDragEnd = (result: DropResult) => {
     console.log("currentDisplay:" + currentDisplay);
     if (currentDisplay === 1) {
@@ -507,22 +607,39 @@ export function KanbanBoardContent({
     if (currentDisplay === 2) {
       handleDragMilestone(result);
     }
+    if (currentDisplay === 3) {
+      handleDragQATask(result);
+    }
   };
 
   function handleTaskDeletion(deleted: Task) {
-    let temp_list, temp_item;
-    temp_list = plannedTaskItems.filter((item) => item.id !== deleted.id);
-    temp_item = plannedTaskItems.find((item) => item.id !== deleted.id);
-    if (temp_item) 
-      updateTaskList("t0", temp_list, temp_item, false);
-    temp_list = inProgressTaskItems.filter((item) => item.id !== deleted.id);
-    temp_item = inProgressTaskItems.find((item) => item.id !== deleted.id);
-    if (temp_item) 
-      updateTaskList("t1", temp_list, temp_item, false);
-    temp_list = completedTaskItems.filter((item) => item.id !== deleted.id);
-    temp_item = completedTaskItems.find((item) => item.id !== deleted.id);
-    if (temp_item) 
-      updateTaskList("t2", temp_list, temp_item, false);
+    let temp_task_list, temp_qa_list, temp_task_item, temp_qa_item;
+    temp_task_list = plannedTaskItems.filter((item) => item.id !== deleted.id);
+    temp_qa_list = plannedQATaskItems.filter((item) => item.id !== deleted.id);
+    temp_task_item = plannedTaskItems.find((item) => item.id === deleted.id);
+    temp_qa_item = plannedQATaskItems.find((item) => item.id === deleted.id);
+    if (temp_task_item && temp_qa_item) {
+      updateTaskList("t0", temp_task_list, temp_task_item, false);
+      updateQATaskList("qt0", temp_qa_list, temp_qa_item, false);
+    }
+
+    temp_task_list = inProgressTaskItems.filter((item) => item.id !== deleted.id);
+    temp_qa_list = inProgressQATaskItems.filter((item) => item.id !== deleted.id);
+    temp_task_item = inProgressTaskItems.find((item) => item.id === deleted.id);
+    temp_qa_item = inProgressQATaskItems.find((item) => item.id === deleted.id);
+    if (temp_task_item && temp_qa_item) {
+      updateTaskList("t1", temp_task_list, temp_task_item, false);
+      updateQATaskList("qt1", temp_qa_list, temp_qa_item, false);
+    }
+
+    temp_task_list = completedTaskItems.filter((item) => item.id !== deleted.id);
+    temp_qa_list = completedQATaskItems.filter((item) => item.id !== deleted.id);
+    temp_task_item = completedTaskItems.find((item) => item.id === deleted.id);
+    temp_qa_item = completedQATaskItems.find((item) => item.id === deleted.id);
+    if (temp_task_item && temp_qa_item) {
+      updateTaskList("t2", temp_task_list, temp_task_item, false);
+      updateQATaskList("qt2", temp_qa_list, temp_qa_item, false);
+    }
   }
 
   function handleMilestoneDeletion(deleted: Milestone) {
@@ -542,34 +659,70 @@ export function KanbanBoardContent({
     const planned_milestone_column = document.getElementById('m0div');
     const in_progress_milestone_column = document.getElementById('m1div');
     const completed_milestone_column = document.getElementById('m2div');
+    const planned_qa_task_column = document.getElementById('qt0div');
+    const in_progress_qa_task_column = document.getElementById('qt1div');
+    const completed_qa_task_column = document.getElementById('qt2div');
     const status_filter_text = document.getElementById('currentStatusFilterText');
     const priority_filter_text = document.getElementById('currentPriorityFilterText');
 
-    if (currentDisplay === 1 && planned_task_column && in_progress_task_column && 
-      completed_task_column && status_filter_text && priority_filter_text) {
+    if ((currentDisplay === 1 || currentDisplay === 3) && planned_task_column && in_progress_task_column && 
+      completed_task_column && planned_qa_task_column && in_progress_qa_task_column && completed_qa_task_column && 
+      status_filter_text && priority_filter_text) {
       if (index === 0) {
-        status_filter_text.innerHTML = 'All'
-        planned_task_column.style.display = 'flex';
-        in_progress_task_column.style.display = 'flex'
-        completed_task_column.style.display = 'flex'
+        if (currentDisplay === 1) {
+          status_filter_text.innerHTML = 'All'
+          planned_task_column.style.display = 'flex';
+          in_progress_task_column.style.display = 'flex'
+          completed_task_column.style.display = 'flex'
+        }
+        if (currentDisplay === 3) {
+          status_filter_text.innerHTML = 'All'
+          planned_qa_task_column.style.display = 'flex';
+          in_progress_qa_task_column.style.display = 'flex'
+          completed_qa_task_column.style.display = 'flex'
+        }
       }
       if (index === 1) {
-        status_filter_text.innerHTML = 'To Do'
-        planned_task_column.style.display = 'flex';
-        in_progress_task_column.style.display = 'none'
-        completed_task_column.style.display = 'none'
+        if (currentDisplay === 1) {
+          status_filter_text.innerHTML = 'To Do'
+          planned_task_column.style.display = 'flex';
+          in_progress_task_column.style.display = 'none'
+          completed_task_column.style.display = 'none'
+        }
+        if (currentDisplay === 3) {
+          status_filter_text.innerHTML = 'To Do'
+          planned_qa_task_column.style.display = 'flex';
+          in_progress_qa_task_column.style.display = 'none'
+          completed_qa_task_column.style.display = 'none'
+        }
       }
       if (index === 2) {
-        status_filter_text.innerHTML = 'In Progress'
-        planned_task_column.style.display = 'none';
-        in_progress_task_column.style.display = 'flex'
-        completed_task_column.style.display = 'none'
+        if (currentDisplay === 1) {
+          status_filter_text.innerHTML = 'In Progress'
+          planned_task_column.style.display = 'none';
+          in_progress_task_column.style.display = 'flex'
+          completed_task_column.style.display = 'none'
+        }
+        if (currentDisplay === 3) {
+          status_filter_text.innerHTML = 'In Progress'
+          planned_qa_task_column.style.display = 'none';
+          in_progress_qa_task_column.style.display = 'flex'
+          completed_qa_task_column.style.display = 'none'
+        }
       }
       if (index === 3) {
-        status_filter_text.innerHTML = 'Completed'
-        planned_task_column.style.display = 'none';
-        in_progress_task_column.style.display = 'none'
-        completed_task_column.style.display = 'flex'
+        if (currentDisplay === 1) {
+          status_filter_text.innerHTML = 'Completed'
+          planned_task_column.style.display = 'none';
+          in_progress_task_column.style.display = 'none'
+          completed_task_column.style.display = 'flex'
+        }
+        if (currentDisplay === 3) {
+          status_filter_text.innerHTML = 'Completed'
+          planned_qa_task_column.style.display = 'none';
+          in_progress_qa_task_column.style.display = 'none'
+          completed_qa_task_column.style.display = 'flex'
+        }
       }
       if (index === 4) {
         priority_filter_text.innerHTML = 'Low Priority'
@@ -578,26 +731,36 @@ export function KanbanBoardContent({
         const temp_started_list = inProgressTaskList.filter(item => item.priority==="Low")
         const temp_completed_list = completedTaskList.filter(item => item.priority==="Low")
 
-        console.log(temp_planned_list, temp_started_list, temp_completed_list)
-
         setPlannedTaskItems(temp_planned_list)
         setInProgressTaskItems(temp_started_list)
         setCompletedTaskItems(temp_completed_list)
+
+        const temp_qa_planned_list = plannedQATaskList.filter(item => item.qaTask.priority==="Low")
+        const temp_qa_started_list = inProgressQATaskList.filter(item => item.qaTask.priority==="Low")
+        const temp_qa_completed_list = completedQATaskList.filter(item => item.qaTask.priority==="Low")
+
+        setPlannedQATaskItems(temp_qa_planned_list)
+        setInProgressQATaskItems(temp_qa_started_list)
+        setCompletedQATaskItems(temp_qa_completed_list)
       }
       if (index === 5) {
         priority_filter_text.innerHTML = 'Medium Priority'
-
-        console.log(plannedTaskList)
 
         const temp_planned_list = plannedTaskList.filter(item => item.priority==="Medium")
         const temp_started_list = inProgressTaskList.filter(item => item.priority==="Medium")
         const temp_completed_list = completedTaskList.filter(item => item.priority==="Medium")
 
-        console.log(temp_planned_list, temp_started_list, temp_completed_list)
-
         setPlannedTaskItems(temp_planned_list)
         setInProgressTaskItems(temp_started_list)
         setCompletedTaskItems(temp_completed_list)
+
+        const temp_qa_planned_list = plannedQATaskList.filter(item => item.qaTask.priority==="Medium")
+        const temp_qa_started_list = inProgressQATaskList.filter(item => item.qaTask.priority==="Medium")
+        const temp_qa_completed_list = completedQATaskList.filter(item => item.qaTask.priority==="Medium")
+
+        setPlannedQATaskItems(temp_qa_planned_list)
+        setInProgressQATaskItems(temp_qa_started_list)
+        setCompletedQATaskItems(temp_qa_completed_list)
       }
       if (index === 6) {
         priority_filter_text.innerHTML = 'High Priority'
@@ -611,6 +774,16 @@ export function KanbanBoardContent({
         setPlannedTaskItems(temp_planned_list)
         setInProgressTaskItems(temp_started_list)
         setCompletedTaskItems(temp_completed_list)
+
+        const temp_qa_planned_list = plannedQATaskList.filter(item => item.qaTask.priority==="High")
+        const temp_qa_started_list = inProgressQATaskList.filter(item => item.qaTask.priority==="High")
+        const temp_qa_completed_list = completedQATaskList.filter(item => item.qaTask.priority==="High")
+
+        setPlannedQATaskItems(temp_qa_planned_list)
+        setInProgressQATaskItems(temp_qa_started_list)
+        setCompletedQATaskItems(temp_qa_completed_list)
+
+        console.log("high: " + temp_qa_completed_list);
       }
       if (index === 7) {
         priority_filter_text.innerHTML = 'All'
@@ -618,6 +791,10 @@ export function KanbanBoardContent({
         setPlannedTaskItems(plannedTaskList)
         setInProgressTaskItems(inProgressTaskList)
         setCompletedTaskItems(completedTaskList)
+
+        setPlannedQATaskItems(plannedQATaskList)
+        setInProgressQATaskItems(inProgressQATaskList)
+        setCompletedQATaskItems(completedQATaskList)
       }
     }
 
@@ -780,7 +957,8 @@ export function KanbanBoardContent({
             name="To Do"
             id={"t0"}
             tasks={plannedTaskItems}
-            change={handleTaskDeletion}
+            updateParentTask={handleTaskUpdate}
+            deleteParentTask={handleTaskDeletion}
           />
           </Flex>
           <Flex id="t1div">
@@ -788,7 +966,8 @@ export function KanbanBoardContent({
             name="In Progress"
             id={"t1"}
             tasks={inProgressTaskItems}
-            change={handleTaskDeletion}
+            updateParentTask={handleTaskUpdate}
+            deleteParentTask={handleTaskDeletion}
           />
           </Flex>
           <Flex id="t2div">
@@ -796,7 +975,8 @@ export function KanbanBoardContent({
             name="Completed"
             id={"t2"}
             tasks={completedTaskItems}
-            change={handleTaskDeletion}
+            updateParentTask={handleTaskUpdate}
+            deleteParentTask={handleTaskDeletion}
           />
           </Flex>
         </Flex>
@@ -843,24 +1023,27 @@ export function KanbanBoardContent({
           <KanbanColumnQATask
             name="To Do"
             id={"qt0"}
-            tasks={plannedTaskItems}
-            change={handleTaskDeletion}
+            tasks={plannedQATaskItems}
+            updateParentTask={handleTaskUpdate}
+            deleteParentTask={handleTaskDeletion}
           />
           </Flex>
           <Flex id="qt1div">
           <KanbanColumnQATask
             name="In Progress"
             id={"qt1"}
-            tasks={inProgressTaskItems}
-            change={handleTaskDeletion}
+            tasks={inProgressQATaskItems}
+            updateParentTask={handleTaskUpdate}
+            deleteParentTask={handleTaskDeletion}
           />
           </Flex>
           <Flex id="qt2div">
           <KanbanColumnQATask
             name="Completed"
             id={"qt2"}
-            tasks={completedTaskItems}
-            change={handleTaskDeletion}
+            tasks={completedQATaskItems}
+            updateParentTask={handleTaskUpdate}
+            deleteParentTask={handleTaskDeletion}
           />
           </Flex>
         </Flex>

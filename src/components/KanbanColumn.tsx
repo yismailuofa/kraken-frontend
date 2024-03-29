@@ -9,10 +9,32 @@ import { Droppable } from "react-beautiful-dnd";
 import { KanbanItemTask, KanbanItemMilestone, KanbanItemQATask } from "./KanbanItem";
 import { Milestone, Task } from "../contexts/ApiContext";
 
+interface KanbanColumnTaskProps {
+    name: string, 
+    id: string, 
+    tasks: Task[], 
+    updateParentTask: (updated: Task) => void, 
+    deleteParentTask: (deleted: Task) => void
+}
 
-export function KanbanColumnTask({name, id, tasks=[], change} : { name: string, id: string, tasks: Task[], change: any }) {
+interface KanbanColumnMilestoneProps {
+    name: string, 
+    id: string, 
+    milestones: Milestone[], 
+    change: any
+}
+
+interface KanbanColumnQATaskProps {
+    name: string, 
+    id: string, 
+    tasks: Task[], 
+    updateParentTask: (updated: Task) => void, 
+    deleteParentTask: (deleted: Task) => void
+}
+
+export function KanbanColumnTask({name, id, tasks, updateParentTask, deleteParentTask} : KanbanColumnTaskProps) {
     let taskItems = tasks.map((task) => <li key={task.id}>
-        <KanbanItemTask task={task} index={tasks.indexOf(task)} change={change}/></li>);
+        <KanbanItemTask task={task} index={tasks.indexOf(task)} updateParentTask={updateParentTask} deleteParentTask={deleteParentTask}/></li>);
 
     return (
         <Card width={"20vw"}>
@@ -38,7 +60,7 @@ export function KanbanColumnTask({name, id, tasks=[], change} : { name: string, 
     )
 }
 
-export function KanbanColumnMilestone({name, id, milestones=[], change} : { name: string, id: string, milestones: Milestone[], change: any }) {
+export function KanbanColumnMilestone({name, id, milestones=[], change} : KanbanColumnMilestoneProps) {
     let mItems = milestones.map((milestone) => <li key={milestone.id}>
         <KanbanItemMilestone milestone={milestone} index={milestones.indexOf(milestone)} change={change}/></li>);
 
@@ -66,9 +88,10 @@ export function KanbanColumnMilestone({name, id, milestones=[], change} : { name
     )
 }
 
-export function KanbanColumnQATask({name, id, tasks=[], change} : { name: string, id: string, tasks: Task[], change: any }) {
-    let taskItems = tasks.map((task) => <li key={task.id}>
-        <KanbanItemQATask task={task} index={tasks.indexOf(task)} change={change}/></li>);
+export function KanbanColumnQATask({name, id, tasks=[], updateParentTask, deleteParentTask} : KanbanColumnQATaskProps) {    
+    let taskItems = tasks.map((task) => <li key={task.id + "QA"}>
+        <KanbanItemQATask task={task} index={tasks.indexOf(task)} 
+        updateParentTask={updateParentTask} deleteParentTask={deleteParentTask}/></li>);
 
     return (
         <Card width={"20vw"}>

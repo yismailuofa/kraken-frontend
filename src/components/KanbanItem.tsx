@@ -44,8 +44,27 @@ import { useContext } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DeleteIcon, EditIcon, ChevronDownIcon } from "@chakra-ui/icons";
 
+interface KanbanItemTaskProps {
+    task: Task, 
+    index: number, 
+    updateParentTask: (updated: Task) => void, 
+    deleteParentTask: (deleted: Task) => void
+}
 
-export function KanbanItemTask({task, index, change} : {task: Task, index: number, change: any}) {
+interface KanbanItemMilestoneProps{
+    milestone: Milestone, 
+    index: number, 
+    change: any
+}
+
+interface KanbanItemQATaskProps {
+    task: Task, 
+    index: number, 
+    updateParentTask: (updated: Task) => void, 
+    deleteParentTask: (deleted: Task) => void
+}
+
+export function KanbanItemTask({task, index, updateParentTask, deleteParentTask} : KanbanItemTaskProps) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
@@ -112,7 +131,13 @@ export function KanbanItemTask({task, index, change} : {task: Task, index: numbe
     function handleDeleteTask(){
         deleteModal.onClose();
         deleteTask();
-        change(task);
+        if (task)
+            deleteParentTask(taskItem);
+    }
+
+    function handleUpdateTask(t: Task){
+        if (t)
+            updateParentTask(t);
     }
 
     return (
@@ -126,8 +151,9 @@ export function KanbanItemTask({task, index, change} : {task: Task, index: numbe
                 ref={provided.innerRef}
                 onClick={onOpen}    >
                     <CardBody>
+                        <Box color={"gray"} fontSize={"small"}>  Task </Box>
                         <Stack divider={<StackDivider />} spacing='4'>
-                            <Box>  {taskItem.name} </Box>
+                            <Box fontWeight={"bold"}>  {taskItem.name} </Box>
                             <HStack>
                                 <EditIcon onClick={editModal.onOpen}/>
                                 <DeleteIcon onClick={deleteModal.onOpen}/>
@@ -236,6 +262,8 @@ export function KanbanItemTask({task, index, change} : {task: Task, index: numbe
                         createdAt: taskItem.createdAt
                     }
                     setTaskItem(newTaskItem);
+                    console.log(newTaskItem.priority);
+                    handleUpdateTask(newTaskItem);
                     actions.resetForm();
                     } else {
                     console.log(response);
@@ -463,7 +491,7 @@ export function KanbanItemTask({task, index, change} : {task: Task, index: numbe
     )
 }
 
-export function KanbanItemMilestone({milestone, index, change} : {milestone: Milestone, index: number, change: any}) {
+export function KanbanItemMilestone({milestone, index, change} : KanbanItemMilestoneProps) {
     const editModal = useDisclosure();
     const deleteModal = useDisclosure();
     // const { isOpen, onOpen, onClose } = useDisclosure()
@@ -524,10 +552,11 @@ export function KanbanItemMilestone({milestone, index, change} : {milestone: Mil
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
                 >
-                    <CardBody>
+                    <CardBody>                            
+                        <Box color={"gray"} fontSize={"small"}>  Milestone </Box>
                         <Stack divider={<StackDivider />} spacing='4'>
                             <Box>  
-                                <FormLabel paddingBlockEnd={"20px"}>{milestoneName}</FormLabel>
+                                <FormLabel fontWeight={"bold"}>{milestoneName}</FormLabel>
                             </Box>
                             <HStack>
                                 <EditIcon onClick={editModal.onOpen}/>
@@ -713,7 +742,7 @@ export function KanbanItemMilestone({milestone, index, change} : {milestone: Mil
     )
 }
 
-export function KanbanItemQATask({task, index, change} : {task: Task, index: number, change: any}) {
+export function KanbanItemQATask({task, index, updateParentTask, deleteParentTask} : KanbanItemQATaskProps) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
@@ -724,6 +753,7 @@ export function KanbanItemQATask({task, index, change} : {task: Task, index: num
     const project = useContext(ApiContext).project;
 
     const [taskItem, setTaskItem] = useState(task);
+    const dragId = taskItem.id + "QA";
 
     function updateMilestoneButton(mname: string) {
         const btn = document.getElementById("mnameStringQA");
@@ -740,7 +770,7 @@ export function KanbanItemQATask({task, index, change} : {task: Task, index: num
       }
     
     function updateQAMenuButton(pri: string){
-    const btn = document.getElementById("qaPriorityStr");
+    const btn = document.getElementById("qaPriorityStrQA");
     if (btn) {
         btn.innerText = pri;
     }
@@ -780,12 +810,17 @@ export function KanbanItemQATask({task, index, change} : {task: Task, index: num
     function handleDeleteTask(){
         deleteModal.onClose();
         deleteTask();
-        change(task);
+        deleteParentTask(task);
+    }
+
+    function handleUpdateTask(t: Task){
+        if (t)
+            updateParentTask(t);
     }
 
     return (
         // requires task id
-        <Draggable draggableId={task.id || ""} index={index}>
+        <Draggable draggableId={dragId || ""} index={index}>
             {(provided, snapshot) => (
                 <>
                 <Card
@@ -794,8 +829,9 @@ export function KanbanItemQATask({task, index, change} : {task: Task, index: num
                 ref={provided.innerRef}
                 onClick={onOpen}    >
                     <CardBody>
+                        <Box color={"gray"} fontSize={"small"}>  QA Task </Box>
                         <Stack divider={<StackDivider />} spacing='4'>
-                            <Box>  {taskItem.qaTask.name} </Box>
+                            <Box fontWeight={"bold"}>  {taskItem.qaTask.name} </Box>
                             <HStack>
                                 <EditIcon onClick={editModal.onOpen}/>
                                 <DeleteIcon onClick={deleteModal.onOpen}/>
@@ -904,6 +940,8 @@ export function KanbanItemQATask({task, index, change} : {task: Task, index: num
                         createdAt: taskItem.createdAt
                     }
                     setTaskItem(newTaskItem);
+                    console.log(newTaskItem.qaTask.priority);
+                    handleUpdateTask(newTaskItem);
                     actions.resetForm();
                     } else {
                     console.log(response);
