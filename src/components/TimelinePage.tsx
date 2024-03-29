@@ -57,7 +57,7 @@ function TimelinePageContent() {
       x: milestone.id,
       z: milestone.name,
       y: [
-        new Date().getTime(),
+        new Date(milestone.createdAt!).getTime(),
         new Date(milestone.dueDate).getTime(),
       ],
       fillColor: '#EDAE0F'
