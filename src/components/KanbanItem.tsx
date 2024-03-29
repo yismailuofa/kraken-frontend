@@ -43,6 +43,8 @@ import * as Yup from "yup";
 import { useContext } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DeleteIcon, EditIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import Multiselect from 'multiselect-react-dropdown';
+
 
 interface KanbanItemTaskProps {
     task: Task, 
@@ -501,9 +503,31 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
     const client = useContext(ApiContext).client;
     const project = useContext(ApiContext).project;
 
-    const [milestoneName, setMilestoneName] = useState(milestone.name)
-    const [milestoneDescription, setMilestoneDescription] = useState(milestone.description)
-    const [milestoneDueDate, setMilestoneDueDate] = useState(milestone.dueDate)
+    const [milestoneName, setMilestoneName] = useState(milestone.name);
+    const [milestoneDescription, setMilestoneDescription] = useState(milestone.description);
+    const [milestoneDueDate, setMilestoneDueDate] = useState(milestone.dueDate);
+    const [milestoneTasks, setMilestoneTasks] = useState(milestone.dependentTasks);
+    const [milestoneMilestones, setMilestoneMilstones] = useState(milestone.dependentMilestones);
+
+    const possibleChildTasks = project?.tasks?.map(({ name, id }) => {
+        return { name: name, id: id };
+    });
+
+    const possibleChildMilestones = project?.milestones?.map(({name, id}) => {
+        return { name: name, id: id };
+    });
+
+    const task_state = {
+        options: possibleChildTasks,
+        selectedValue: milestoneTasks 
+    };
+
+    const milestone_state = {
+        options: possibleChildMilestones,
+        selectedValue: milestoneMilestones 
+    };
+
+    console.log(milestone.dependentTasks);
 
     const deleteMilestone = async () => {
         const { data, error, response } = await client.DELETE("/milestones/{id}", {
@@ -627,7 +651,8 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                     setMilestoneName(values.milestoneName)
                     setMilestoneDescription(values.description)
                     setMilestoneDueDate(values.dueDate)
-
+                    setMilestoneTasks(task_state.selectedValue)
+                    setMilestoneMilstones(milestone_state.selectedValue)
                     } else {
                     console.log(response);
                     }
@@ -667,6 +692,24 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                             setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
                             startDate={new Date(milestoneDueDate.split("T")[0])}
                         />
+
+                        <HStack justifyContent="flex-start" width="100%" alignItems="center">
+                        <FormLabel>Dependent Tasks:</FormLabel>
+                        <Multiselect
+                        options={task_state.options} // Options to display in the dropdown
+                        selectedValues={task_state.selectedValue} // Preselected value to persist in dropdown
+                        displayValue="name" // Property name to display in the dropdown options
+                        />
+                        </HStack>
+
+                        <HStack justifyContent="flex-start" width="100%" alignItems="center">
+                        <FormLabel>Dependent Milestones:</FormLabel>
+                        <Multiselect
+                        options={milestone_state.options} // Options to display in the dropdown
+                        selectedValues={milestone_state.selectedValue} // Preselected value to persist in dropdown
+                        displayValue="name" // Property name to display in the dropdown options
+                        /> 
+                        </HStack>
 
                         <Stack spacing={4} direction="row" align="center">
                         <Button
