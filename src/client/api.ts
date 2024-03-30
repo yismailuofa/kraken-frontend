@@ -106,7 +106,7 @@ export interface components {
       dueDate: string;
       /** @default Medium */
       priority?: components["schemas"]["Priority"];
-      /** @default Todo */
+      /** @default To Do */
       status?: components["schemas"]["Status"];
       /**
        * Assignedto
@@ -199,7 +199,7 @@ export interface components {
       dueDate: string;
       /** @default Medium */
       priority?: components["schemas"]["Priority"];
-      /** @default Todo */
+      /** @default To Do */
       status?: components["schemas"]["Status"];
       /**
        * Assignedto
@@ -252,7 +252,7 @@ export interface components {
       dependentTasks?: string[];
       /** Id */
       id?: string | null;
-      /** @default Todo */
+      /** @default To Do */
       status?: components["schemas"]["Status"];
       /**
        * Tasks
@@ -281,7 +281,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-20T23:10:28
+       * @default 2024-03-29T17:53:16
        */
       createdAt?: string;
     };
@@ -296,7 +296,7 @@ export interface components {
       /**
        * Createdat
        * Format: date-time
-       * @default 2024-03-20T23:10:28
+       * @default 2024-03-29T17:53:16
        */
       createdAt?: string;
       /**
@@ -381,7 +381,7 @@ export interface components {
      * Status
      * @enum {string}
      */
-    Status: "Todo" | "In Progress" | "Completed";
+    Status: "To Do" | "In Progress" | "Completed";
     /** Task */
     Task: {
       /** Name */
@@ -395,7 +395,7 @@ export interface components {
       dueDate: string;
       /** @default Medium */
       priority?: components["schemas"]["Priority"];
-      /** @default Todo */
+      /** @default To Do */
       status?: components["schemas"]["Status"];
       /**
        * Assignedto
