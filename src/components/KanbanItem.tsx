@@ -83,7 +83,7 @@ export function KanbanItemTask({task, index, type, updateParentTask, deleteParen
     useEffect(()=>{
         setTaskItem(task)
     }, [task])
-    
+
     const fetchProjectUsers = async() => {
       if (project && project.id) {
         const { error, data } = await client.GET("/projects/{id}/users", {
@@ -112,6 +112,90 @@ export function KanbanItemTask({task, index, type, updateParentTask, deleteParen
         statusColor = "yellow";
     } else if (task.priority === "Low") {
         statusColor = "green";
+    }
+
+    const possibleChildTasks = project?.tasks
+    ? project.tasks
+        .filter(item => item.id !== taskItem.id)
+        .filter((item) => {
+            if (taskItem.id)
+                return !(item?.dependentTasks?.includes(taskItem.id));
+        })
+        .map(({ name, id }) => ({ name, id }))
+    : [];
+
+    const possibleChildMilestones = project?.milestones
+    ? project.milestones
+        .filter((item) => {
+            if (taskItem.id)
+                return !(item?.dependentTasks?.includes(taskItem.id));
+        })
+        .map(({ name, id }) => ({ name, id }))
+    : [];
+
+    const task_state = {
+        options: possibleChildTasks,
+        selectedValue: project?.tasks
+          ?.map(({ name, id }) => {
+            if (id && taskItem.dependentTasks?.includes(id)) 
+                return {name: name, id: id};
+          })
+          .filter((value) => value !== undefined),
+      };
+
+    const milestone_state = {
+        options: possibleChildMilestones,
+        selectedValue: project?.milestones?.map(({name, id}) => {
+            if (id && taskItem.dependentMilestones?.includes(id) && name)
+            return {name: name, id: id};
+        })
+        .filter((value) => value !== undefined),
+    };
+
+    function onTaskSelect(selectedList: any, selectedItem: any) {
+        const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+  
+        if (selectedTask && selectedTask.id && taskItem.dependentTasks){
+            const newList = [...taskItem.dependentTasks, selectedTask.id];
+            var newTaskItem = taskItem;
+            newTaskItem.dependentTasks = newList;
+            setTaskItem(newTaskItem);
+            console.log(newTaskItem)
+        }
+    }
+
+    function onTaskRemove(selectedList: any, selectedItem: any) {
+        const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+  
+        if (selectedTask && selectedTask.id){
+            const newList = taskItem.dependentTasks?.filter((item) => item !== selectedTask.id);
+            var newTaskItem = taskItem;
+            newTaskItem.dependentTasks = newList;
+            setTaskItem(newTaskItem);
+        }
+    }
+  
+    function onMilestoneSelect(selectedList: any, selectedItem: any) {
+        const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+        if (selectedM && selectedM.id && taskItem.dependentMilestones){
+            const newList = [...taskItem.dependentMilestones, selectedM.id];
+            var newTaskItem = taskItem;
+            newTaskItem.dependentMilestones = newList;
+            setTaskItem(newTaskItem);
+            console.log(newTaskItem)
+        }
+    }
+
+    function onMilestoneRemove(selectedList: any, selectedItem: any) {
+        const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+        if (selectedM && selectedM.id && taskItem.dependentMilestones){
+            const newList = taskItem.dependentMilestones.filter((item) => item !== selectedM.id);
+            var newTaskItem = taskItem;
+            newTaskItem.dependentMilestones = newList;
+            setTaskItem(newTaskItem);
+        }
     }
 
     function updateMilestoneButton(mname: string) {
@@ -455,6 +539,29 @@ export function KanbanItemTask({task, index, type, updateParentTask, deleteParen
                                     </MenuList>
                                 </Menu>   
                         </HStack>
+
+                        <HStack justifyContent="space-between" width="100%" alignItems="center">
+                        <FormLabel>Dependent Tasks:</FormLabel>
+                        <Multiselect
+                        options={task_state.options} // Options to display in the dropdown
+                        selectedValues={task_state.selectedValue} // Preselected value to persist in dropdown
+                        displayValue="name" // Property name to display in the dropdown options
+                        onSelect={onTaskSelect}
+                        onRemove={onTaskRemove}
+                        />
+                        </HStack>
+
+                        <HStack justifyContent="space-between" width="100%" alignItems="center">
+                        <FormLabel>Dependent Milestones:</FormLabel>
+                        <Multiselect
+                        options={milestone_state.options} // Options to display in the dropdown
+                        selectedValues={milestone_state.selectedValue} // Preselected value to persist in dropdown
+                        displayValue="name" // Property name to display in the dropdown options
+                        onSelect={onMilestoneSelect}
+                        onRemove={onMilestoneRemove}
+                        /> 
+                        </HStack>
+
                         </VStack>
 
                         <Divider orientation="vertical" borderColor="gray.200" height="100%" />
@@ -609,17 +716,21 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
     const [milestoneTasks, setMilestoneTasks] = useState(milestone.dependentTasks);
     const [milestoneMilestones, setMilestoneMilstones] = useState(milestone.dependentMilestones);
 
-    const possibleChildTasks = project?.tasks?.map(({ name, id }) => {
-        return { name: name, id: id };
-    });
+    const possibleChildTasks = project?.tasks
+    ? project.tasks
+        .filter((item) => {
+            if (milestone.id)
+                return !(item?.dependentMilestones?.includes(milestone.id));
+        })
+        .map(({ name, id }) => ({ name, id }))
+    : [];
 
     const possibleChildMilestones = project?.milestones
     ? project.milestones
         .filter(item => item.id !== milestone.id)
         .filter((item) => {
-            const checkingMilestone = project?.milestones?.find((m) => m.id === item.id);
             if (milestone.id)
-                return !(checkingMilestone?.dependentMilestones?.includes(milestone.id));
+                return !(item?.dependentMilestones?.includes(milestone.id));
         })
         .map(({ name, id }) => ({ name, id }))
     : [];
