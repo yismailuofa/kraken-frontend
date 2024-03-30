@@ -311,7 +311,7 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
 
         let status: Status = data.status;
         switch (status) {
-          case "Todo":
+          case "To Do":
             status += " ⏳";
             break;
           case "In Progress":
