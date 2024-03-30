@@ -19,14 +19,14 @@ export function RemoveMemberModal({onConfirmRemoveMember, member, isOpen, onClos
 					<ModalHeader>Confirm Remove Member</ModalHeader>
           <ModalBody>
             <VStack spacing={3} align="left">
-              <Text>Are you sure you want to delete {member?.username ? member.username : ""} from the project?</Text>
+              <Text>Are you sure you want to delete <b>{member?.username ? member.username : ""}</b> from the project?</Text>
             </VStack>
           </ModalBody>
           <ModalFooter>
               <Button colorScheme='teal' mr={3} onClick={() => onClose()}>
                   Cancel
               </Button>
-              <Button colorScheme='red' mr={3} type="submit" onClick={() => {onClose(); onConfirmRemoveMember(member);}}>Remove</Button>
+              <Button colorScheme='red' mr={3} type="submit" onClick={() => {onClose(); onConfirmRemoveMember(member);}}>Remove Member</Button>
           </ModalFooter>
 				</ModalContent>
 			</Modal>

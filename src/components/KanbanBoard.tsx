@@ -125,7 +125,7 @@ export function KanbanBoardContent({
     // sets both task and qa task
     if (data && data.tasks) {
       const tasklist = data.tasks;
-      const plannedTaskList = tasklist?.filter((task) => task.status === "Todo");
+      const plannedTaskList = tasklist?.filter((task) => task.status === "To Do");
       const inProgressTaskList = tasklist?.filter(
         (task) => task.status === "In Progress"
       );
@@ -133,7 +133,7 @@ export function KanbanBoardContent({
         (task) => task.status === "Completed"
       );
 
-      const plannedQATaskList = tasklist?.filter((task) => task.qaTask.status === "Todo");
+      const plannedQATaskList = tasklist?.filter((task) => task.qaTask.status === "To Do");
       const inProgressQATaskList = tasklist?.filter(
         (task) => task.qaTask.status === "In Progress"
       );
@@ -166,7 +166,7 @@ export function KanbanBoardContent({
     if (data && data.milestones) {
       const mlist = data.milestones;
       const temp_planned = mlist?.filter(
-        (milestone) => milestone.status === "Todo"
+        (milestone) => milestone.status === "To Do"
       );
       const temp_started = mlist?.filter(
         (milestone) => milestone.status === "In Progress"
@@ -288,8 +288,8 @@ export function KanbanBoardContent({
 
   const updateTaskStatus = async (
     task: Task,
-    endTaskStatus: "Todo" | "In Progress" | "Completed" | null | undefined,
-    endQATaskStatus: "Todo" | "In Progress" | "Completed" | null | undefined
+    endTaskStatus: "To Do" | "In Progress" | "Completed" | null | undefined,
+    endQATaskStatus: "To Do" | "In Progress" | "Completed" | null | undefined
   ) => {
     const { data, error, response } = await client.PATCH(`/tasks/{id}`, {
       params: {
@@ -314,7 +314,7 @@ export function KanbanBoardContent({
 
   const updateMilestoneStatus = async (
     milestone: Milestone,
-    endStatus: "Todo" | "In Progress" | "Completed" | null | undefined
+    endStatus: "To Do" | "In Progress" | "Completed" | null | undefined
   ) => {
     // TO DO: update QA task
     const { data, error, response } = await client.PATCH(`/milestones/{id}`, {
@@ -416,7 +416,7 @@ export function KanbanBoardContent({
     let draggedItem: Task | undefined;
     let temp_dest: Task[] = [];
     let temp_src: Task[] = [];
-    let dest_status: "Todo" | "In Progress" | "Completed" | null | undefined;
+    let dest_status: "To Do" | "In Progress" | "Completed" | null | undefined;
 
     if (!destination || source.droppableId === destination.droppableId) return;
 
@@ -436,7 +436,7 @@ export function KanbanBoardContent({
       draggedItem = inProgressTaskItems.find((item) => item.id === draggableId);
       temp_src = inProgressTaskItems.filter((item) => item.id !== draggableId);
       if (draggedItem) temp_dest = [...plannedTaskItems, draggedItem];
-      dest_status = "Todo";
+      dest_status = "To Do";
     }
     if (source.droppableId === "t1" && destination.droppableId === "t2") {
       draggedItem = inProgressTaskItems.find((item) => item.id === draggableId);
@@ -448,7 +448,7 @@ export function KanbanBoardContent({
       draggedItem = completedTaskItems.find((item) => item.id === draggableId);
       temp_src = completedTaskItems.filter((item) => item.id !== draggableId);
       if (draggedItem) temp_dest = [...plannedTaskItems, draggedItem];
-      dest_status = "Todo";
+      dest_status = "To Do";
     }
     if (source.droppableId === "t2" && destination.droppableId === "t1") {
       draggedItem = completedTaskItems.find((item) => item.id === draggableId);
@@ -470,7 +470,7 @@ export function KanbanBoardContent({
     let draggedItem: Milestone | undefined;
     let temp_dest: Milestone[] = [];
     let temp_src: Milestone[] = [];
-    let dest_status: "Todo" | "In Progress" | "Completed" | null | undefined;
+    let dest_status: "To Do" | "In Progress" | "Completed" | null | undefined;
 
     if (!destination || source.droppableId === destination.droppableId) return;
 
@@ -502,7 +502,7 @@ export function KanbanBoardContent({
         (item) => item.id !== draggableId
       );
       if (draggedItem) temp_dest = [...plannedMilestoneItems, draggedItem];
-      dest_status = "Todo";
+      dest_status = "To Do";
     }
     if (source.droppableId === "m1" && destination.droppableId === "m2") {
       draggedItem = inProgressMilestoneItems.find(
@@ -522,7 +522,7 @@ export function KanbanBoardContent({
         (item) => item.id !== draggableId
       );
       if (draggedItem) temp_dest = [...plannedMilestoneItems, draggedItem];
-      dest_status = "Todo";
+      dest_status = "To Do";
     }
     if (source.droppableId === "m2" && destination.droppableId === "m1") {
       draggedItem = completedMilestoneItems.find(
@@ -550,7 +550,7 @@ export function KanbanBoardContent({
     let draggedItem: Task | undefined;
     let temp_dest: Task[] = [];
     let temp_src: Task[] = [];
-    let dest_status: "Todo" | "In Progress" | "Completed" | null | undefined;
+    let dest_status: "To Do" | "In Progress" | "Completed" | null | undefined;
 
     if (!destination || source.droppableId === destination.droppableId) return;
 
@@ -570,7 +570,7 @@ export function KanbanBoardContent({
       draggedItem = inProgressQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
       temp_src = inProgressQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
       if (draggedItem) temp_dest = [...plannedQATaskItems, draggedItem];
-      dest_status = "Todo";
+      dest_status = "To Do";
     }
     if (source.droppableId === "qt1" && destination.droppableId === "qt2") {
       draggedItem = inProgressQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
@@ -582,7 +582,7 @@ export function KanbanBoardContent({
       draggedItem = completedQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
       temp_src = completedQATaskItems.filter((item) => item.id !== draggableId.slice(0, -2));
       if (draggedItem) temp_dest = [...plannedQATaskItems, draggedItem];
-      dest_status = "Todo";
+      dest_status = "To Do";
     }
     if (source.droppableId === "qt2" && destination.droppableId === "qt1") {
       draggedItem = completedQATaskItems.find((item) => item.id === draggableId.slice(0, -2));
@@ -829,14 +829,14 @@ export function KanbanBoardContent({
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <VStack h="80vh" alignContent={"top"} justifyContent={"right"}>
+      <VStack h="100%" alignContent={"top"} justifyContent={"right"}>
         <HStack
           justifyContent={"space-between"}
-          paddingBottom={"5px"}
+          paddingBottom={"15px"}
           w={"100%"}
         >
           <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal">
               <Text id="currentDisplayText">Task</Text>
             </MenuButton>
             <MenuList>
@@ -868,8 +868,8 @@ export function KanbanBoardContent({
             <HStack id="statusFilter">
             <FormLabel minW={15}> Status: </FormLabel>
             <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <Text id="currentStatusFilterText"> Choose a status </Text>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal">
+                <Text id="currentStatusFilterText"> All </Text>
               </MenuButton>
               <MenuList>
                 <MenuItem
@@ -908,8 +908,8 @@ export function KanbanBoardContent({
             <HStack paddingLeft={"20px"}>
             <FormLabel minW={15}> Priority: </FormLabel>
             <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <Text id="currentPriorityFilterText"> Choose a prioirity </Text>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal">
+                <Text id="currentPriorityFilterText"> All </Text>
               </MenuButton>
               <MenuList>
                 <MenuItem
@@ -948,7 +948,7 @@ export function KanbanBoardContent({
         </HStack>
         <Flex
           justifyContent={"space-evenly"}
-          gap={20}
+          gap={5}
           id="taskDisplay"
           display={"flex"}
         >
@@ -983,7 +983,7 @@ export function KanbanBoardContent({
 
         <Flex
           justifyContent={"space-evenly"}
-          gap={20}
+          gap={5}
           id="milestoneDisplay"
           display={"none"}
         >
@@ -1015,7 +1015,7 @@ export function KanbanBoardContent({
 
         <Flex
           justifyContent={"space-evenly"}
-          gap={20}
+          gap={5}
           id="QATaskDisplay"
           display={"none"}
         >

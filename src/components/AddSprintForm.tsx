@@ -137,7 +137,7 @@ export function AddSprintForm({onProjectUpdated}: AddSprintProps) {
                 </Button>
 
                 <Button type="submit" colorScheme="teal" variant="solid">
-                  Create
+                  Create Sprint
                 </Button>
               </Stack>
             </VStack>

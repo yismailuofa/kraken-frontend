@@ -30,6 +30,10 @@ import {
     MenuItem,
     Text,
     Divider,
+    Avatar,
+    Tag,
+    Tooltip,
+    Center,
 } from "@chakra-ui/react"
 import { Draggable } from "react-beautiful-dnd";
 import { Milestone, Task } from "../contexts/ApiContext";
@@ -80,7 +84,6 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
     const project = useContext(ApiContext).project;
 
     const [taskItem, setTaskItem] = useState(task);
-
     const [projectUsers, setProjectUsers] = useState<ProjUser[]>([]);
 
     const fetchProjectUsers = async() => {
@@ -103,6 +106,15 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
     useEffect(() => {
       fetchProjectUsers();
     }, [client]);
+    let statusColor = "grey";
+
+    if (task.priority === "High") {
+        statusColor = "red";
+    } else if (task.priority === "Medium") {
+        statusColor = "yellow";
+    } else if (task.priority === "Low") {
+        statusColor = "green";
+    }
 
     function updateMilestoneButton(mname: string) {
         const btn = document.getElementById("mnameString");
@@ -197,8 +209,15 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                         <Stack divider={<StackDivider />} spacing='4'>
                             <Box fontWeight={"bold"}>  {taskItem.name} </Box>
                             <HStack>
-                                <EditIcon onClick={editModal.onOpen}/>
-                                <DeleteIcon onClick={deleteModal.onOpen}/>
+                                {task.assignedTo !== "Unassigned" &&
+                                    <Tooltip label={task.assignedTo}>
+                                        <Avatar name={task.assignedTo} size={"sm"} mr={2}></Avatar>
+                                    </Tooltip>
+                                }
+                                <Tag colorScheme={statusColor}>{task.priority}</Tag>
+                                <Spacer />
+                                <EditIcon onClick={editModal.onOpen} color={"teal"} boxSize={5} mr={2} cursor={"pointer"}/>
+                                <DeleteIcon onClick={deleteModal.onOpen} boxSize={5} color={"#C0302F"} cursor={"pointer"}/>
                             </HStack>
                         </Stack>
                     </CardBody>
@@ -210,6 +229,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
                 size="full"
+                isCentered
                 >
                 <ModalOverlay />
                 <ModalContent maxW="900px">
@@ -510,7 +530,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                         </Button>
 
                         <Button type="submit" colorScheme="teal" variant="solid" width={"200px"} onClick={editModal.onClose}>
-                            Update Task
+                            Save
                         </Button>
                         </Stack>
                     </VStack>
@@ -522,48 +542,29 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                 </ModalContent>
                 </Modal>
                 <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={deleteModal.isOpen}
-                onClose={deleteModal.onClose}
-                size="lg">
+                    initialFocusRef={initialRef}
+                    finalFocusRef={finalRef}
+                    isOpen={deleteModal.isOpen}
+                    onClose={deleteModal.onClose}
+                    size="lg"
+                    isCentered
+                >
                 <ModalOverlay />
                 <ModalContent>
                 <ModalHeader>Delete Task</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody pb={6}></ModalBody>
-                    <VStack
-                        mx="auto"
-                        w={{ base: "90%", md: 400 }}
-                        h="30vh"
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                    <FormLabel> Are you sure you would like to delete this task? </FormLabel>
-                    <Heading>{task.name}</Heading>
-                    <Spacer/>
-                    <Stack spacing={4} direction="row" align="center">
-                    <Button
-                        colorScheme="teal"
-                        variant="solid"
-                        onClick={deleteModal.onClose}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button 
-                        colorScheme="red" 
-                        variant="solid" 
-                        onClick={
-                            handleDeleteTask
-                        }
-                        id="taskDeleteButton"
-                    >
-                        Delete Task
-                    </Button>
-                    </Stack>
-                    <Spacer />
+                <ModalBody>
+                    <VStack spacing={3} align="left">
+                        <Text>Are you sure you would like to delete this task?</Text>
+                        <Text fontWeight={"bold"}>{task.name}</Text>
                     </VStack>
+                </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='teal' mr={3} onClick={deleteModal.onClose}>
+                            Cancel
+                        </Button>
+                        <Button colorScheme='red' mr={3} variant="solid" onClick={handleDeleteTask} id="taskDeleteButton">Delete Task</Button>
+                    </ModalFooter>
                 </ModalContent>
                 </Modal>
                 </>
@@ -717,8 +718,9 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                                 <FormLabel fontWeight={"bold"}>{milestoneName}</FormLabel>
                             </Box>
                             <HStack>
-                                <EditIcon onClick={editModal.onOpen}/>
-                                <DeleteIcon onClick={deleteModal.onOpen}/>
+                                <Spacer />
+                                <EditIcon onClick={editModal.onOpen} color={"teal"} boxSize={5} mr={2} cursor={"pointer"}/>
+                                <DeleteIcon onClick={deleteModal.onOpen} boxSize={5} color={"#C0302F"} cursor={"pointer"}/>
                             </HStack>
                         </Stack>
                     </CardBody>
@@ -730,6 +732,7 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                 isOpen={editModal.isOpen}
                 onClose={editModal.onClose}
                 size="full"
+                isCentered
                 >
                 <ModalOverlay />
                 <ModalContent maxW="900px">
@@ -800,7 +803,7 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                         h="70vh"
                         justifyContent="center"
                     >
-                        <Heading>Update Milestone</Heading>
+                        <Heading>Edit Milestone</Heading>
 
                         <TextField
                         id="milestoneName"
@@ -859,7 +862,7 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                         </Button>
 
                         <Button type="submit" colorScheme="teal" variant="solid" onClick={editModal.onClose}>
-                            Update Milestone
+                            Save
                         </Button>
                         </Stack>
                     </VStack>
@@ -871,48 +874,33 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                 </ModalContent>
                 </Modal>
                 <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={deleteModal.isOpen}
-                onClose={deleteModal.onClose}
-                size="lg">
+                    initialFocusRef={initialRef}
+                    finalFocusRef={finalRef}
+                    isOpen={deleteModal.isOpen}
+                    onClose={deleteModal.onClose}
+                    size="lg"
+                    isCentered
+                >
                 <ModalOverlay />
                 <ModalContent>
                 <ModalHeader>Delete Milestone</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody pb={6}></ModalBody>
-                    <VStack
-                        mx="auto"
-                        w={{ base: "90%", md: 400 }}
-                        h="30vh"
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                    <FormLabel> Are you sure you would like to delete this milestone? All of its subtasks will be deleted as well. </FormLabel>
-                    <Heading>{milestone.name}</Heading>
-                    <Spacer/>
-                    <Stack spacing={4} direction="row" align="center">
-                    <Button
-                        colorScheme="teal"
-                        variant="solid"
-                        onClick={deleteModal.onClose}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button 
-                        colorScheme="red" 
-                        variant="solid" 
-                        onClick={
-                            handleDeleteMilestone
-                        }
-                        id="milestoneDeleteButton"
-                    >
-                        Delete Milestone
-                    </Button>
-                    </Stack>
-                    <Spacer />
+                <ModalBody>
+                    <VStack spacing={3} align="left">
+                        <Text>Are you sure you would like to delete this milestone?</Text>
+                        <Text fontWeight={"bold"}>{milestone.name}</Text>
+                        <HStack>
+                            <Text color={"red"} fontWeight={"bold"}>Warning:</Text>
+                            <Text>All of the milestone's subtasks will be deleted</Text>
+                        </HStack>
                     </VStack>
+                </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='teal' mr={3} onClick={deleteModal.onClose}>
+                            Cancel
+                        </Button>
+                        <Button colorScheme='red' mr={3} variant="solid" onClick={handleDeleteMilestone} id="milestoneDeleteButton">Delete Milestone</Button>
+                    </ModalFooter>
                 </ModalContent>
                 </Modal>
                 </>
@@ -934,6 +922,16 @@ export function KanbanItemQATask({task, index, updateParentTask, deleteParentTas
 
     const [taskItem, setTaskItem] = useState(task);
     const dragId = taskItem.id + "QA";
+
+    let statusColor = "grey";
+
+    if (task.qaTask.priority === "High") {
+        statusColor = "red";
+    } else if (task.qaTask.priority === "Medium") {
+        statusColor = "yellow";
+    } else if (task.qaTask.priority === "Low") {
+        statusColor = "green";
+    }
 
     function updateMilestoneButton(mname: string) {
         const btn = document.getElementById("mnameStringQA");
@@ -1013,8 +1011,15 @@ export function KanbanItemQATask({task, index, updateParentTask, deleteParentTas
                         <Stack divider={<StackDivider />} spacing='4'>
                             <Box fontWeight={"bold"}>  {taskItem.qaTask.name} </Box>
                             <HStack>
-                                <EditIcon onClick={editModal.onOpen}/>
-                                <DeleteIcon onClick={deleteModal.onOpen}/>
+                                {task.qaTask.assignedTo !== "Unassigned" &&
+                                    <Tooltip label={task.qaTask.assignedTo}>
+                                        <Avatar name={task.qaTask.assignedTo} size={"sm"} mr={2}></Avatar>
+                                    </Tooltip>
+                                }
+                                <Tag colorScheme={statusColor}>{task.qaTask.priority}</Tag>
+                                <Spacer />
+                                <EditIcon onClick={editModal.onOpen} color={"teal"} boxSize={5} mr={2} cursor={"pointer"}/>
+                                <DeleteIcon onClick={deleteModal.onOpen} boxSize={5} color={"#C0302F"} cursor={"pointer"}/>
                             </HStack>
                         </Stack>
                     </CardBody>
@@ -1286,7 +1291,7 @@ export function KanbanItemQATask({task, index, updateParentTask, deleteParentTas
                         </Button>
 
                         <Button type="submit" colorScheme="teal" variant="solid" width={"200px"} onClick={editModal.onClose}>
-                            Update Task
+                            Save
                         </Button>
                         </Stack>
                     </VStack>
@@ -1298,48 +1303,33 @@ export function KanbanItemQATask({task, index, updateParentTask, deleteParentTas
                 </ModalContent>
                 </Modal>
                 <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={deleteModal.isOpen}
-                onClose={deleteModal.onClose}
-                size="lg">
+                    initialFocusRef={initialRef}
+                    finalFocusRef={finalRef}
+                    isOpen={deleteModal.isOpen}
+                    onClose={deleteModal.onClose}
+                    size="lg"
+                    isCentered
+                >
                 <ModalOverlay />
                 <ModalContent>
-                <ModalHeader>Delete Task</ModalHeader>
+                <ModalHeader>Delete QA Task</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody pb={6}></ModalBody>
-                    <VStack
-                        mx="auto"
-                        w={{ base: "90%", md: 400 }}
-                        h="30vh"
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                    <FormLabel> Are you sure you would like to delete this QA task with its associated task? </FormLabel>
-                    <Heading>{task.name}</Heading>
-                    <Spacer/>
-                    <Stack spacing={4} direction="row" align="center">
-                    <Button
-                        colorScheme="teal"
-                        variant="solid"
-                        onClick={deleteModal.onClose}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button 
-                        colorScheme="red" 
-                        variant="solid" 
-                        onClick={
-                            handleDeleteTask
-                        }
-                        id="taskDeleteButton"
-                    >
-                        Delete Task
-                    </Button>
-                    </Stack>
-                    <Spacer />
+                <ModalBody>
+                    <VStack spacing={3} align="left">
+                        <Text>Are you sure you would like to delete this QA task?</Text>
+                        <Text fontWeight={"bold"}>{task.qaTask.name}</Text>
+                        <HStack>
+                            <Text color={"red"} fontWeight={"bold"}>Warning:</Text>
+                            <Text>The associated task <b>{task.name}</b> will be deleted</Text>
+                        </HStack>
                     </VStack>
+                </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='teal' mr={3} onClick={deleteModal.onClose}>
+                            Cancel
+                        </Button>
+                        <Button colorScheme='red' mr={3} variant="solid" onClick={handleDeleteTask} id="taskDeleteButton">Delete Task</Button>
+                    </ModalFooter>
                 </ModalContent>
                 </Modal>
                 </>

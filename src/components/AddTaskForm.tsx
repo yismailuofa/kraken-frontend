@@ -106,7 +106,7 @@ export function AddTaskForm() {
             description: values.description,
             dueDate: values.dueDate,
             priority: values.priority, 
-            status: "Todo", 
+            status: "To Do", 
             assignedTo: values.assignTo,
             projectId: (project?.id || "") as string,
             milestoneId: values.milestoneId,
@@ -117,7 +117,7 @@ export function AddTaskForm() {
               description: values.qaDescription,
               dueDate: values.qaDueDate,
               priority: values.qaPriority,
-              status: "Todo",
+              status: "To Do",
               assignedTo: values.qaAssignTo
             }
         }});

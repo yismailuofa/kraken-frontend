@@ -19,14 +19,14 @@ export function DeleteSprintModal({sprint, onConfirmDeleteSprint, isOpen, onClos
 					<ModalHeader>Confirm Sprint Deletion</ModalHeader>
           <ModalBody>
             <VStack spacing={3} align="left">
-              <Text>Are you sure you want to delete sprint "{sprint.name}"?</Text>
+              <Text>Are you sure you want to delete sprint <b>{sprint.name}</b>?</Text>
             </VStack>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme='teal' mr={3} onClick={() => onClose()}>
                 Cancel
             </Button>
-            <Button colorScheme='red' mr={3} type="submit" onClick={() => {onClose(); onConfirmDeleteSprint(sprint);}}>Delete</Button>
+            <Button colorScheme='red' mr={3} type="submit" onClick={() => {onClose(); onConfirmDeleteSprint(sprint);}}>Delete Sprint</Button>
           </ModalFooter>
 				</ModalContent>
 			</Modal>

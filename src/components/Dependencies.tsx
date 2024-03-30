@@ -311,7 +311,7 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
 
         let status: Status = data.status;
         switch (status) {
-          case "Todo":
+          case "To Do":
             status += " ⏳";
             break;
           case "In Progress":
@@ -375,8 +375,8 @@ export const DependenciesContent = ({ project }: DependenciesContentProps) => {
           {completeness * 100}%
         </Badge>
         <Menu closeOnSelect={false}>
-          <MenuButton as={Button} maxH="35px">
-            Filter
+          <MenuButton as={Button} maxH="35px" colorScheme="teal">
+            Status Filter
           </MenuButton>
           <MenuList>
             <MenuOptionGroup
