@@ -72,7 +72,7 @@ interface SidebarProps extends BoxProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: "Kanban", icon: BsKanban, page: "/kanban" },
   { name: "Sprints", icon: GrCycle, page: "/sprintslist" },
-  { name: "Timeline", icon: MdTimeline, page: "/timeline" }, // TODO: update the page route when the backlog page is created
+  { name: "Timeline", icon: MdTimeline, page: "/timeline" },
   { name: "Dependencies", icon: CgArrowLongRightC, page: "/dependencies" },
   { name: "Projects", icon: BsFillGrid3X3GapFill, page: "/projectlist" },
 ]
