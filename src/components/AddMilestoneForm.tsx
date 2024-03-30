@@ -49,32 +49,32 @@ export function AddMilestoneForm() {
       }
     }
 
-    function onTaskRemove(selectedList: any, selectedItem: any) {
-      const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+  function onTaskRemove(selectedList: any, selectedItem: any) {
+    const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
 
-      if (selectedTask && selectedTask.id){
-        const newList = selectedTasks.filter((item) => item !== selectedTask.id);
-        setSelectedTasks(newList);
-      }
+    if (selectedTask && selectedTask.id){
+      const newList = selectedTasks.filter((item) => item !== selectedTask.id);
+      setSelectedTasks(newList);
     }
+  }
 
-    function onMilestoneSelect(selectedList: any, selectedItem: any) {
-      const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+  function onMilestoneSelect(selectedList: any, selectedItem: any) {
+    const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
 
-      if (selectedM && selectedM.id){
-        const newList = [...selectedMilestones, selectedM.id];
-        setSelectedMilestones(newList);
-      }
+    if (selectedM && selectedM.id){
+      const newList = [...selectedMilestones, selectedM.id];
+      setSelectedMilestones(newList);
     }
+  }
 
-    function onMilestoneRemove(selectedList: any, selectedItem: any) {
-      const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+  function onMilestoneRemove(selectedList: any, selectedItem: any) {
+    const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
 
-      if (selectedM && selectedM.id){
-        const newList = selectedMilestones.filter((item) => item !== selectedM.id);
-        setSelectedMilestones(newList);
-      }
+    if (selectedM && selectedM.id){
+      const newList = selectedMilestones.filter((item) => item !== selectedM.id);
+      setSelectedMilestones(newList);
     }
+  }
 
   return (
     <Formik

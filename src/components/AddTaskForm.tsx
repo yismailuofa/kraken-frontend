@@ -21,6 +21,63 @@ export function AddTaskForm() {
   const default_date = new Date();
 
   const [projectUsers, setProjectUsers] = useState<ProjUser[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+  const [selectedMilestones, setSelectedMilestones] = useState<string[]>([]);
+
+  const possibleChildTasks = project?.tasks?.map(({ name, id }) => {
+    return { name: name, id: id };
+  });
+
+  const possibleChildMilestones = project?.milestones?.map(({name, id}) => {
+    return { name: name, id: id };
+  });
+
+  const task_state = {
+    options: possibleChildTasks,
+    selectedValue:[] 
+  };
+
+  const milestone_state = {
+    options: possibleChildMilestones,
+    selectedValue:[] 
+  };
+
+  function onTaskSelect(selectedList: any, selectedItem: any) {
+    const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+    console.log(selectedTask);
+
+    if (selectedTask && selectedTask.id){
+      const newList = [...selectedTasks, selectedTask.id];
+      setSelectedTasks(newList);
+    }
+  }
+
+  function onTaskRemove(selectedList: any, selectedItem: any) {
+    const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+
+    if (selectedTask && selectedTask.id){
+      const newList = selectedTasks.filter((item) => item !== selectedTask.id);
+      setSelectedTasks(newList);
+    }
+  }
+
+  function onMilestoneSelect(selectedList: any, selectedItem: any) {
+    const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+    if (selectedM && selectedM.id){
+      const newList = [...selectedMilestones, selectedM.id];
+      setSelectedMilestones(newList);
+    }
+  }
+
+  function onMilestoneRemove(selectedList: any, selectedItem: any) {
+    const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+    if (selectedM && selectedM.id){
+      const newList = selectedMilestones.filter((item) => item !== selectedM.id);
+      setSelectedMilestones(newList);
+    }
+  }
 
   const fetchProjectUsers = async() => {
     if (project && project.id) {
@@ -110,8 +167,8 @@ export function AddTaskForm() {
             assignedTo: values.assignTo,
             projectId: (project?.id || "") as string,
             milestoneId: values.milestoneId,
-            dependentMilestones: [],
-            dependentTasks: [],
+            dependentMilestones: selectedMilestones,
+            dependentTasks: selectedTasks,
             qaTask: {
               name: values.qaTaskName,
               description: values.qaDescription,
@@ -174,6 +231,7 @@ export function AddTaskForm() {
                     </MenuList>
                 </Menu> 
             </HStack>
+
             <HStack justifyContent="space-between" width="100%" paddingBottom={"50px"}>
                 <VStack width="45%">
                 <Heading>Create Task</Heading>
@@ -205,7 +263,7 @@ export function AddTaskForm() {
                     startDate={new Date()}
                 />
 
-                <HStack justifyContent="flex-start" width={"100%"}>
+                <HStack justifyContent="space-between" width={"100%"}>
                     <FormLabel> Priority: </FormLabel> 
                     <Menu>           
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -234,7 +292,7 @@ export function AddTaskForm() {
                     </Menu>   
             </HStack>
 
-            <HStack justifyContent="flex-start" width={"100%"}>
+            <HStack justifyContent="space-between" width={"100%"}>
                     <FormLabel> Assign To: </FormLabel> 
                     <Menu>           
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -251,6 +309,28 @@ export function AddTaskForm() {
                           </MenuItem>)}
                         </MenuList>
                     </Menu>   
+            </HStack>
+
+            <HStack justifyContent="space-between" width={"100%"}>
+              <FormLabel>Dependent Tasks:</FormLabel>
+              <Multiselect
+              options={task_state.options} // Options to display in the dropdown
+              selectedValues={task_state.selectedValue} // Preselected value to persist in dropdown
+              displayValue="name" // Property name to display in the dropdown options
+              onSelect={onTaskSelect}
+              onRemove={onTaskRemove}
+              />
+            </HStack>
+
+            <HStack justifyContent="space-between" width={"100%"}>
+              <FormLabel>Dependent Milestones:</FormLabel>
+              <Multiselect
+              options={milestone_state.options} // Options to display in the dropdown
+              selectedValues={milestone_state.selectedValue} // Preselected value to persist in dropdown
+              displayValue="name" // Property name to display in the dropdown options
+              onSelect={onMilestoneSelect}
+              onRemove={onMilestoneRemove}
+              /> 
             </HStack>
             
             </VStack>
@@ -287,7 +367,7 @@ export function AddTaskForm() {
 
             />
 
-            <HStack justifyContent="flex-start" width={"100%"}>
+            <HStack justifyContent="space-between" width={"100%"}>
                 <FormLabel> QA Priority: </FormLabel> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -316,7 +396,7 @@ export function AddTaskForm() {
                 </Menu>   
             </HStack>
 
-            <HStack justifyContent="flex-start" width={"100%"}>
+            <HStack justifyContent="space-between" width={"100%"}>
                 <FormLabel> Assign To: </FormLabel> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
