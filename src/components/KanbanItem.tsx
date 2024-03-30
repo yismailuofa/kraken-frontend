@@ -44,9 +44,11 @@ import { useNavigate } from "react-router-dom";
 import { TextArea } from "./TextArea";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ApiContext, MaybeProject } from "../contexts/ApiContext";
 import { DeleteIcon, EditIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import Multiselect from 'multiselect-react-dropdown';
+
 
 interface KanbanItemTaskProps {
     task: Task, 
@@ -68,6 +70,9 @@ interface KanbanItemQATaskProps {
     deleteParentTask: (deleted: Task) => void
 }
 
+interface ProjUser { id: string | null, username: string, email: string }
+
+
 export function KanbanItemTask({task, index, updateParentTask, deleteParentTask} : KanbanItemTaskProps) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
@@ -79,7 +84,28 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
     const project = useContext(ApiContext).project;
 
     const [taskItem, setTaskItem] = useState(task);
+    const [projectUsers, setProjectUsers] = useState<ProjUser[]>([]);
 
+    const fetchProjectUsers = async() => {
+      if (project && project.id) {
+        const { error, data } = await client.GET("/projects/{id}/users", {
+          params: { path: { id: project.id } },
+        });
+  
+        if (error) {
+          console.error(error);
+          return;
+        }
+  
+        if (data) {
+          setProjectUsers(data);
+        }
+      }
+    } 
+  
+    useEffect(() => {
+      fetchProjectUsers();
+    }, [client]);
     let statusColor = "grey";
 
     if (task.priority === "High") {
@@ -105,11 +131,25 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
       }
     
     function updateQAMenuButton(pri: string){
-    const btn = document.getElementById("qaPriorityStr");
-    if (btn) {
-        btn.innerText = pri;
+        const btn = document.getElementById("qaPriorityStr");
+        if (btn) {
+            btn.innerText = pri;
+        }
     }
-    }
+
+    function updateAssignButton(a: string) {
+        const btn = document.getElementById("assignStr");
+        if (btn) {
+            btn.innerText = a;
+        }
+      }
+    
+      function updateQAAssignButton(a: string) {
+        const btn = document.getElementById("qaAssignStr");
+        if (btn) {
+            btn.innerText = a;
+        }
+      }
 
     const deleteTask = async () => {
         const { data, error, response } = await client.DELETE("/tasks/{id}", {
@@ -203,10 +243,12 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                     dueDate: taskItem.dueDate,
                     priority: taskItem.priority,    
                     milestoneId: taskItem.milestoneId,
+                    assignedTo: taskItem.assignedTo,
                     qaTaskName: taskItem.qaTask.name,
                     qaDescription: taskItem.qaTask.description,
                     qaDueDate: taskItem.qaTask.dueDate,
-                    qaPriority: taskItem.qaTask.priority,     
+                    qaPriority: taskItem.qaTask.priority,  
+                    qaAssignedTo: taskItem.qaTask.assignedTo   
                 }}
                 validationSchema={Yup.object({
                     taskName: Yup.string().required("Task name required"),
@@ -228,14 +270,14 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                         projectId: (project?.id || "") as string,
                         milestoneId: values.milestoneId,
                         status: taskItem.status,
-                        assignedTo: taskItem.assignedTo,
+                        assignedTo: values.assignedTo,
                         qaTask: {
                             name: values.qaTaskName,
                             description: values.qaDescription,
                             dueDate: values.qaDueDate,
                             priority: values.qaPriority,
                             status: taskItem.qaTask.status,
-                            assignedTo: taskItem.qaTask.assignedTo
+                            assignedTo: values.qaAssignedTo
                         },
                         dependentMilestones: taskItem.dependentMilestones,
                         dependentTasks: taskItem.dependentTasks
@@ -269,7 +311,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                         milestoneId: values.milestoneId,
                         projectId: (project?.id || "") as string,
                         status: taskItem.status,
-                        assignedTo: taskItem.assignedTo,
+                        assignedTo: values.assignedTo,
                         dependentMilestones: taskItem.dependentMilestones,
                         dependentTasks: taskItem.dependentTasks,
                         qaTask: {
@@ -278,7 +320,7 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                             dueDate: values.qaDueDate,
                             priority: values.qaPriority,
                             status: taskItem.qaTask.status,
-                            assignedTo: taskItem.qaTask.assignedTo,
+                            assignedTo: values.qaAssignedTo,
                         },
                         id: taskItem.id,
                         createdAt: taskItem.createdAt
@@ -375,6 +417,25 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                                     </MenuList>
                                 </Menu>   
                         </HStack>
+
+                        <HStack justifyContent="flex-start" width={"100%"}>
+                                <FormLabel> Assigned To: </FormLabel> 
+                                <Menu>           
+                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                                    <Text id="assignStr">{taskItem.assignedTo}</Text>
+                                    </MenuButton>
+                                    <MenuList>
+                                    {projectUsers.map((user) => 
+                                    <MenuItem onClick={() => {
+                                        formik.setFieldValue("assignedTo", user.username);
+                                        updateAssignButton(user.username)
+                                        }}
+                                        key={user.id}> 
+                                        {user.username}
+                                    </MenuItem>)}
+                                    </MenuList>
+                                </Menu>   
+                        </HStack>
                         </VStack>
 
                         <Divider orientation="vertical" borderColor="gray.200" height="100%" />
@@ -434,6 +495,25 @@ export function KanbanItemTask({task, index, updateParentTask, deleteParentTask}
                                     </MenuItem>
                                 </MenuList>
                             </Menu>   
+                        </HStack>
+
+                        <HStack justifyContent="flex-start" width={"100%"}>
+                                <FormLabel> Assigned To: </FormLabel> 
+                                <Menu>           
+                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                                    <Text id="qaAssignStr">{taskItem.qaTask.assignedTo}</Text>
+                                    </MenuButton>
+                                    <MenuList>
+                                    {projectUsers.map((user) => 
+                                    <MenuItem onClick={() => {
+                                        formik.setFieldValue("qaAssignedTo", user.username);
+                                        updateQAAssignButton(user.username)
+                                        }}
+                                        key={user.id}> 
+                                        {user.username}
+                                    </MenuItem>)}
+                                    </MenuList>
+                                </Menu>   
                         </HStack>
 
                         </VStack>
@@ -504,9 +584,85 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
     const client = useContext(ApiContext).client;
     const project = useContext(ApiContext).project;
 
-    const [milestoneName, setMilestoneName] = useState(milestone.name)
-    const [milestoneDescription, setMilestoneDescription] = useState(milestone.description)
-    const [milestoneDueDate, setMilestoneDueDate] = useState(milestone.dueDate)
+    const [milestoneName, setMilestoneName] = useState(milestone.name);
+    const [milestoneDescription, setMilestoneDescription] = useState(milestone.description);
+    const [milestoneDueDate, setMilestoneDueDate] = useState(milestone.dueDate);
+    const [milestoneTasks, setMilestoneTasks] = useState(milestone.dependentTasks);
+    const [milestoneMilestones, setMilestoneMilstones] = useState(milestone.dependentMilestones);
+
+    const possibleChildTasks = project?.tasks?.map(({ name, id }) => {
+        return { name: name, id: id };
+    });
+
+    const possibleChildMilestones = project?.milestones
+    ? project.milestones
+        .filter(item => item.id !== milestone.id)
+        .filter((item) => {
+            const checkingMilestone = project?.milestones?.find((m) => m.id === item.id);
+            if (milestone.id)
+                return !(checkingMilestone?.dependentMilestones?.includes(milestone.id));
+        })
+        .map(({ name, id }) => ({ name, id }))
+    : [];
+
+    const task_state = {
+        options: possibleChildTasks,
+        selectedValue: project?.tasks
+          ?.map(({ name, id }) => {
+            if (id && milestoneTasks?.includes(id)) 
+                return {name: name, id: id};
+          })
+          .filter((value) => value !== undefined),
+      };
+
+    const milestone_state = {
+        options: possibleChildMilestones,
+        selectedValue: project?.milestones?.map(({name, id}) => {
+            if (id && milestoneMilestones?.includes(id) && name)
+            return {name: name, id: id};
+        })
+        .filter((value) => value !== undefined),
+    };
+
+    function onTaskSelect(selectedList: any, selectedItem: any) {
+        const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+        console.log(selectedTask);
+  
+        if (selectedTask && selectedTask.id && milestoneTasks){
+          const newList = [...milestoneTasks, selectedTask.id];
+          console.log(newList)
+          setMilestoneTasks(newList);
+        }
+    }
+
+    function onTaskRemove(selectedList: any, selectedItem: any) {
+        const selectedTask = project?.tasks?.find((item) => item.id === selectedItem.id);
+        console.log(selectedItem);
+  
+        if (selectedTask && selectedTask.id){
+          const newList = milestoneTasks?.filter((item) => item !== selectedTask.id);
+          console.log(newList);
+          setMilestoneTasks(newList);
+        }
+    }
+  
+    function onMilestoneSelect(selectedList: any, selectedItem: any) {
+        const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+        if (selectedM && selectedM.id && milestoneMilestones){
+            const newList = [...milestoneMilestones, selectedM.id];
+            setMilestoneMilstones(newList);
+        }
+    }
+
+    function onMilestoneRemove(selectedList: any, selectedItem: any) {
+        const selectedM = project?.milestones?.find((item) => item.id === selectedItem.id);
+
+        if (selectedM && selectedM.id && milestoneMilestones){
+            const newList = milestoneMilestones.filter((item) => item !== selectedM.id);
+            setMilestoneMilstones(newList);
+        }
+    }
 
     const deleteMilestone = async () => {
         const { data, error, response } = await client.DELETE("/milestones/{id}", {
@@ -595,7 +751,7 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                 })}
                 onSubmit={async (values, actions) => {
                     actions.resetForm();
-
+                    console.log(milestoneTasks)
                     const { data, error, response } = await client.PATCH("/milestones/{id}", {
                         params: {
                             path: {
@@ -606,6 +762,8 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                             name: values.milestoneName,
                             description: values.description,
                             dueDate: values.dueDate,
+                            dependentMilestones: milestoneMilestones,
+                            dependentTasks: milestoneTasks
                         }
                     });
 
@@ -632,7 +790,6 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                     setMilestoneName(values.milestoneName)
                     setMilestoneDescription(values.description)
                     setMilestoneDueDate(values.dueDate)
-
                     } else {
                     console.log(response);
                     }
@@ -672,6 +829,28 @@ export function KanbanItemMilestone({milestone, index, change} : KanbanItemMiles
                             setSelectedDateString={(date) => formik.setFieldValue("dueDate", date)}
                             startDate={new Date(milestoneDueDate.split("T")[0])}
                         />
+
+                        <HStack justifyContent="flex-start" width="100%" alignItems="center">
+                        <FormLabel>Dependent Tasks:</FormLabel>
+                        <Multiselect
+                        options={task_state.options} // Options to display in the dropdown
+                        selectedValues={task_state.selectedValue} // Preselected value to persist in dropdown
+                        displayValue="name" // Property name to display in the dropdown options
+                        onSelect={onTaskSelect}
+                        onRemove={onTaskRemove}
+                        />
+                        </HStack>
+
+                        <HStack justifyContent="flex-start" width="100%" alignItems="center">
+                        <FormLabel>Dependent Milestones:</FormLabel>
+                        <Multiselect
+                        options={milestone_state.options} // Options to display in the dropdown
+                        selectedValues={milestone_state.selectedValue} // Preselected value to persist in dropdown
+                        displayValue="name" // Property name to display in the dropdown options
+                        onSelect={onMilestoneSelect}
+                        onRemove={onMilestoneRemove}
+                        /> 
+                        </HStack>
 
                         <Stack spacing={4} direction="row" align="center">
                         <Button
