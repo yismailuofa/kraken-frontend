@@ -162,7 +162,7 @@ export function AddMilestoneForm() {
                 startDate={new Date()}
             />
 
-            <HStack justifyContent="flex-start" width="100%" alignItems="center">
+            <HStack justifyContent="space-between" width="100%" alignItems="center">
             <FormLabel>Dependent Tasks:</FormLabel>
             <Multiselect
             options={task_state.options} // Options to display in the dropdown
@@ -173,7 +173,7 @@ export function AddMilestoneForm() {
             />
             </HStack>
 
-            <HStack justifyContent="flex-start" width="100%" alignItems="center">
+            <HStack justifyContent="space-between" width="100%" alignItems="center">
             <FormLabel>Dependent Milestones:</FormLabel>
             <Multiselect
             options={milestone_state.options} // Options to display in the dropdown
