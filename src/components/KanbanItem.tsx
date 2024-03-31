@@ -536,6 +536,13 @@ export function KanbanItemTask({task, index, type, updateParentTask, deleteParen
                                         key={user.id}> 
                                         {user.username}
                                     </MenuItem>)}
+                                    <MenuItem onClick={() => {
+                                        formik.setFieldValue("assignedTo", "Unassigned");
+                                        updateAssignButton("Unassigned")
+                                        }}
+                                        key={"Unassigned"}> 
+                                        Unassigned
+                                    </MenuItem>
                                     </MenuList>
                                 </Menu>   
                         </HStack>
@@ -638,6 +645,13 @@ export function KanbanItemTask({task, index, type, updateParentTask, deleteParen
                                         key={user.id}> 
                                         {user.username}
                                     </MenuItem>)}
+                                    <MenuItem onClick={() => {
+                                        formik.setFieldValue("qaAssignedTo", "Unassigned");
+                                        updateQAAssignButton("Unassigned")
+                                        }}
+                                        key={"Unassigned"}> 
+                                        Unassigned
+                                    </MenuItem>
                                     </MenuList>
                                 </Menu>   
                         </HStack>

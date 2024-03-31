@@ -143,12 +143,12 @@ export function AddTaskForm() {
         dueDate: default_date.toISOString(),
         priority: undefined as "Low" | "Medium" | "High" | undefined,    
         milestoneId: "",
-        assignTo: "",
+        assignTo: "Unassigned",
         qaTaskName: "",
         qaDescription: "",
         qaDueDate: default_date.toISOString(),
         qaPriority: undefined as "Low" | "Medium" | "High" | undefined,   
-        qaAssignTo:""  
+        qaAssignTo:"Unassigned"  
       }}
       validationSchema={Yup.object({
         taskName: Yup.string().required("Task name required"),
@@ -296,7 +296,7 @@ export function AddTaskForm() {
                     <FormLabel> Assign To: </FormLabel> 
                     <Menu>           
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                        <Text id="assignStr"></Text>
+                        <Text id="assignStr">Unassigned</Text>
                         </MenuButton>
                         <MenuList>
                         {projectUsers.map((user) => 
@@ -307,6 +307,13 @@ export function AddTaskForm() {
                             key={user.id}> 
                             {user.username}
                           </MenuItem>)}
+                          <MenuItem onClick={() => {
+                            formik.setFieldValue("assignTo", "Unassigned");
+                            updateAssignButton("Unassigned")
+                            }}
+                            key={"Unassigned"}> 
+                            Unassigned
+                          </MenuItem>
                         </MenuList>
                     </Menu>   
             </HStack>
@@ -400,7 +407,7 @@ export function AddTaskForm() {
                 <FormLabel> Assign To: </FormLabel> 
                 <Menu>           
                     <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                    <Text id="qaAssignStr"></Text>
+                    <Text id="qaAssignStr">Unassigned</Text>
                     </MenuButton>
                     <MenuList>
                       {projectUsers.map((user) => 
@@ -411,6 +418,13 @@ export function AddTaskForm() {
                         key={user.id}> 
                         {user.username}
                       </MenuItem>)}
+                      <MenuItem onClick={() => {
+                        formik.setFieldValue("assignTo", "Unassigned");
+                        updateQAAssignButton("Unassigned")
+                        }}
+                        key={"Unassigned"}> 
+                        Unassigned
+                      </MenuItem>
                     </MenuList>
                 </Menu>   
             </HStack>
