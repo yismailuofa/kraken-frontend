@@ -153,6 +153,8 @@ export function AddTaskForm() {
       validationSchema={Yup.object({
         taskName: Yup.string().required("Task name required"),
         qaTaskName: Yup.string().required("QA task name required"),
+        description: Yup.string().required("Task description required"),
+        qaDescription: Yup.string().required("QA task description required"),
         milestoneId: Yup.string().required("Parent milestone required"),
       })}
       onSubmit={async (values, actions) => {
@@ -344,7 +346,7 @@ export function AddTaskForm() {
 
             <Divider orientation="vertical" borderColor="gray.200" height="100%" />
 
-            <VStack width="45%">
+            <VStack width="45%" height="100%">
             <Heading>Create QA Task</Heading>
             <TextField
               id="qaTaskName"

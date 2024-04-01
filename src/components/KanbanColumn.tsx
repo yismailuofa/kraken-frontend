@@ -48,7 +48,8 @@ export function KanbanColumnTask({name, id, tasks, updateParentTask, deleteParen
                 style={{ 
                     width: '25vw',
                     backgroundColor: snapshot.isDraggingOver ? 'teal' : '#B6D6CC',
-                    overflowY: "auto", maxHeight: "60vh"
+                    overflowY: "auto", maxHeight: "60vh",
+                    minHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
@@ -76,7 +77,8 @@ export function KanbanColumnMilestone({name, id, milestones=[], change} : Kanban
                 style={{ 
                     width: '25vw',
                     backgroundColor: snapshot.isDraggingOver ? 'teal' : '#B6D6CC',
-                    overflowY: "auto", maxHeight: "60vh"
+                    overflowY: "auto", maxHeight: "60vh",
+                    minHeight: "60vh",
                 }}
                 {...provided.droppableProps}
                 >
@@ -106,7 +108,8 @@ export function KanbanColumnQATask({name, id, tasks=[], updateParentTask, delete
                 style={{ 
                     width: '25vw',
                     backgroundColor: snapshot.isDraggingOver ? 'teal' : '#B6D6CC',
-                    overflowY: "auto", maxHeight: "60vh"
+                    overflowY: "auto", maxHeight: "60vh",
+                    minHeight: "60vh"
                 }}
                 {...provided.droppableProps}
                 >
