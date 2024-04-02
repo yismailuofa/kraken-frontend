@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/kraken-frontend/static/css/main.2cb918f2.css",
-    "main.js": "/kraken-frontend/static/js/main.5fbc3ea5.js",
+    "main.js": "/kraken-frontend/static/js/main.50a7a0b6.js",
     "static/js/592.896c918b.chunk.js": "/kraken-frontend/static/js/592.896c918b.chunk.js",
     "index.html": "/kraken-frontend/index.html",
     "main.2cb918f2.css.map": "/kraken-frontend/static/css/main.2cb918f2.css.map",
-    "main.5fbc3ea5.js.map": "/kraken-frontend/static/js/main.5fbc3ea5.js.map",
+    "main.50a7a0b6.js.map": "/kraken-frontend/static/js/main.50a7a0b6.js.map",
     "592.896c918b.chunk.js.map": "/kraken-frontend/static/js/592.896c918b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2cb918f2.css",
-    "static/js/main.5fbc3ea5.js"
+    "static/js/main.50a7a0b6.js"
   ]
 }
