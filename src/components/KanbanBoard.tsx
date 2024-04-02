@@ -337,12 +337,12 @@ export function KanbanBoardContent({
 
   const handleTaskUpdate = (updated: Task) => {
     let temp_task_list, temp_qa_list;
+    console.log(updated.name);
 
     if (plannedTaskList.find((item) => item.id === updated.id)){
       temp_task_list = plannedTaskList.filter((item) => item.id !== updated.id);
-      console.log("handle: " + updated.priority)
+      console.log([...temp_task_list, updated]);
       setPlannedTaskList([...temp_task_list, updated]);
-      console.log(plannedTaskList);
     }
     if (plannedQATaskList.find((item) => item.id === updated.id)){
       temp_qa_list = plannedQATaskList.filter((item) => item.id !== updated.id);
@@ -363,14 +363,14 @@ export function KanbanBoardContent({
     if (completedQATaskList.find((item) => item.id === updated.id)){
       temp_qa_list = completedQATaskList.filter((item) => item.id !== updated.id);
       setCompletedQATaskList([...temp_qa_list, updated]);
-      console.log(updated.priority);
-      console.log(completedQATaskList);
     }
-
-    handleFilterChange(7);
-
-    console.log(plannedTaskList, inProgressTaskList, completedTaskList);
   }
+
+  useEffect(() => {
+    handleFilterChange(0);
+    handleFilterChange(7);
+    console.log(plannedQATaskList);
+  }, [plannedTaskList, plannedQATaskList, inProgressTaskList, inProgressQATaskList, completedTaskList, completedQATaskList]);
 
   const handleDisplayChange = (num: number) => {
     let textToChange = document.getElementById("currentDisplayText");
@@ -795,6 +795,7 @@ export function KanbanBoardContent({
         setPlannedQATaskItems(plannedQATaskList)
         setInProgressQATaskItems(inProgressQATaskList)
         setCompletedQATaskItems(completedQATaskList)
+
       }
     }
 

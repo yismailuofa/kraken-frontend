@@ -23,10 +23,14 @@ export function DateChooser({ id, name, selectedDateString, setSelectedDateStrin
   }
 
   return (
-    <HStack justifyContent="flex-start" width="100%" alignItems="center">    
+    <HStack justifyContent="space-between" width="100%" alignItems="center">    
       <FormLabel minW={20}>{label}</FormLabel>
       <Box borderWidth='1px' p={3}>
-        <DatePicker selected={selectedDate} onChange={(date) => updateSelectedDate(date)} className="custom-datepicker"/>
+        <DatePicker selected={selectedDate} 
+        onChange={(date) => updateSelectedDate(date)} 
+        className="custom-datepicker"
+        minDate={new Date()}
+        />
       </Box>
     </HStack>
   );
