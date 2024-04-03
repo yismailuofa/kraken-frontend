@@ -118,7 +118,7 @@ export function ProjectMemberTable() {
   )
 
   const showMembers = () => (
-    <TableContainer>
+    <TableContainer maxHeight="40vh" overflowY="auto">
       <Table variant="simple">
         <Thead>
           <Tr>

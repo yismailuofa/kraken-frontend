@@ -154,7 +154,7 @@ export function ProjectSettings({ onLogout }: ProjectSettingsProps) {
         {
           user?.ownedProjects?.some(projectId => projectId === project.id)
           &&
-          <Button colorScheme='teal' variant='solid' mb={10} onClick={onOpenProjectCodeModal}>
+          <Button colorScheme='teal' variant='solid' mb={10} onClick={onOpenProjectCodeModal} minHeight="40px">
             Get Project ID
           </Button>
         }
