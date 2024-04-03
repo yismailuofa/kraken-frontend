@@ -423,7 +423,7 @@ export function Sprint({ sprint, onProjectUpdated }: any) {
             <MenuButton as={Button} colorScheme="teal" rightIcon={<ChevronDownIcon />}>
               <Text>Add Milestone/Task</Text>
             </MenuButton>
-            <MenuList>
+            <MenuList maxHeight={"40vh"} overflowY={"scroll"}>
             <HStack m={3} pb={3} spacing={10} borderBottom="1px" borderColor={'gray.200'}>
               <Box fontWeight="bold" w="50vw">
                   Title
