@@ -38,8 +38,7 @@ import {
 import { BsKanban, BsFillGrid3X3GapFill } from "react-icons/bs";
 import { GrCycle } from "react-icons/gr";
 import { CgArrowLongRightC } from "react-icons/cg";
-import { MdTimeline } from "react-icons/md";
-import { SiOctopusdeploy } from "react-icons/si";
+import { MdTimeline  } from "react-icons/md";
 // import { FiMenu } from "react-icons/fi";
 import { IconType } from 'react-icons'
 import { useNavigate } from 'react-router-dom'
