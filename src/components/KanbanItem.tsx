@@ -106,11 +106,11 @@ export function KanbanItemTask({task, index, type, updateParentTask, deleteParen
     }, [client]);
     let statusColor = "grey";
 
-    if (task.priority === "High") {
+    if (task.qaTask.priority === "High") {
         statusColor = "red";
-    } else if (task.priority === "Medium") {
+    } else if (task.qaTask.priority === "Medium") {
         statusColor = "yellow";
-    } else if (task.priority === "Low") {
+    } else if (task.qaTask.priority === "Low") {
         statusColor = "green";
     }
 
