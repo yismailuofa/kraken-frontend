@@ -1,3 +1,7 @@
+/**
+ * Project setting page top bar
+ */
+
 import {
   Heading,
   Flex,

@@ -1,3 +1,8 @@
+/**
+ * FR 11
+ * Modal for removing member from project as admin
+ */
+
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, VStack } from "@chakra-ui/react";
 import { components } from "../client/api";
 

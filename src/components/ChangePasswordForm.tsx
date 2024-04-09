@@ -1,3 +1,8 @@
+/**
+ * FR 3
+ * Form for changing user password
+ */
+
 import {
   VStack,
   Stack,

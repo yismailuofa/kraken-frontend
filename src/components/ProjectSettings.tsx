@@ -1,3 +1,8 @@
+/**
+ * FR 11, FR 9, FR 7
+ * Project setting page that allows user to perform deleting user, editing project, or leaving the project
+ */
+
 import { Box, Heading, Text, Button, Spacer, Stack, VStack, useDisclosure, useToast, IconButton, HStack } from "@chakra-ui/react";
 import { useContext } from "react";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";

@@ -1,3 +1,8 @@
+/**
+ * FR 17, FR 18
+ * Form for adding tasks and QA tasks for a given milestone
+ */
+
 import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, Divider, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

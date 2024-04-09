@@ -1,3 +1,8 @@
+/**
+ * FR 25
+ * Form for creating new sprints
+ */
+
 import { VStack, Stack, Heading, Button, Box, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

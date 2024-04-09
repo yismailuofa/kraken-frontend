@@ -1,3 +1,8 @@
+/**
+ * FR 14
+ * Form for adding new milstone to project
+ */
+
 import { VStack, Stack, Heading, Button, useToast, Menu, MenuList, MenuItem, HStack, Text, MenuButton, FormLabel } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

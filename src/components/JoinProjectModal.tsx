@@ -1,3 +1,8 @@
+/**
+ * FR 8
+ * Form for user joining project via access code
+ */
+
 import { VStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

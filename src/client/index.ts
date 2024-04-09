@@ -1,3 +1,7 @@
+/**
+ * creates a client for making HTTP requests with backend
+ */
+
 import createClient from 'openapi-fetch'
 import type { paths } from "./api";
 

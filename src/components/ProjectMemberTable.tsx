@@ -1,3 +1,8 @@
+/**
+ * FR 12
+ * Table displaying all members in project
+ */
+
 import { Box, Button, Container, Flex, Heading, IconButton, Spacer, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from "@chakra-ui/react";
 import { useState, useEffect, useContext } from "react";
 import { components } from "../client/api";

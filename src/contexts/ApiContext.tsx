@@ -1,3 +1,7 @@
+/**
+ * Creates API context for frontend
+ */
+
 import { createContext } from "react";
 import { createClientWithToken } from "../client";
 import { components } from "../client/api";

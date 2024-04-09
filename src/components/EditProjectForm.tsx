@@ -1,3 +1,8 @@
+/**
+ * FR 7
+ * Form for updating a project
+ */
+
 import { useToast } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";

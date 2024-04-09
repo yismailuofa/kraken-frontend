@@ -1,3 +1,8 @@
+/**
+ * Route protection based on user autentication
+ */
+
+
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { ApiContext } from "../contexts/ApiContext";

@@ -1,3 +1,7 @@
+/**
+ * Text input for forms
+ */
+
 import {
   FormControl,
   FormLabel,

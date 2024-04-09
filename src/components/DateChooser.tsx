@@ -1,3 +1,7 @@
+/**
+ * provides a date chooser for selecting a date
+ */
+
 import React, { useState } from "react";
 import { Box, HStack, Text, border, Button, FormLabel, Center } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";

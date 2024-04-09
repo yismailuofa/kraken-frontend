@@ -1,3 +1,9 @@
+/**
+ * FR 1
+ * Form for user to sign up with username, email, and password
+ */
+
+
 import { VStack, Stack, Heading, Button, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

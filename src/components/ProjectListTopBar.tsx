@@ -1,3 +1,7 @@
+/**
+ * Top bar for project list page
+ */
+
 import {
   Heading,
   Flex,

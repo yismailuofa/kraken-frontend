@@ -1,3 +1,7 @@
+/**
+ * kanban column that holds kanban items with the same status
+ */
+
 import React from "react";
 import {
     Heading,

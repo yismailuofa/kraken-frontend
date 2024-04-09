@@ -1,3 +1,8 @@
+/**
+ * FR 26
+ * Modal for sprint deletion
+ */
+
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, VStack } from "@chakra-ui/react";
 import { components } from "../client/api";
 

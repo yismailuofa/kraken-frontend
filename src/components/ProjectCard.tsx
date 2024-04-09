@@ -1,3 +1,8 @@
+/**
+ * FR 4
+ * Card holding a project, which can be selected
+ */
+
 import { Heading, Text, Card, CardBody, CardHeader } from "@chakra-ui/react";
 
 export function ProjectCard({ name, description, onClick }: any) {

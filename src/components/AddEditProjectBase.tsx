@@ -1,3 +1,8 @@
+/**
+ * FR6, FR7
+ * provides the base form for adding and editing projects
+ */
+
 import { VStack, Stack, Heading, Button, Box, } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
