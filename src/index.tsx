@@ -1,3 +1,7 @@
+/**
+ * Main entry point of application, sets up root component
+ */
+
 import * as ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";

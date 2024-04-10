@@ -1,3 +1,8 @@
+/**
+ * FR 10
+ * Form for adding user to project via email
+ */
+
 import { VStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

@@ -1,3 +1,9 @@
+/**
+ * FR 20, FR 21, FR 15, FR 16
+ * Kanban item that holds a certain task/milestone/qa task
+ * can edit or delete containing task/milestone/qa task
+ */
+
 import React, { useState } from "react";
 import {
     Flex,

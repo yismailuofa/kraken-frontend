@@ -1,3 +1,8 @@
+/**
+ * FR 24
+ * Timeline page displaying the timeline view of tasks, milestones and qa tasks for a project
+ */
+
 import { Box } from "@chakra-ui/react";
 import { useContext } from "react";
 import { ApiContext, MaybeUser } from "../contexts/ApiContext";

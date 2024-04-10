@@ -1,3 +1,7 @@
+/**
+ * Local storage for user data
+ */
+
 import { components } from "../client/api";
 import { MaybeUser } from "../contexts/ApiContext";
 

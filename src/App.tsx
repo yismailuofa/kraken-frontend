@@ -1,3 +1,7 @@
+/**
+ * Main entry point of application, sets up routing and context
+ */
+
 import * as React from "react";
 import { Routes, Route } from "react-router-dom";
 import { ChakraProvider, theme } from "@chakra-ui/react";

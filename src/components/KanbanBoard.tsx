@@ -1,3 +1,11 @@
+/**
+ * FR 22, FR 23, FR 19
+ * Kanban board page that displays all tasks, milestones, and QA tasks in the project
+ * tasks, milstones, and QA tasks categorized based on status, which be changed by drag and drop
+ * tasks, milestones, and QA tasks can be filtered based on status and priority
+ * 
+ */
+
 import {
   Box,
   Flex,

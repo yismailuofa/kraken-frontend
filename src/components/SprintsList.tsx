@@ -1,3 +1,9 @@
+/**
+ * FR 25, FR 28
+ * Sprint page displaying all current sprints of the project
+ * can add new sprints
+ */
+
 import { Box, Button, Accordion, HStack, IconButton } from "@chakra-ui/react";
 import { useContext } from "react";
 import { ApiContext, MaybeProject, MaybeUser } from "../contexts/ApiContext";

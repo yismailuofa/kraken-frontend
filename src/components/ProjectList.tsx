@@ -1,3 +1,8 @@
+/**
+ * FR 13
+ * Project list page displaying all projects the user is a member of
+ */
+
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectListTopBar } from "./ProjectListTopBar";

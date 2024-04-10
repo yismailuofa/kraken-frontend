@@ -1,3 +1,8 @@
+/**
+ * Side bar for a project, which can be used for navigating between project page, kanban page, 
+ * timeline page, depedency page, and sprint page 
+ */
+
 'use client'
 
 import {

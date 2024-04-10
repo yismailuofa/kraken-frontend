@@ -1,3 +1,8 @@
+/**
+ * FR 1, FR 2
+ * Home screen that provides interface for login and sign up 
+ */
+
 import { VStack, Stack, Heading, Button, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { SiOctopusdeploy } from "react-icons/si";

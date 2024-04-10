@@ -1,3 +1,8 @@
+/**
+ * FR 8
+ * Modal for displaying access code for project
+ */
+
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, Flex, Input, useClipboard, VStack } from "@chakra-ui/react";
 
 export function ProjectCodeModal({projectCode, onCloseModal, isOpen, onClose}: any) {

@@ -1,3 +1,8 @@
+/**
+ * FR 26, FR 27
+ * provide functionality for editing sprint content, and deleting sprints
+ */
+
 import { Stack, HStack, StackDivider, IconButton, Button, Text, Box, Spacer, AccordionPanel, AccordionItem, AccordionButton, AccordionIcon, Table, TableContainer, Tbody, Td, Th, Thead, Tr, Menu, MenuButton, MenuItem, MenuList, MenuDivider, useDisclosure, useToast, Avatar, Tooltip, Heading, Wrap } from "@chakra-ui/react";
 import { useContext } from "react";
 import { components } from "../client/api";

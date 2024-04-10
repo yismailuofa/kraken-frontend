@@ -1,3 +1,8 @@
+/**
+ * FR 5
+ * Modal for project deletion
+ */
+
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, VStack } from "@chakra-ui/react";
 
 export function DeleteProjectModal({onConfirmDelete, isOpen, onClose}: any) { 

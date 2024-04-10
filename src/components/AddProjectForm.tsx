@@ -1,3 +1,8 @@
+/**
+ * FR 6
+ * Form for creating a new project
+ */
+
 import { Box, useToast, useDisclosure } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";

@@ -1,3 +1,8 @@
+/**
+ * FR 2
+ * Form for logging in
+ */
+
 import { VStack, Stack, Heading, Button, Box, Text } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";

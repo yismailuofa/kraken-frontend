@@ -1,3 +1,8 @@
+/**
+ * FR 9
+ * Modal that allows user to leave a project
+ */
+
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, VStack } from "@chakra-ui/react";
 
 export function LeaveProjectModal({onConfirmLeave, isOpen, onClose}: any) { 

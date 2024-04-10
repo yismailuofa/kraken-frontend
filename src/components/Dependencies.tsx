@@ -1,3 +1,9 @@
+/**
+ * FR 29, FR 30
+ * Dependency page displaying the task and milstone dependencies in the project
+ * Also shows the alpha and QA completeness based on task status
+ */
+
 import {
   Alert,
   Badge,
